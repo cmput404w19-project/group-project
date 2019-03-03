@@ -1,14 +1,39 @@
-#dist: xenial
-#language: python
-#python: 3.7
+# Disable sudo to speed up the build
+sudo: false
 
-#env: -DJANGO=1.8 DB=mysql
+# Set the build language to Python
+language: python
 
-#install: - pip install -r requirements.txt
+# Cache to speed up the build
+cache: pip
 
-#script:
-  #- python manage.py test
+# Set the python versions
+python:
+- 3.4
+- 3.5
+- 3.6
 
+# Addons
+addons:
+  postgresql: '9.6'
+  
+# Environment
+env:
+- DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
+
+# Install pip dependencies
+install:
+- pip install -r requirements.txt
+
+# Create test database
+before_script:
+- psql -c 'create database travis_ci_test;' -U postgres
+
+# Run the unit test
+script:
+- python manage.py test
+
+# Deploy to heroku server
 deploy:
   provider: heroku
   api_key:
@@ -16,3 +41,4 @@ deploy:
   app: Cmput404Project
   on:
     repo: cmput404w19-project/group-project
+    branch: master
