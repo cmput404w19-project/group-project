@@ -1,43 +1,22 @@
-# Disable sudo to speed up the build
 sudo: false
-
-# Set the build language to Python
 language: python
-
-# Cache to speed up the build
 cache: pip
-
-# Set the python versions
 python:
-- 3.4
-- 3.5
 - 3.6
-
-# Addons
 addons:
   postgresql: '9.6'
-  
-# Environment
 env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
-
-# Install pip dependencies
 install:
 - pip install -r requirements.txt
-
-# Create test database
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
-
-# Run the unit test
 script:
 - python manage.py test
-
-# Deploy to heroku server
 deploy:
   provider: heroku
   api_key:
-    secure: bzS+a+7Ii8KkPBD0zyf5iFFjMfDrhW3Ko4EZx43Z2SjZhyGxAFR3jRwA+0seArqhp3DQW8bePVA561UkX9nv9N3nZoKmYDu1+HeleZZG+viHeMxQKiIuMYZ1JdIVc7QwHo+bEvQNHNkcjK+z6S4CaeqS7mAJsltQnHo+6BryXQ4sM4VtpSqiJKK+Eokx7PxhMdK8jSIDljAYJOYmdITDKj3OvJkGa81Oq9xD7r8678rROJMViQFVPqYTSnXkFTONCFMdY7RZyete3/uAJLmiRJhUPeM47V8iYgsKtsSAO6PqlC0hBjGb1/bNHbkvR9M5cuGpneECPbguMgJhHHPYcJIdzjyCyxFC2UvID83wc4+YjlTRZYlb00PxDk3VdfX1GqdtYBr+qR2bf1Tbe60J+OUz23VmSPAM1hf+EphtXS44oQa1MakxWB1CMUMtR7uYYokioeWgQD28JHN9n4orl/e/YXN7Km/KBAeQDUmLUqX7+FurWgK0FlT5ySeaGDd2dhtpimbiUS+SoY7Raqp4JyuKwoxkiePDWgGv8KKJV4fwtEr/QzN2H8Nxk0NmpEt+6wYu4QEEmBSFfw3UFb4xhyfBGDAGve0huxeScCVAe47ynt051+Xs2u3/0EwWPH1Mcjl1qkArrF8eQ1eUyxIatA/h1hHflDh7K9Bt+EXAWZ0=
+    secure: lyytXKhgQoZl9ZdrbKsEGxQchFSr5yEi/p6OMxsV5XwaWCFJCRYmIBWU34m1VP0URyB6rlIWnLDpeG+dyCwm+eYlfliTpfXA+fJQp0vQf667r6d6LLjctibC0oTE3xvqR9Z4THF+PLFXaxoThlyXfoxjhT+u/OB06Skfv0iEXKG6O4yXMu7IgYnq6tI8NTqNIopv1JC91HV0/HlxjGJ9jedePSZww5KffrSttth+BSf1xOnbCI+UV/G1LDFAIDKsaSwdpuXd0xtfhRgTZdFM07ImzyMecaz31jmNebrMi8+MuEbHGVZ/NGM7F4cKKNL4tX6K6a9MnB/l4t1HDxQTIbaVgJrvCl5zrFm4RB8T5feBAt3UGeRyWnztBN14k6iV1XNdPROQ/bLUnGnqhbu38fDCgysJOtZxVsTACGNqtNkmTplHaehtlQX0GhqjHjCv4438qwjkIcxsLyQCO6LKcJp+h9/5y4BnDAuaKykeW65u2mk1tjeqZsX5ztlmjxuKWWQtK8d62FfHMJbPugKcna4l+I1pCi/JawxJMjtEfvtv3nypE+9HsRtdjwJUJN4FWN2QK0bUm1V+7lShM9qqVMwqJ3IUwDinDpRBAQMlos7Rc3wA1SvK0yGKABvOnD2wro3/El6IWr5vRzEfPC02Vz0QMwqhVpJcZNqJM3PWEYc=
   app: Cmput404Project
   on:
     repo: cmput404w19-project/group-project
