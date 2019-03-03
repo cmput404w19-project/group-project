@@ -17,7 +17,7 @@ deploy:
   provider: heroku
   api_key:
     secure: lyytXKhgQoZl9ZdrbKsEGxQchFSr5yEi/p6OMxsV5XwaWCFJCRYmIBWU34m1VP0URyB6rlIWnLDpeG+dyCwm+eYlfliTpfXA+fJQp0vQf667r6d6LLjctibC0oTE3xvqR9Z4THF+PLFXaxoThlyXfoxjhT+u/OB06Skfv0iEXKG6O4yXMu7IgYnq6tI8NTqNIopv1JC91HV0/HlxjGJ9jedePSZww5KffrSttth+BSf1xOnbCI+UV/G1LDFAIDKsaSwdpuXd0xtfhRgTZdFM07ImzyMecaz31jmNebrMi8+MuEbHGVZ/NGM7F4cKKNL4tX6K6a9MnB/l4t1HDxQTIbaVgJrvCl5zrFm4RB8T5feBAt3UGeRyWnztBN14k6iV1XNdPROQ/bLUnGnqhbu38fDCgysJOtZxVsTACGNqtNkmTplHaehtlQX0GhqjHjCv4438qwjkIcxsLyQCO6LKcJp+h9/5y4BnDAuaKykeW65u2mk1tjeqZsX5ztlmjxuKWWQtK8d62FfHMJbPugKcna4l+I1pCi/JawxJMjtEfvtv3nypE+9HsRtdjwJUJN4FWN2QK0bUm1V+7lShM9qqVMwqJ3IUwDinDpRBAQMlos7Rc3wA1SvK0yGKABvOnD2wro3/El6IWr5vRzEfPC02Vz0QMwqhVpJcZNqJM3PWEYc=
-  app: Cmput404Project
+  app: cmput404w19-project
   on:
     repo: cmput404w19-project/group-project
     branch: master
