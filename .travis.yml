@@ -1,18 +1,18 @@
-dist: xenial
-language: python
-python: 3.7
+#dist: xenial
+#language: python
+#python: 3.7
 
-env: -DJANGO=1.8 DB=mysql
+#env: -DJANGO=1.8 DB=mysql
 
-install: - pip install -r requirements.txt
+#install: - pip install -r requirements.txt
 
-script:
-  - python manage.py test
+#script:
+  #- python manage.py test
 
 deploy:
   provider: heroku
   api_key:
     secure: bzS+a+7Ii8KkPBD0zyf5iFFjMfDrhW3Ko4EZx43Z2SjZhyGxAFR3jRwA+0seArqhp3DQW8bePVA561UkX9nv9N3nZoKmYDu1+HeleZZG+viHeMxQKiIuMYZ1JdIVc7QwHo+bEvQNHNkcjK+z6S4CaeqS7mAJsltQnHo+6BryXQ4sM4VtpSqiJKK+Eokx7PxhMdK8jSIDljAYJOYmdITDKj3OvJkGa81Oq9xD7r8678rROJMViQFVPqYTSnXkFTONCFMdY7RZyete3/uAJLmiRJhUPeM47V8iYgsKtsSAO6PqlC0hBjGb1/bNHbkvR9M5cuGpneECPbguMgJhHHPYcJIdzjyCyxFC2UvID83wc4+YjlTRZYlb00PxDk3VdfX1GqdtYBr+qR2bf1Tbe60J+OUz23VmSPAM1hf+EphtXS44oQa1MakxWB1CMUMtR7uYYokioeWgQD28JHN9n4orl/e/YXN7Km/KBAeQDUmLUqX7+FurWgK0FlT5ySeaGDd2dhtpimbiUS+SoY7Raqp4JyuKwoxkiePDWgGv8KKJV4fwtEr/QzN2H8Nxk0NmpEt+6wYu4QEEmBSFfw3UFb4xhyfBGDAGve0huxeScCVAe47ynt051+Xs2u3/0EwWPH1Mcjl1qkArrF8eQ1eUyxIatA/h1hHflDh7K9Bt+EXAWZ0=
-  app: cmput404w19-project
+  app: Cmput404Project
   on:
     repo: cmput404w19-project/group-project
