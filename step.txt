@@ -1,3 +1,0 @@
-When we create the new project in Django, there are couple apps that are automatically installed. (auth app is one of them)
-
-1. In order to use auth app, we need to add it to project-level urls.py file.
