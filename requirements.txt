@@ -1,4 +1,5 @@
 Django
 django-storages
+django-heroku
 gunicorn
 pytz
