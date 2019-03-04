@@ -21,3 +21,5 @@ deploy:
   on:
     repo: cmput404w19-project/group-project
     branch: master
+  run: 
+    - python manage.py test socknet
