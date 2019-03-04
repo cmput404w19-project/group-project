@@ -21,5 +21,3 @@ deploy:
   on:
     repo: cmput404w19-project/group-project
     branch: master
-  run: 
-    - heroku run --app cmput404w19-project python manage.py migrate
