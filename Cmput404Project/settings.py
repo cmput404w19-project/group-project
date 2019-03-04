@@ -122,7 +122,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# login logout
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 django_heroku.settings(locals())
+
+# reset password
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
