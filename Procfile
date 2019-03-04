@@ -1,1 +1,1 @@
-web: gunicorn Cmput404Project.wsgi
+web: gunicorn core.wsgi
