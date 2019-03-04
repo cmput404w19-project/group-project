@@ -22,4 +22,4 @@ deploy:
     repo: cmput404w19-project/group-project
     branch: master
   run: 
-    - python manage.py test socknet
+    - heroku run --app cmput404w19-project python manage.py migrate
