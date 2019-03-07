@@ -4,11 +4,15 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  <div class="container">
+	  Hi {{ user.username }}!
+	  <p><a href="{% url 'logout' %}">logout</a></p>
+	  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  </div>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+  <div class="container">
+	  <p>You are not logged in</p>
+	  <a type="button" class="btn btn-danger" href="{% url 'login' %}">login</a>
+  </div>
 {% endif %}
 {% endblock %}
