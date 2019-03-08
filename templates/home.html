@@ -5,13 +5,17 @@
 {% block content %}
 {% if user.is_authenticated %}
   <div class="container">
-	  Hi {{ user.username }}!
-	  <p><a href="{% url 'logout' %}">logout</a></p>
-	  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  	  <div class="jumbotron" style="font-weight: bold; font-size:20pt;">
+	  	Hi {{ user.username }}!
+	  </div>
+	  <p><a href="{% url 'logout' %}" type="button" class="btn btn-info">logout</a></p>
+	  <p><a href="{% url 'password_reset' %}" type="button" class="btn btn-info">reset password</a></p>
   </div>
 {% else %}
   <div class="container">
-	  <p>You are not logged in</p>
+  	  <div class="jumbotron" style="font-weight: bold; font-size:20pt;">
+	  	<p>You are not logged in</p>
+	  </div>
 	  <a type="button" class="btn btn-danger" href="{% url 'login' %}">login</a>
   </div>
 {% endif %}
