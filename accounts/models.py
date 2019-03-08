@@ -78,6 +78,14 @@ class Friendship(models.Model):
 	# Primary key(user 1 , user 2)
 	pass
 
+class Follow(models.Model):
+	"""
+	Follow Relationship Between Users
+	"""
+	# follower  Foreign key to user
+	# following Foreign key to user
+	pass
+
 class Images(models.Model):
 	"""
 	Image In The Post
