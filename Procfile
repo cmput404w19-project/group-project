@@ -1,2 +1,2 @@
 web: gunicorn core.wsgi
-web: python3 manage.py migrate
+release: rake db:migrate
