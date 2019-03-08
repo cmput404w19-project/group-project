@@ -1,2 +1,2 @@
 web: gunicorn core.wsgi
-release: rake db:migrate
+#release: rake db:migrate
