@@ -2,25 +2,28 @@ sudo: false
 language: python
 cache: pip
 python:
-- 3.6
-addons:
-  postgresql: '9.6'
-#env:
-#- DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
+  - 3.6
+
+services: postgresql
+
 install:
-- pip install -r requirements.txt
-#before_script:
-#- psql -c 'create database travis_ci_test;' -U postgres
+  - pip install -r requirements.txt
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+
 script:
-- python manage.py makemigrations
-- python manage.py migrate
-- python manage.py test
+  - python manage.py syncdb --noinput
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test
+
 deploy:
   provider: heroku
   api_key:
     secure: AnmD+C68zJd5rX/ELMQmlWPgHyIg89ocxV+LOqpfdJc5th9e5CCfVTdl95myySMaj/TvUFplSbeeZTkKrfUglTqvNAoglV1SjapOQAz8CGgImOnVXJGaipASwBI+vLjANDe0iHLwWSpr/+7bl/vp8DDVb8/5Ubyo4OEA9wDGcfrI4e8tD2qRLksHGYAp/tfrDxPRWsliLj+RwwIAXROQBjjmgWT7SsFLx//6P+xr2mYt2wYI4cshtamlD1uSC7QrgJ977a99Y9hlZekLnlOqgdPoJZ0PjsLZFZHq3aWIC7fdCaJwUErF7o1uSr2IaKBZNfwdoVKQKTRJEa8kMUWRvuvwE9stAxondmmkgvdsFlstOSH8ySr5KUH6jw0r35tYBtXjowMQH68/Ko31LhECMHYVzQyeZoOjM5KuhQJJBeRyRvg74zAk9aUS+oS0kmOrSlWccEtGJLrFVV+2Cj5BYNP6pNI+zVxfBcv11JAuxmNEWdPr5uwdSvvNC7GrPJ81nMDxvR1IUtmHuMxmkP0eY0pU47JXHparB+vGzyv2SqrP+2w1bxgJz2sW6ZDgqxiuVHuvcb437i0EMO27dgedxUCQXxeHv6rF3GLsmvxQ9j7gBTamMZbZzINsiI5VSKTIeOMjCXI4gJjiqSwvP0CSplC6IVPNEP2wHQ2pFxZNSZU=
-  app: cmput404w19-project
-  on:
-    repo: cmput404w19-project/group-project
-    branch: master
+    app: cmput404w19-project
+    on:
+      repo: cmput404w19-project/group-project
+      branch: master
 
