@@ -9,7 +9,6 @@ install:
 
 before_script:
   - mysql -e 'create database coreDb;'
-  - python manage.py syncdb --noinput
 
 script:
   - python manage.py makemigrations
