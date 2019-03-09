@@ -2,25 +2,16 @@ sudo: false
 language: python
 cache: pip
 python:
-  - 3.6
-
+- 3.6
 install:
-  - pip install -r requirements.txt
-
+- pip install -r requirements.txt
 before_script:
-  - mysql -e 'create database coreDb;'
-
+- mysql -e 'create database coreDb;'
 script:
-  - python manage.py makemigrations
-  - python manage.py migrate
-  - python manage.py test
-
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py test
 deploy:
   provider: heroku
   api_key:
-    secure: AnmD+C68zJd5rX/ELMQmlWPgHyIg89ocxV+LOqpfdJc5th9e5CCfVTdl95myySMaj/TvUFplSbeeZTkKrfUglTqvNAoglV1SjapOQAz8CGgImOnVXJGaipASwBI+vLjANDe0iHLwWSpr/+7bl/vp8DDVb8/5Ubyo4OEA9wDGcfrI4e8tD2qRLksHGYAp/tfrDxPRWsliLj+RwwIAXROQBjjmgWT7SsFLx//6P+xr2mYt2wYI4cshtamlD1uSC7QrgJ977a99Y9hlZekLnlOqgdPoJZ0PjsLZFZHq3aWIC7fdCaJwUErF7o1uSr2IaKBZNfwdoVKQKTRJEa8kMUWRvuvwE9stAxondmmkgvdsFlstOSH8ySr5KUH6jw0r35tYBtXjowMQH68/Ko31LhECMHYVzQyeZoOjM5KuhQJJBeRyRvg74zAk9aUS+oS0kmOrSlWccEtGJLrFVV+2Cj5BYNP6pNI+zVxfBcv11JAuxmNEWdPr5uwdSvvNC7GrPJ81nMDxvR1IUtmHuMxmkP0eY0pU47JXHparB+vGzyv2SqrP+2w1bxgJz2sW6ZDgqxiuVHuvcb437i0EMO27dgedxUCQXxeHv6rF3GLsmvxQ9j7gBTamMZbZzINsiI5VSKTIeOMjCXI4gJjiqSwvP0CSplC6IVPNEP2wHQ2pFxZNSZU=
-    app: cmput404w19-project
-    on:
-      repo: cmput404w19-project/group-project
-      branch: master
-
+    secure: AW+Qcc2kSQs12XsGAlidM2DskGqXP2hkrXfNGjwHiod/qpVLYmODl9cGBujoKJn9K6OmolYOKMvbgh9gV5LKmzmeqPN8AtBgwphO/H71UNxRXWpKl3AQkkO7pfG25YBWEKira5RAC7bDyKuA7THFZEiW5Qj9FIUHcARlvIzleU//jTu0NB6moM+WCJB8lb2SNNvxkVsqFNnM0SnxD6bmlVvMWCvuqjsuMhIgMGjnQJgyyNL6Z9cETroRrgE8RUH9Eummj9p5FNYWQluFdCVBo7GitKHpK2pr56N9QiLSSzORDCNv25+irzcHYa8Z+wdzvGfcDzokM73gpZj5DRJWCsrfHuhM0Q/8a+cY68XetlQi7umafXznQQ4xFJAcU2uxNAGHpLFuVrakEo0QF0Q6g7Ked860BtdE9yPZzh1CHwFROacfi1UnIholkov7+Ht6BFVwUdmwMmGodVUDSJr9vyThHjYphm6Ifc/9l2O/4cDbOz3uE7+cg3ZaieFIxo03bbA9DaY3lIJePi5J8j5ag8PlFBqSX8fmHjHLtkqp3q1D8ZoJnpkSkqgPIOEbYkme22bdS8XLckXxK5huO3GVPF8VdxWkaWJZnpvY9a/7NKG5eX+AF/rvZ3yyr5W9zev0wADcTyvCN+7Zoq9DRwyTVgOMnjde9d9E7mVNqd9XinI=
