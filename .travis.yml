@@ -9,8 +9,8 @@ env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
 install:
 - pip install -r requirements.txt
-before_script:
-- psql -c 'create database travis_ci_test;' -U postgres
+#before_script:
+#- psql -c 'create database travis_ci_test;' -U postgres
 script:
 - python manage.py makemigrations
 - python manage.py migrate
@@ -23,3 +23,4 @@ deploy:
   on:
     repo: cmput404w19-project/group-project
     branch: master
+
