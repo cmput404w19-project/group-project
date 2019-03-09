@@ -6,11 +6,23 @@
 {% if user.is_authenticated %}
   <div class="container">
   	  <div class="jumbotron" style="font-weight: bold; font-size:20pt;">
-	  	Hi {{ user.username }}!
+			Hi {{ user.username }}!
+			<p><a href="{% url 'logout' %}" type="button" class="btn btn-info">logout</a></p>
+			<p><a href="{% url 'password_reset' %}" type="button" class="btn btn-info">reset password</a></p>
 	  </div>
-	  <p><a href="{% url 'logout' %}" type="button" class="btn btn-info">logout</a></p>
-	  <p><a href="{% url 'password_reset' %}" type="button" class="btn btn-info">reset password</a></p>
-  </div>
+	</div>
+
+	
+	<p> i am here</p>
+	<div class="allPost">
+		{%for post in list%}
+		<div class = "Post">
+			<li>{{post.title}}</li>
+			<li>{{post.description}}</li>
+			</div>
+		{%endfor%}
+		
+	</div>
 {% else %}
   <div class="container">
   	  <div class="jumbotron" style="font-weight: bold; font-size:20pt;">

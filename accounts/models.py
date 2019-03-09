@@ -24,37 +24,40 @@ class UserProfile(models.Model):
 		indexes = [
 			models.Index(fields=['user_id'], name='usr_idx'),
 		]
+    
+	
+
 
 class Post(models.Model):
 	"""
 	USER POST
 	"""
-	typeChoice = (('text/markdown', 'text/markdown'),('text/plain','text/plain'),('image/png;base64','image/png;base64'),('image/jpeg;base64','image/jpeg;base64'))
-	visibilityChoice = (("PUBLIC","PUBLIC"),("FOAF","FOAF"),("FRIENDS","FRIENDS"),("PRIVATE","PRIVATE"),("SERVERONLY","SERVERONLY"))
+	#typeChoice = (('text/markdown', 'text/markdown'),('text/plain','text/plain'),('image/png;base64','image/png;base64'),('image/jpeg;base64','image/jpeg;base64'))
+	#visibilityChoice = (("PUBLIC","PUBLIC"),("FOAF","FOAF"),("FRIENDS","FRIENDS"),("PRIVATE","PRIVATE"),("SERVERONLY","SERVERONLY"))
 	# post id  Unique Primary key
 	# author   Foreign key to user
 	# title
-	title = models.CharField(max_length=20)
+	title = models.CharField(max_length=20,default='')
 	# description
-	description = models.CharField(max_length=200)
+	description = models.CharField(max_length=200,default='')
 	# source
-	source = models.URLField()
+	#source = models.URLField()
 	# origin
-	origin = models.URLField()
+	#origin = models.URLField()
 	# content type      -text/markdown -application/base64 -image/png;base64 -image/jpeg;base64
-	contentType = models.CharField(max_length=20, choices=typeChoice)
+	#contentType = models.CharField(max_length=20, choices=typeChoice)
 	# content ?
-	content = models.TextField()
+	#content = models.TextField()
 	# categories
 
 	# size: page size
 	# published: timestamp ISO
 	# visibility: ["PUBLIC","FOAF","FRIENDS","PRIVATE","SERVERONLY"]
-	visibility = models.CharField(max_length=20, default="PUBLIC", choices=visibilityChoice)
+	#visibility = models.CharField(max_length=20, default="PUBLIC", choices=visibilityChoice)
 	# visibleTo: [] list of author URIs who can read the PRIVATE message
 	
 	# unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
-	pass
+	
 
 class PostVisibeTo(models.Model):
 	"""
