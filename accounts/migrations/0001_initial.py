@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('description', models.CharField(default='', max_length=100)),
                 ('city', models.CharField(default='', max_length=100)),
                 ('host', models.CharField(default='', max_length=100)),

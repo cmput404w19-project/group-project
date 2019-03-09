@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User # default user table in Django auth
 from django.db.models.signals import post_save
+from django.utils import timezone
 import uuid 
 
 # Create your models here.
@@ -8,8 +9,10 @@ class UserProfile(models.Model):
 	"""
 	User Information
 	"""
+	# userprofile id
+	profile_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	# user id
-	user_id = models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
+	user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 	# user name
 	displayName = models.CharField(max_length=20, default="") 
 	# bio
@@ -50,7 +53,7 @@ class Post(models.Model):
 	# post id  Unique Primary key
 	post_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	# author   Foreign key to user
-	author_id = models.ForeignKey(User,on_delete=models.CASCADE)
+	author_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
 	# title
 	title = models.CharField(max_length=20,default="")
 	# description
@@ -67,7 +70,7 @@ class Post(models.Model):
 	category = models.CharField(max_length=20, default="")
 	# size: page size
 	# published: timestamp ISO
-	publish_time = models.DateTimeField(auto_now_add=True, blank=True)
+	publish_time = models.DateTimeField(default=timezone.now)
 	# visibility: ["PUBLIC","FOAF","FRIENDS","PRIVATE","SERVERONLY"]
 	visibility = models.CharField(max_length=20, default="PUBLIC", choices=visibilityChoice)
 	# unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
@@ -81,7 +84,7 @@ class PostVisibeTo(models.Model):
 	# Post id
 	post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 	# user id : who can see the post
-	user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+	user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
 	class Meta:
 		unique_together = ("post_id", "user_id")
@@ -101,36 +104,55 @@ class Comment(models.Model):
 	# comment id
 	comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	# author   Foreign key to user
-	author_id = models.ForeignKey(User, on_delete=models.CASCADE)
+	author_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 	# comment  
 	content = models.CharField(max_length=100, default="")
 	# contentType
 	contentType = models.CharField(max_length=20, choices=typeChoice, default="text/plain")
 	# published
-	publish_time = models.DateTimeField(auto_now_add=True, blank=True)
+	publish_time = models.DateTimeField(default=timezone.now)
 	# post id (maybe?)
 	post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
-class Friendship(models.Model):
-	"""
-	Friend Relationship Between Users
-	remember this is bi-directional relation
-	AB <-> BA
-	keep one relation tuple is enough for each relationship
-	"""	
-	# user 1 id  Foreign key to user
-	# user 2 id  Foreign key to user
-	# Create Date Time
-	# Primary key(user 1 , user 2)
-	pass
+
 
 class Follow(models.Model):
 	"""
 	Follow Relationship Between Users
+	Friendship exist if A follows B and B follows A
 	"""
 	# follower  Foreign key to user
+	follower_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="follower")
 	# following Foreign key to user
-	pass
+	following_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="following")
+	# Time follow starts
+	follow_publish_time = models.DateTimeField(default=timezone.now)
+	class Meta:
+		unique_together = ("follower_id", "following_id")
+
+
+class FriendRequest(models.Model):
+	"""
+	Friend request status
+	"""	
+	statusChoice = (
+		("Accept","Accept"),
+		("Decline","Decline"),
+		("Pending","Pending")
+	)
+	# requested by id  Foreign key to user
+	requestedBy_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requestedBY')
+	# request to id  Foreign key to user
+	requestedTo_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requestedTO')
+	# request status
+	request_status = models.CharField(max_length=20, choices=statusChoice, default="Pending")
+	# Request Time
+	request_publish_time = models.DateTimeField(default=timezone.now)
+	# Primary key(user 1 , user 2)
+	class Meta:
+		unique_together = ("requestedBy_id", "requestedTo_id")
+
+
 
 class Images(models.Model):
 	"""
