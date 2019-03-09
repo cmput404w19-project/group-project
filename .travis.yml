@@ -4,16 +4,8 @@ cache: pip
 python:
   - 3.6
 
-services: postgresql
-
-env:
-  - DJANGO_VERSION=2.1.7 DB=postgresq
-
 install:
   - pip install -r requirements.txt
-
-before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
   - python manage.py makemigrations
