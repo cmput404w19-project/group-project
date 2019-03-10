@@ -1,5 +1,7 @@
 Django
 django-storages
 django-heroku
+djangorestframework
+markdown
 gunicorn
 pytz
