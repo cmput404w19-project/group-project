@@ -1,5 +1,5 @@
 # accounts/views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -24,6 +24,11 @@ def home( request):
     return render(request, 'home.html', context)
     
 def profile(request):
-	args = {'user':request.user} # pass in the whole user object
-	print(request.user)
-	return render(request, 'profile.html', args)
+	if request.user.is_authenticated:
+		# user has login
+		userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+		args = {'userprofile':userprofile} # pass in the whole user object
+		return render(request, 'profile.html', args)
+	else:
+		# not login yet
+		return redirect('/')

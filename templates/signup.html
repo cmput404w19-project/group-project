@@ -4,12 +4,19 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
+  {% if not user.is_authenticated %}
   <div class="container">
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Sign up</button>
-  </form>
-</div>
+	  <h2>Sign up</h2>
+	  <form method="post">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+	    <button type="submit" class="btn btn-primary">Sign up</button>
+	  </form>
+  </div>
+  {% else %}
+  <div class="container">
+  	<h1>You Cannot signup while login. You have to logout first</h1>
+  	<p><a href="{% url 'logout' %}" type="button" class="btn btn-info">logout</a></p>
+  </div>
+  {% endif %}
 {% endblock %}

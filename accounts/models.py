@@ -24,10 +24,10 @@ class UserProfile(models.Model):
 	# url
 	url = models.URLField(default="")
 	# indexes
-	class Meta:
-		indexes = [
-			models.Index(fields=['user_id'], name='usr_idx'),
-		]
+	# class Meta:
+	# 	indexes = [
+	# 		models.Index(fields=['user_id'], name='usr_idx'),
+	# 	]
     
 	
 
@@ -164,7 +164,7 @@ class Images(models.Model):
 
 def create_profile(sender, **kwargs):
 	if kwargs['created']:
-		user_profile = UserProfile.objects.create(user_id=kwargs['instance'])
+		user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
 
 
 post_save.connect(create_profile, sender=User)
