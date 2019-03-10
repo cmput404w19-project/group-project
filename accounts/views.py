@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 from .models import UserProfile, Post
+from django.contrib.auth.models import User
 from .serializers import UserSerializers
 from rest_framework import viewsets
 
@@ -22,4 +23,7 @@ def home( request):
     context = {'list': postList}
     return render(request, 'home.html', context)
     
-
+def profile(request):
+	args = {'user':request.user} # pass in the whole user object
+	print(request.user)
+	return render(request, 'profile.html', args)
