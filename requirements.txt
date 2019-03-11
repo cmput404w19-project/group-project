@@ -5,3 +5,4 @@ djangorestframework
 markdown
 gunicorn
 pytz
+coreapi
