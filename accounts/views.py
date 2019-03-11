@@ -47,7 +47,6 @@ def profile(request):
         # not login yet
         return redirect('/')
 
-
 def edit_profile(request):
     if request.user.is_authenticated:
         # user has login
@@ -56,11 +55,12 @@ def edit_profile(request):
             form = EditProfileForm(request.POST, instance=userprofile)
             if form.is_valid():
                 form.save()
+
                 # text = form.cleaned_data['displayName']
                 return redirect('/accounts/profile')
         else:
-            form = EditProfileForm()
             userprofile = UserProfile.objects.filter(user_id = request.user).first()
+            form = EditProfileForm(instance=userprofile)
             args = {'form': form, 'userprofile': userprofile}
             return render(request, 'edit_profile.html', args)
     else:
