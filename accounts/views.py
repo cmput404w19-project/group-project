@@ -37,6 +37,17 @@ class PostById(APIView):
         args = {'post':post}
         return render(request, 'post.html', args)
 
+def profile(request):
+    if request.user.is_authenticated:
+        # user has login
+        userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+        args = {'userprofile':userprofile} # pass in the whole user object
+        return render(request, 'profile.html', args)
+    else:
+        # not login yet
+        return redirect('/')
+
+
 def edit_profile(request):
     if request.user.is_authenticated:
         # user has login
