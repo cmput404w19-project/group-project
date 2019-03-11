@@ -47,8 +47,8 @@ def edit_profile(request):
 				# text = form.cleaned_data['displayName']
 				return redirect('/accounts/profile')
 		else:
-			form = EditProfileForm()
 			userprofile = UserProfile.objects.filter(user_id = request.user).first()
+			form = EditProfileForm(instance=userprofile)
 			args = {'form': form, 'userprofile': userprofile}
 			return render(request, 'edit_profile.html', args)
 	else:
