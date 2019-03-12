@@ -7,8 +7,7 @@ app_name = 'accounts'
 # has to be called urlpatterns
 urlpatterns = [
     path('signup/', views.SignUp.as_view(), name='signup'),
-    #path('rest/', views.User.as_view()),
-    # url(r'^signup/$', views.SignUp.as_view(), name='signup'),
- 	path('profile/', views.profile, name='profile'),  
- 	path('profile/edit/', views.edit_profile, name='edit_profile') 
+    
+ 	path('profile/', views.profile, name='profile'),
+ 	path('profile/edit/', views.edit_profile, name='edit_profile')
 ]
