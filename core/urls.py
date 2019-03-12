@@ -41,10 +41,10 @@ urlpatterns = [
     path(r'posts/', views.PublicPosts().as_view()),
 
     # handle get/post for author posting
-    path(r'author/posts', views.AuthorPosts().as_view()),
+    path(r'author/posts/', views.AuthorPosts().as_view()),
     # author endpoints
-    path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
+    path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
 
     # post endpoints
-    path(r'posts/<str:post_id>', views.PostById().as_view())
+    path(r'posts/<str:post_id>/', views.PostById().as_view())
 ]

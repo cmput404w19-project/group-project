@@ -1,0 +1,51 @@
+{
+  {
+    "title": "THIS IS A PUBLIC POST",
+    "source": "http://localhost:8000",
+    "origin": "http://localhost:8000",
+    "description": "This post discusses stuff -- brief",
+    "contentType": "text/plain",
+    "content": "stuffs",
+    "author_id": "9852a11d-eef7-4418-8e20-7fe9a0ca357d"
+  },
+  {
+    "title": "THIS IS A FOAF POST",
+    "source": "http://lastplaceigotthisfrom.com/posts/yyyyy",
+    "origin": "http://whereitcamefrom.com/posts/zzzzz",
+    "description": "This post discusses stuff -- brief",
+    "contentType": "text/plain",
+    "content": "stuffs",
+    "author_id": "9852a11d-eef7-4418-8e20-7fe9a0ca357d",
+    "visibility": "FOAF"
+  },
+  {
+    "title": "THIS IS A FRIENDS POST",
+    "source": "http://localhost:8000",
+    "origin": "http://localhost:8000",
+    "description": "This post discusses stuff -- brief",
+    "contentType": "text/plain",
+    "content": "stuffs",
+    "author_id": "9852a11d-eef7-4418-8e20-7fe9a0ca357d",
+    "visibility": "FRIENDS"
+  },
+  {
+    "title": "THIS IS A PRIVATE POST",
+    "source": "http://localhost:8000",
+    "origin": "http://localhost:8000",
+    "description": "This post discusses stuff -- brief",
+    "contentType": "text/plain",
+    "content": "stuffs",
+    "author_id": "9852a11d-eef7-4418-8e20-7fe9a0ca357d",
+    "visibility": "PRIVATE"
+  },
+  {
+    "title": "THIS IS AN UNLISTED POST",
+    "source": "http://localhost:8000",
+    "origin": "http://localhost:8000",
+    "description": "This post discusses stuff -- brief",
+    "contentType": "text/plain",
+    "content": "stuffs",
+    "author_id": "9852a11d-eef7-4418-8e20-7fe9a0ca357d",
+    "visibility": "SERVERONLY"
+  }
+}

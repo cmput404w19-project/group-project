@@ -9,6 +9,6 @@ class UserProfileAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Post)
 admin.site.register(Comment)
-admin.site.register(PostVisibeTo)
+admin.site.register(PostVisibleTo)
 admin.site.register(Follow)
 admin.site.register(FriendRequest)

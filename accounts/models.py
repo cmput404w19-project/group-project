@@ -10,7 +10,7 @@ class UserProfile(models.Model):
     User Information
     """
     # userprofile id
-    profile_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    author_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # user id
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # user name
@@ -51,7 +51,7 @@ class Post(models.Model):
     # author   Foreign key to user
     author_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
     # title
-    title = models.CharField(max_length=20,default="")
+    title = models.CharField(max_length=80,default="")
     # description
     description = models.CharField(max_length=200,default="")
     # source
@@ -63,7 +63,7 @@ class Post(models.Model):
     # content ?
     content = models.TextField(default="")
     # categories
-    category = models.CharField(max_length=20, default="")
+    category = models.CharField(max_length=80, default="")
     # size: page size
     # published: timestamp ISO
     publish_time = models.DateTimeField(default=timezone.now)
@@ -75,7 +75,7 @@ class Post(models.Model):
     def __str__(self):
             return self.title
 
-class PostVisibeTo(models.Model):
+class PostVisibleTo(models.Model):
     """
     Each Post visible to
     visibleTo: [] list of author URIs who can read the PRIVATE message
