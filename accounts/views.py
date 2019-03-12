@@ -66,34 +66,31 @@ class AuthorPosts(APIView):
 
 
 def profile(request):
-    if request.user.is_authenticated:
-        # user has login
-        userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
-        args = {'userprofile':userprofile} # pass in the whole user object
-        return render(request, 'profile.html', args)
-    else:
-        # not login yet
-        return redirect('/')
+    # user has login
+    userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+    args = {'userprofile':userprofile} # pass in the whole user object
+    return render(request, 'profile.html', args)
+    
+
 
 def edit_profile(request):
-    if request.user.is_authenticated:
-        # user has login
-        if request.method == "POST":
-            userprofile = UserProfile.objects.filter(user_id = request.user).first()
-            form = EditProfileForm(request.POST, instance=userprofile)
-            if form.is_valid():
-                form.save()
+    # user has login
+    if request.method == "POST":
+        # POST
+        userprofile = UserProfile.objects.filter(user_id = request.user).first()
+        form = EditProfileForm(request.POST, instance=userprofile)
+        if form.is_valid():
+            form.save()
 
-                # text = form.cleaned_data['displayName']
-                return redirect('/accounts/profile')
-        else:
-            userprofile = UserProfile.objects.filter(user_id = request.user).first()
-            form = EditProfileForm(instance=userprofile)
-            args = {'form': form, 'userprofile': userprofile}
-            return render(request, 'edit_profile.html', args)
+            # text = form.cleaned_data['displayName']
+            return redirect('/accounts/profile')
     else:
-        # not login yet
-        return redirect('/')
+        # GET
+        userprofile = UserProfile.objects.filter(user_id = request.user).first()
+        form = EditProfileForm(instance=userprofile)
+        args = {'form': form, 'userprofile': userprofile}
+        return render(request, 'edit_profile.html', args)
+    
 
 def post_page(request):
     if request.user.is_authenticated:
