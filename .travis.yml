@@ -5,8 +5,6 @@ python:
 - 3.6
 install:
 - pip install -r requirements.txt
-before_script:
-- mysql -e 'create database coreDb;'
 script:
 - python manage.py makemigrations
 - python manage.py migrate
