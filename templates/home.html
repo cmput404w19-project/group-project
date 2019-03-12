@@ -30,7 +30,9 @@
         <!--<span class="w3-right w3-opacity">1 min</span>-->
         {%for post in list%}
         <div class = "Post">
-        <h4>{{ user.username }}</h4><br>
+        <!--<h4>{{ user.username }}</h4><br>-->
+        <a href="author/{{post.author_id}}" id="user_profile">{{post.author_id}}</a>
+      
         <p>{{post.title}}</p>
         <hr class="w3-clear">
         <p>{{post.description}}</p>
@@ -42,6 +44,7 @@
         </div>
         </div>
         <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+        <br>
         {%endfor%}
       </div>
 {% else %}
@@ -51,5 +54,7 @@
 	  </div>
 	  <a type="button" class="btn btn-danger" href="{% url 'login' %}">login</a>
   </div>
+
+
 {% endif %}
 {% endblock %}
