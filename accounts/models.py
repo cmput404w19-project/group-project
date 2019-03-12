@@ -23,6 +23,10 @@ class UserProfile(models.Model):
 	github = models.URLField(default="")
 	# url
 	url = models.URLField(default="")
+
+	def __str__(self):
+		return "{displayname}'s user profile".format(displayname=self.displayName)
+
 	# indexes
 	# class Meta:
 	# 	indexes = [
@@ -75,6 +79,9 @@ class Post(models.Model):
 	visibility = models.CharField(max_length=20, default="PUBLIC", choices=visibilityChoice)
 	# unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
 	unlisted = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.title
 
 class PostVisibeTo(models.Model):
 	"""
