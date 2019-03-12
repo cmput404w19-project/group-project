@@ -47,5 +47,4 @@ urlpatterns = [
 
     # post endpoints
     path(r'posts/<str:post_id>', views.PostById().as_view())
-
 ]
