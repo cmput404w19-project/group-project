@@ -19,11 +19,15 @@ from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from accounts import views
 
+from rest_framework_swagger.views import get_swagger_view
+
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 
 router=DefaultRouter()
 router.register('users', views.UserViewSet)
+
+schema_view = get_swagger_view(title='API Docs')
 
 urlpatterns = [
     # the basic homepage
@@ -35,7 +39,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # Api docs
-    path('docs/', include_docs_urls(title='API Docs')),
+    # path('docs/', include_docs_urls(title='API Docs')),
+    path('docs/', schema_view),
 
     # all public 
     path(r'posts/', views.PublicPosts().as_view()),

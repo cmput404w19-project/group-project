@@ -33,24 +33,43 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializers
 
 class AuthorProfile(APIView):
+    """
+    get:
+    Get the profile for a given {author_id}
+    """
     def get(self, request, author_id):
         userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
         args = {'userprofile':userprofile} # pass in the whole user object
         return render(request, 'profile.html', args)
 
 class PostById(APIView):
+    """
+    get:
+    Get post for given {post_id}
+    """
     def get(self, request, post_id):
         post = Post.objects.filter(post_id = post_id).first()
         serializer = PostSerializer(post)
         return Response(serializer.data)
 
 class PublicPosts(APIView):
+    """
+    get:
+    Get all public posts on server
+    """
     def get(self, request):
         posts = Post.objects.filter(visibility = "PUBLIC")
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
 class AuthorPosts(APIView):
+    """
+    get:
+    Get all posts visible to current user
+
+    post:
+    Create a new post as current user
+    """
     def get(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
