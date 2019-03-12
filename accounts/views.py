@@ -3,14 +3,26 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
+
 from .models import UserProfile, Post
+
 from django.contrib.auth.models import User
-from .serializers import UserSerializers
+
+from .serializers import UserSerializers, PostSerializer
+
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
+
 from .forms import EditProfileForm
 
-# Create your views here.
+def home(request):
+    postList = Post.objects.all()
+    context = {'list': postList}
+    return render(request, 'home.html', context)
+
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
@@ -19,11 +31,6 @@ class SignUp(generic.CreateView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializers
-
-def home(request):
-    postList = Post.objects.all()
-    context = {'list': postList}
-    return render(request, 'home.html', context)
 
 class AuthorProfile(APIView):
     def get(self, request, author_id):
@@ -34,8 +41,28 @@ class AuthorProfile(APIView):
 class PostById(APIView):
     def get(self, request, post_id):
         post = Post.objects.filter(post_id = post_id).first()
-        args = {'post':post}
-        return render(request, 'post.html', args)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
+
+class PublicPosts(APIView):
+    def get(self, request):
+        posts = Post.objects.filter(visibility = "PUBLIC")
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+class AuthorPosts(APIView):
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def profile(request):
     if request.user.is_authenticated:
