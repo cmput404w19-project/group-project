@@ -17,6 +17,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from .forms import EditProfileForm
+from .forms import NewPostForm
 
 def home(request):
     postList = Post.objects.all()
@@ -92,4 +93,29 @@ def edit_profile(request):
             return render(request, 'edit_profile.html', args)
     else:
         # not login yet
+        return redirect('/')
+
+def post_page(request):
+    if request.user.is_authenticated:
+        # user has login
+        userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+        if request.method == "POST":
+            form = NewPostForm(request.POST)
+            if form.is_valid():
+                #print(form)
+                #form.instance.author_id = UserProfile.objects.filter(user_id = request.user.id).first().get_profile_id()
+                form.save()
+                # text = form.cleaned_data['displayName']
+                return redirect('/')
+        else:
+            #print()
+            #print(UserProfile.objects.filter(user_id = request.user.id).first().author_id)
+            #print()
+            profile_id = UserProfile.objects.filter(user_id = request.user.id).first()
+            #post_form = forms.IntegerField(widget=forms.HiddenInput(), initial=123)
+            post_form = NewPostForm(initial={'author_id': profile_id})
+            args = {'userprofile':userprofile,
+                    'post_form':post_form} # pass in the whole user object
+            return render(request, 'post.html', args)
+    else:
         return redirect('/')

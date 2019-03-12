@@ -7,10 +7,11 @@
 
 
   <div class="w3-container w3-card w3-white w3-round w3-margin" style="font-weight: bold; font-size:20pt; "><br>
-  	  
+
 			Hi {{ user.username }}!
 			<p><a href="{% url 'logout' %}" type="button" class="btn btn-info">logout</a></p>
 			<p><a href="{% url 'password_reset' %}" type="button" class="btn btn-info">reset password</a></p>
+            <p><a href="/accounts/profile/post" type="button" class="btn btn-info">Make Post</a></p>
 	  </div>
 	</div>
 
