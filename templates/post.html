@@ -5,45 +5,13 @@
 {% block content %}
 <div class="post_container">
 
-    
-    <form >
-        Title<input name="title"/>
-        <br>
-        Description<input name="description">
-        <br>
-    </form>
 
-    <form>
-        <select>
-            <option value="private">
-                private to me
-            </option>
-            <option value="public">
-                public to everyone
-            </option>
-            <option value="myfriends">
-                private to my friends
-            </option>
-            <option value="friendsOffriends">
-                private to friends of friends
-            </option>
-            <option value="myhost">
-                private to friends on my host
-            </option>
-        </select>
-    </form>
-
-    <form>
-        Or select who can see your posts
-        {{}}: <input name={{}} value={{}} type="radio"/>
-        <br>
-    </form>
-
-    <form>
-    Choose a image to upload!
-    <input name="uploadFile" type="file" />
-    </form>
-
+    <h1>Make a Post</h1>
+	<form method="POST">
+		{% csrf_token %}
+		{{ post_form.as_p }}
+		<button class="btn btn-default" type="submit">Save</button>
+	</form>
 
 
 
