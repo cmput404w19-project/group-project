@@ -56,15 +56,22 @@ svg{
 .button-s{
 	background: red;
 	border-radius: 10px;
+	text-align: center;
 }
 
 .a-dec{
 	text-decoration: none;
-	margin: 10pt;
+	text-align: center;
+	font-size: 15pt;
+	text-transform: uppercase;
+	color: white;
+	margin-left: 15pt;
+	margin-right: 15pt;
 }
 
 .a-dec:hover{
 	text-decoration: none;	
+	color: white;
 }
 
 
