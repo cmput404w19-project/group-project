@@ -12,7 +12,7 @@
 .wrapper{
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	font-weight: bold; 
+	font-weight: bold;
 	font-size:20pt;
 	position: fixed;
 	height: 100vh;
@@ -45,4 +45,15 @@
 .image-bg{
 	background-image: url("bg.jpg");
 	background-size: 1000px 800px;
+}
+.btn-default{
+background-color: #6b717a;
+color:#FFF;
+border-color: #6b717a;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+background-color: black;
+color:#FFF;
+border-color: black;
 }
