@@ -1,9 +1,6 @@
 from .models import UserProfile
 from .models import Post
-<<<<<<< HEAD
 from .models import FriendRequest
-=======
->>>>>>> f425a4072c4cc4669aa12426d5a826ee0505f06b
 from .models import Follow
 from rest_framework import serializers
 
