@@ -27,11 +27,16 @@
       <!-- Profile -->
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center">{{ user.username }}</h4>
+         <h4 class="w3-center" style="font-family:Arial Black; font-size: 1.5em">{{ user.username }}</h4>
+         <br>
+         <div class="btn-group btn-group-justified">
+         <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
+         <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
+         </div>
          <hr>
-         <p><a href="{% url 'logout' %}" class="btn btn-default">logout</a></p>
-         <p><a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a></p>
+         <div class="w3-center">
                <p><a href="/accounts/profile/post" class="btn btn-default">Make Post</a></p>
+        </div>
         </div>
       </div>
     </div>
@@ -51,7 +56,11 @@
             </div>
           </div>
           </div>
-          <p><a href="{% url 'logout' %}" class="btn btn-default">Comment</a></p>
+          <hr class="w3-clear">
+          <p>{{ user.username }} :</p>
+          <p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p>
+          <!--<p><a href="{% url 'logout' %}" class="btn btn-default">Comment</a></p>-->
+          <p><button class="btn btn-default" type="submit">Comment</button></p>
           <br>
       </div>
       {%endfor%}
