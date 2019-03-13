@@ -70,20 +70,18 @@ class AuthorProfile(APIView):
     Get the profile for a given {author_id}
     """
     def get(self, request, author_id):
-        print(author_id)
-        print(request.user)
         #here author_id is a displayname, we may change it later!!!
         thisUser = UserProfile.objects.filter(user_id = request.user).first()
         userprofile = UserProfile.objects.filter(displayName = author_id).first()
         args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
         return render(request, 'profile.html', args)
 
-    def post(self, request, author_id):
-        serializer = FollowSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request, author_id):
+        # serializer = FollowSerializer(data=request.data)
+        # if serializer.is_valid():
+            # serializer.save()
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostById(APIView):
     """
@@ -91,8 +89,10 @@ class PostById(APIView):
     Get post for given {post_id}
     """
     def get(self, request, post_id):
+        print(post_id)
         post = Post.objects.filter(post_id = post_id).first()
         serializer = PostSerializer(post)
+        print(serializer.data)
         return Response(serializer.data)
 
 class PublicPosts(APIView):

@@ -109,6 +109,7 @@ SWAGGER_SETTINGS = {
     'DOC_EXPANSION' : 'list',
     'JSON_EDITOR' : 'True',
     'SHOW_REQUEST_HEADERS' : 'True',
+    'exclude_namespaces' : ["docs"],
 }
 
 
@@ -139,6 +140,8 @@ LOGOUT_REDIRECT_URL = 'home'
 if '/app' in os.environ['HOME']:
     import django_heroku
     django_heroku.settings(locals())
+
+APPEND_SLASH = False
 
 # reset password
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

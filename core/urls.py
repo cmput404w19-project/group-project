@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from accounts import views
@@ -39,25 +39,19 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # Api docs
-    path('docs/', schema_view),
-    path('docs', schema_view),
+    re_path(r'docs/?$', schema_view),
 
     # Friend Requests
-    path(r'friendrequest/', views.FriendRequest().as_view()),
-    path(r'friendrequest', views.FriendRequest().as_view()),
+    re_path(r'friendrequest/?$', views.FriendRequest().as_view()),
 
     # all public 
-    path(r'posts/', views.PublicPosts().as_view()),
-    path(r'posts', views.PublicPosts().as_view()),
+    re_path(r'posts/?$', views.PublicPosts().as_view()),
 
     # handle get/post for author posting
-    path(r'author/posts/', views.AuthorPosts().as_view()),
     path(r'author/posts', views.AuthorPosts().as_view()),
     # author endpoints
-    path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
     path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
 
     # post endpoints
-    path(r'posts/<str:post_id>/', views.PostById().as_view()),
-    path(r'posts/<str:post_id>', views.PostById().as_view()),
+    path('posts/<str:post_id>', views.PostById().as_view()),
 ]
