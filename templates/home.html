@@ -43,7 +43,7 @@
     <!-- Middle Column -->
     <div class="w3-col m9" style="position:relative">
       {%for post in list%}
-      <div class="w3-container w3-card w3-white w3-round w3-margin" style="position:relative"><br>
+      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em"><br>
         <div class = "Post">
           <a href="author/{{post.author_id}}" id="user_profile">{{post.author_id}}</a>
           <p>{{post.title}}</p>
