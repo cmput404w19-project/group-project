@@ -24,4 +24,4 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ('Follower', 'Following')
+        fields = ('follower_id', 'following_id')

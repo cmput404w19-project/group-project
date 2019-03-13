@@ -44,8 +44,8 @@ class FriendRequest(APIView):
         data = dict()
         data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
         data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
-        data['Follower']=request.data['author']['id'].split('/')[-1]
-        data['Following']=request.data['friend']['id'].split('/')[-1]
+        data['follower_id']=request.data['author']['id'].split('/')[-1]
+        data['following_id']=request.data['friend']['id'].split('/')[-1]
         friend_request_serializer = FriendRequestSerializer(data=data)
         follow_serializer = FollowSerializer(data=data)
         
