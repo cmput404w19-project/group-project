@@ -17,6 +17,10 @@
 	height: 100vh;
 	width: 100vw;
 }
+.comment_add{
+	display: inline; /* the default for span */
+
+}
 
 .left-section{
 	position: relative;
@@ -40,7 +44,7 @@ svg{
 	text-align: center;
 	top: 30%;
 	left: 50%;
-	transform: translate(-50%, -50%);	
+	transform: translate(-50%, -50%);
 }
 
 .middle{
@@ -70,7 +74,7 @@ svg{
 }
 
 .a-dec:hover{
-	text-decoration: none;	
+	text-decoration: none;
 	color: white;
 }
 

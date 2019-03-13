@@ -27,18 +27,23 @@
       <!-- Profile -->
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center">{{ user.username }}</h4>
+         <h4 class="w3-center" style="font-family:Arial Black; font-size: 1.5em">{{ user.username }}</h4>
+         <br>
+         <div class="btn-group btn-group-justified">
+         <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
+         <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
+         </div>
          <hr>
-         <p><a href="{% url 'logout' %}" class="btn btn-default">logout</a></p>
-         <p><a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a></p>
+         <div class="w3-center">
                <p><a href="/accounts/profile/post" class="btn btn-default">Make Post</a></p>
+        </div>
         </div>
       </div>
     </div>
     <!-- Middle Column -->
-    <div class="w3-col m9">
+    <div class="w3-col m9" style="position:relative">
       {%for post in list%}
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em"><br>
         <div class = "Post">
           <a href="author/{{post.author_id}}" id="user_profile">{{post.author_id}}</a>
           <p>{{post.title}}</p>
@@ -51,8 +56,23 @@
             </div>
           </div>
           </div>
-          <p><a href="{% url 'logout' %}" class="btn btn-default">Comment</a></p>
+          <hr class="w3-clear">
+          {%for comment in clist%}
+          <div class = "Comment">
+            <a href="author/{{comment.author_id}}" id="user_profile">{{comment.author_id}} : {{comment.content}}</a>
+          </div>
+          {%endfor%}
+          <div class="w3-container" style="position:relative">
+            <!--<div class="comment_add" style="position:relative">{{ user.username }} :</div>
+            <div class="comment_add" style="position:relative"><p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p></div>
+            -->
+              <p>{{ user.username }} :</p>
+              <p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p>
+
+          <!--<p><a href="{% url 'logout' %}" class="btn btn-default">Comment</a></p>-->
+          <p><button class="btn btn-default" type="submit">Comment</button></p>
           <br>
+          </div>
       </div>
       {%endfor%}
     <!-- End Middle Column -->
@@ -70,13 +90,13 @@
       <div class="right-section">
         <div class="middle" >
         <p>You are not logged in</p>
-        
-        <button class="button-s"><a class="a-dec" href="{% url 'login' %}">login</a></button>
-      </div>
+        <div class="w3-center">
+              <p><a href="{% url 'login' %}" class="btn btn-primary btn-lg btn-block btn-danger">login</a></p>
+
       </div>
   </div>
-        
-        
+
+
 
 {% endif %}
 {% endblock %}
