@@ -43,6 +43,13 @@ class AuthorProfile(APIView):
         args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
         return render(request, 'profile.html', args)
 
+    def post(self, request, author_id):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PostById(APIView):
     def get(self, request, post_id):
         post = Post.objects.filter(post_id = post_id).first()
