@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block title %}Home{% endblock %}
 
 {% block content %}
@@ -48,13 +49,20 @@
         {%endfor%}
       </div>
 {% else %}
-  <div class="container">
-  	  <div class="jumbotron" style="font-weight: bold; font-size:20pt;">
-	  	<p>You are not logged in</p>
-	  </div>
-	  <a type="button" class="btn btn-danger" href="{% url 'login' %}">login</a>
-  </div>
+  <div class="wrapper">
+      <div class="image-bg">
 
+      </div>
+      <div class="right-section">
+        <div class="middle" >
+        <p>You are not logged in</p>
+        
+        <a class="button-s"  href="{% url 'login' %}">login</a>
+      </div>
+      </div>
+  </div>
+        
+        
 
 {% endif %}
 {% endblock %}
