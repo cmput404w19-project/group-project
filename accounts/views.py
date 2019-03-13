@@ -8,7 +8,7 @@ from .models import UserProfile, Post
 
 from django.contrib.auth.models import User
 
-from .serializers import UserSerializers, PostSerializer
+from .serializers import UserSerializers, PostSerializer,FollowSerializer
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -44,7 +44,7 @@ class AuthorProfile(APIView):
         return render(request, 'profile.html', args)
 
     def post(self, request, author_id):
-        serializer = PostSerializer(data=request.data)
+        serializer = FollowSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
