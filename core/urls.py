@@ -19,10 +19,10 @@ from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from accounts import views
 
-from rest_framework_swagger.views import get_swagger_view
-
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
+
+from rest_framework_swagger.views import get_swagger_view
 
 router=DefaultRouter()
 router.register('users', views.UserViewSet)
@@ -39,17 +39,25 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # Api docs
-    # path('docs/', include_docs_urls(title='API Docs')),
     path('docs/', schema_view),
+    path('docs', schema_view),
+
+    # Friend Requests
+    path(r'friendrequest/', views.FriendRequest().as_view()),
+    path(r'friendrequest', views.FriendRequest().as_view()),
 
     # all public 
     path(r'posts/', views.PublicPosts().as_view()),
+    path(r'posts', views.PublicPosts().as_view()),
 
     # handle get/post for author posting
     path(r'author/posts/', views.AuthorPosts().as_view()),
+    path(r'author/posts', views.AuthorPosts().as_view()),
     # author endpoints
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+    path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
 
     # post endpoints
-    path(r'posts/<str:post_id>/', views.PostById().as_view())
+    path(r'posts/<str:post_id>/', views.PostById().as_view()),
+    path(r'posts/<str:post_id>', views.PostById().as_view()),
 ]

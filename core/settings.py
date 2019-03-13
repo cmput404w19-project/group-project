@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
 
     'rest_framework',
-    'rest_framework_swagger',
+    'rest_framework_swagger'
 ]
 
 MIDDLEWARE = [
@@ -104,6 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# swagger settings
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION' : 'list',
+    'JSON_EDITOR' : 'True',
+    'SHOW_REQUEST_HEADERS' : 'True',
+}
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -135,3 +143,4 @@ if '/app' in os.environ['HOME']:
 # reset password
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+

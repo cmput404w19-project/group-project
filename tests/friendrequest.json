@@ -1,0 +1,17 @@
+{
+  "query": "friendrequest", 
+  "author": 
+  {
+    "id": "http://127.0.0.1:5454/author/dc865f88-8c8f-45d8-b530-538abb5018ab", 
+    "host": "http://127.0.0.1:5454", 
+    "displayName": "Greg Johnson", 
+    "url": "http://127.0.0.1:5454/author/dc865f88-8c8f-45d8-b530-538abb5018ab"
+  }, 
+  "friend": 
+  {
+    "id": "http://127.0.0.1:5454/author/9852a11d-eef7-4418-8e20-7fe9a0ca357d", 
+    "host": "http://127.0.0.1:5454", 
+    "displayName": "Lara Croft", 
+    "url": "http://127.0.0.1:5454/author/9852a11d-eef7-4418-8e20-7fe9a0ca357d"
+  }
+}

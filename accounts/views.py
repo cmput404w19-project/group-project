@@ -4,12 +4,13 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import UserProfile, Post
+from .models import UserProfile, Post, Follow, FriendRequest
 
 from django.contrib.auth.models import User
 
-from .serializers import UserSerializers, PostSerializer
+from .serializers import UserSerializers, PostSerializer, FollowSerializer, FriendRequestSerializer
 
+from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -31,6 +32,36 @@ class SignUp(generic.CreateView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializers
+
+class FriendRequest(APIView):
+    """
+    post:
+    Make a friend request
+    """
+    def post(self, request):
+        # follow = Follow.objects.create()
+        data = dict()
+        data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
+        data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
+        data['follower_id']=request.data['author']['id'].split('/')[-1]
+        data['following_id']=request.data['friend']['id'].split('/')[-1]
+        friend_request_serializer = FriendRequestSerializer(data=data)
+        follow_serializer = FollowSerializer(data=data)
+        
+        failed = 0
+
+        if friend_request_serializer.is_valid():
+            friend_request_serializer.save()
+        else:
+            failed = 1
+
+        if follow_serializer.is_valid():
+            follow_serializer.save()
+        else:
+            return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if failed:
+            return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
 class AuthorProfile(APIView):
     """
@@ -62,6 +93,7 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+
 class AuthorPosts(APIView):
     """
     get:
@@ -87,6 +119,7 @@ def profile(request):
     if request.user.is_authenticated:
         # user has login
         userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+        print(user_id)
         args = {'userprofile':userprofile} # pass in the whole user object
         return render(request, 'profile.html', args)
     else:
