@@ -11,8 +11,21 @@
 	<p> Host:  {{ userprofile.host }}</p>
 	<p> GitHub:  {{ userprofile.github }}</p>
 	<p> Url:  {{ userprofile.url }}</p>
-	<p>{{user.displayName}}</p>
-
-	<a class="btn btn-primary" href="/accounts/profile/edit">Edit Profile</a>
+	{%if thisUser.author_id == userprofile.author_id%}
+		<a class="btn btn-primary" href="/accounts/profile/edit">Edit Profile</a>
+	{%else%}
+		<input id="FollowButton" type="button" value="Follow" onclick="updateRelation()">
+		<script>
+		function updateRelation(){
+			if (document.getElementById("FollowButton").value == "Follow"){
+				document.getElementById("FollowButton").value="Following";
+			}
+			else if(document.getElementById("FollowButton").value == "Following"){
+				document.getElementById("FollowButton").value="Follow" ;
+			}
+		}
+		</script>
 </div>
+
+{%endif%}
 {% endblock %}

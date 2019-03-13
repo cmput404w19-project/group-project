@@ -35,8 +35,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class AuthorProfile(APIView):
     def get(self, request, author_id):
-        userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
-        args = {'userprofile':userprofile} # pass in the whole user object
+        print(author_id)
+        print(request.user)
+        #here author_id is a displayname, we may change it later!!!
+        thisUser = UserProfile.objects.filter(user_id = request.user).first()
+        userprofile = UserProfile.objects.filter(displayName = author_id).first()
+        args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
         return render(request, 'profile.html', args)
 
 class PostById(APIView):
