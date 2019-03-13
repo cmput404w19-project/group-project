@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+	<h1>Profile</h1>
+	<p> Profile ID:  {{ userprofile.author_id}}</p>
+	<p> Displayname: {{ userprofile.displayName }} </p>
+	<p> Bio:  {{ userprofile.bio }}</p>
+	<p> Host:  {{ userprofile.host }}</p>
+	<p> GitHub:  {{ userprofile.github }}</p>
+	<p> Url:  {{ userprofile.url }}</p>
+	{%if thisUser.author_id == userprofile.author_id%}
+		<a class="btn btn-primary" href="/accounts/profile/edit">Edit Profile</a>
+	{%else%}
+		<input id="FollowButton" type="button" value="Follow" onclick="updateRelation()">
+		<script>
+		function updateRelation(){
+			if (document.getElementById("FollowButton").value == "Follow"){
+				document.getElementById("FollowButton").value="Following";
+			}
+			else if(document.getElementById("FollowButton").value == "Following"){
+				document.getElementById("FollowButton").value="Follow" ;
+			}
+		}
+		</script>
+</div>
+
+{%endif%}
+{% endblock %}
