@@ -13,6 +13,10 @@
 	<p> Url:  {{ userprofile.url }}</p>
 	{%if thisUser.author_id == userprofile.author_id%}
 		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+	
+	{%elif not thisUser.author_id%}
+		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+
 	{%else%}
 		<input id="FollowButton" type="button" class="btn btn-default" value="Follow" onclick="updateRelation()">
 		<script>

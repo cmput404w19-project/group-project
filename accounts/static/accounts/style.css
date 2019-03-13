@@ -12,17 +12,35 @@
 .wrapper{
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	font-weight: bold;
 	font-size:20pt;
 	position: fixed;
 	height: 100vh;
 	width: 100vw;
 }
 
+.left-section{
+	position: relative;
+	background: #38d39f;
+}
+
+
 
 .right-section{
 	position: relative;
-	background: #E8E8E8;
+	background: white;
+}
+
+svg{
+	width: 100%;
+	height: 100%;
+}
+
+.middle2{
+	position: absolute;
+	text-align: center;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%, -50%);	
 }
 
 .middle{
@@ -38,7 +56,22 @@
 .button-s{
 	background: red;
 	border-radius: 10px;
-	margin: 20px;
+	text-align: center;
+}
+
+.a-dec{
+	text-decoration: none;
+	text-align: center;
+	font-size: 15pt;
+	text-transform: uppercase;
+	color: white;
+	margin-left: 15pt;
+	margin-right: 15pt;
+}
+
+.a-dec:hover{
+	text-decoration: none;	
+	color: white;
 }
 
 
