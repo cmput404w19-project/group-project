@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import UserProfile, Post, Follow, FriendRequest
+from .models import UserProfile, Post, Follow, FriendRequest, Comment
 
 from django.contrib.auth.models import User
 
@@ -22,7 +22,8 @@ from .forms import NewPostForm
 
 def home(request):
     postList = Post.objects.all()
-    context = {'list': postList}
+    commentList = Comment.objects.all()
+    context = {'list': postList, 'clist': commentList}
     return render(request, 'home.html', context)
 
 class SignUp(generic.CreateView):
@@ -48,7 +49,7 @@ class FriendRequest(APIView):
         data['following_id']=request.data['friend']['id'].split('/')[-1]
         friend_request_serializer = FriendRequestSerializer(data=data)
         follow_serializer = FollowSerializer(data=data)
-        
+
         failed = 0
 
         if friend_request_serializer.is_valid():
@@ -92,7 +93,8 @@ class PostById(APIView):
     """
     def get(self, request, post_id):
         post = Post.objects.filter(post_id = post_id).first()
-        serializer = PostSerializer(post)
+        comment = Comment.objects.filter(comment_id = comment_id).first()
+        serializer = PostSerializer(post, comment)
         return Response(serializer.data)
 
 class PublicPosts(APIView):
@@ -150,7 +152,7 @@ def edit_profile(request):
         form = EditProfileForm(instance=userprofile)
         args = {'form': form, 'userprofile': userprofile}
         return render(request, 'edit_profile.html', args)
-    
+
 
 def post_page(request):
     if request.user.is_authenticated:

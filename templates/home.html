@@ -57,6 +57,11 @@
           </div>
           </div>
           <hr class="w3-clear">
+          {%for comment in clist%}
+          <div class = "Comment">
+            <a href="author/{{comment.author_id}}" id="user_profile">{{comment.author_id}} : {{comment.content}}</a>
+          </div>
+          {%endfor%}
           <p>{{ user.username }} :</p>
           <p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p>
           <!--<p><a href="{% url 'logout' %}" class="btn btn-default">Comment</a></p>-->
