@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import * 
+from .models import *
 
 from django.contrib.auth.models import User
 
@@ -23,13 +23,17 @@ from .forms import NewPostForm, CreateComment,EditProfileForm#, FriendRequest
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.http import HttpResponseRedirect
 
+from rest_framework.renderers import TemplateHTMLRenderer
+
+import copy
+
 def home(request):
     postList = []
     if request.user.is_authenticated:
         # postList = Post.objects.all()
         user = UserProfile.objects.filter(user_id = request.user).first()
         # TODO filter posts in such a way that we can see only the ones we need
-        # All post that can see 
+        # All post that can see
         # PUBLIC post
         public_post = Post.objects.filter(visibility="PUBLIC").all()
         for post in public_post:
@@ -52,10 +56,10 @@ def home(request):
             post = Post.objects.filter(post_id=i.post_id)
             postList.append({"p":post})
         # see friends of friends post
-        
+
         # see our own server's post
 
-        # now get the comments(comment list) of each post that is visible to this user  
+        # now get the comments(comment list) of each post that is visible to this user
         for post in postList:
             post["cl"] = Comment.objects.filter(post_id=post["p"].post_id).all()
 
@@ -74,7 +78,7 @@ def home(request):
 
 
 def find_friends(user):
-    """ 
+    """
     This function will take in the userprofile object and find all the friends of the current user
     Input: request
     Return: a list of all friends userprofile object
@@ -222,6 +226,7 @@ class Comments(APIView):
             return redirect('/')
         return redirect('/')
 
+'''
 class AuthorPosts(APIView):
     """
     get:
@@ -241,6 +246,50 @@ class AuthorPosts(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+'''
+class AuthorPosts(APIView):
+    """
+    get:
+    Get all posts visible to current user
+
+    post:
+    Create a new post as current user
+    """
+    renderer_classes = [TemplateHTMLRenderer]
+    #model = Post
+    template_name = '../templates/post.html'
+    #fields = ['title', 'description','content', 'content-options', 'isibility-select']
+    #login_url="/accounts/login/"
+
+    def get(self, request):
+        print(request.body)
+        posts = Post.objects.all()
+        serializer = PostSerializer()
+        return Response({'serializer':serializer})
+
+    '''
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    '''
+    def post(self, request):
+        #profile = get_object_or_404(Profile, pk=pk)
+        #print(request.data.user_id)
+        new_data = request.data.copy()
+        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
+        print(user_id)
+        new_data.__setitem__("user_id", user_id)
+        print(new_data)
+        serializer = PostSerializer(data=new_data)
+        print(serializer)
+
+        if not serializer.is_valid():
+            return Response({'serializer': serializer})
+        serializer.save()
+        return redirect('/')
 
 
 def profile(request):

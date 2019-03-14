@@ -11,10 +11,20 @@ class UserSerializers(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    #user_id = serializers.HiddenField(default=self.get_serializer_context())
+    class Meta:
+        model = Post
+        fields = ('post_id', 'title', 'source', 'origin', 'description',
+                'contentType', 'user_id', 'content', 'visibility', 'category')
+        #read_only_fields = ('user_id',)
+
+'''
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('post_id', 'title', 'source', 'origin', 'description',
                 'contentType', 'content', 'user_id', 'visibility')
+'''
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:

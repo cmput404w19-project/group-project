@@ -1,21 +1,68 @@
 {% extends 'base.html' %}
-
+{% load rest_framework %}
 {% block title %}Profile{% endblock %}
 
 {% block content %}
 <div class="post_container">
-
-
-    <h1>Make a Post</h1>
-	<form method="POST">
-		{% csrf_token %}
-		{{ post_form.as_p }}
-		<button class="btn btn-default" type="submit">Save</button>
-	</form>
-
+    <form action="{% url 'make_post' %}" method="POST">
+        {% csrf_token %}
+        Title<input name="title"/>
+        <br>
+        Description<input name="description">
+        <br>
+        Source<input name="source">
+        <br>
+        Origin<input name="origin">
+        <br>
+        Category<input name="category">
+        <br>
+        ContantType
+        <select name="contentType">
+            <option value="text/markdown">
+                text/markdown
+            </option>
+            <option value="text/plain">
+                text/plain
+            </option>
+            <option value="application/base64">
+                application/base64
+            </option>
+            <option value="image/png;base64">
+                image/png;base64
+            </option>
+            <option value="image/jpeg;base64">
+                image/jpeg;base64
+            </option>
+        </select>
+        <br>
+        Content
+        <textarea name="content" class="form-control text-area" type="text" maxLength="512" required="true"></textarea>
+        Visibility
+        <select name="visibility">
+            <option value="PRIVATE">
+                private to me
+            </option>
+            <option value="PUBLIC">
+                public to everyone
+            </option>
+            <option value="FRIENDS">
+                private to my friends
+            </option>
+            <option value="FOAF">
+                private to friends of friends
+            </option>
+            <option value="SERVERONLY">
+                private to friends on my host
+            </option>
+        </select>
+        <br>
+        Or select who can see your posts
+        <br>
+        Unlisted
+        <input type="checkbox" name="unlisted" value="True"><br>
+        <input type="submit" value="Save"/>
+    </form>
 
 
 </div>
 {% endblock %}
-
-
