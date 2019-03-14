@@ -11,20 +11,56 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializers, PostSerializer, FollowSerializer, FriendRequestSerializer
 
 from rest_framework.decorators import api_view
+
+from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
 
-from .forms import EditProfileForm
-from .forms import NewPostForm
+from .forms import NewPostForm, CreateComment,EditProfileForm
 
 def home(request):
     postList = Post.objects.all()
+    # TODO filter posts in such a way that we can see only the ones we need
     commentList = Comment.objects.all()
-    context = {'list': postList, 'clist': commentList}
+
+    if request.user.is_authenticated:
+        profile = UserProfile.objects.filter(user_id = request.user).first()
+        context = {'list': postList, 'clist': commentList, 'userprofile_id': profile.author_id}
+    else:
+        context = {'list': postList, 'clist': commentList}
     return render(request, 'home.html', context)
+
+
+@api_view()
+def friend_list(request):
+    # the currently authenticated user
+    user = UserProfile.objects.filter(user_id = request.user).first()
+
+    # all the people the current user is following
+    following_list = Follow.objects.filter(follower_id = user.author_id).all()
+    following_list_serial = FollowSerializer(following_list, many=True)
+    following_id_list = list(following_list_serial.data[i]['following_id'] for i in range(len(following_list_serial.data)))
+
+    # all the people who follow the current user 
+    follower_list = Follow.objects.filter(following_id = user.author_id).all()
+    follower_list_serial = FollowSerializer(follower_list, many=True)
+    follower_id_list = list(follower_list_serial.data[i]['follower_id'] for i in range(len(follower_list_serial.data)))
+
+    # this is a list of the author_ids of all friends of the currently authenticated user
+    friend_list = list(set(following_id_list) & set(follower_id_list))
+    
+    # a list of author objects of the friends
+    friends = list()
+    
+    # populate the list of friends with the json of the authors
+    for author_id in friend_list:
+        f = UserProfile.objects.filter(author_id = author_id).first()
+        friends.append(UserSerializers(f).data)
+
+    return Response(friends)
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
@@ -72,6 +108,7 @@ class AuthorProfile(APIView):
     """
     def get(self, request, author_id):
         #here author_id is a displayname, we may change it later!!!
+        print(author_id)
         thisUser = UserProfile.objects.filter(user_id = request.user).first()
         userprofile = UserProfile.objects.filter(displayName = author_id).first()
         args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
@@ -106,6 +143,29 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+class Comments(APIView):
+    """
+    get:
+    return all comments for a given {post_id}
+
+    post:
+    create new comment on {post_id}
+
+    """
+    # def get(self, request, post_id):
+        # comments = Comment.objects.filter(post_id = post_id)
+        # serializer = CommentSerializer(comments, many=True)
+        # return Response(serializer.data)
+
+    def post(self, request, post_id):
+        form = CreateComment(request.POST)
+        print("GOT FORM")
+        print(form)
+        if form.is_valid():
+            print("VALID FORM")
+            form.save()
+            return redirect('/')
+        return redirect('/')
 
 class AuthorPosts(APIView):
     """
@@ -152,26 +212,19 @@ def edit_profile(request):
         args = {'form': form, 'userprofile': userprofile}
         return render(request, 'edit_profile.html', args)
 
-
 def post_page(request):
     if request.user.is_authenticated:
         # user has login
-        userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
+        userprofile = UserProfile.objects.filter(user_id = request.user).first()
         if request.method == "POST":
             form = NewPostForm(request.POST)
+            print(form)
             if form.is_valid():
-                #print(form)
-                #form.instance.author_id = UserProfile.objects.filter(user_id = request.user.id).first().get_profile_id()
                 form.save()
-                # text = form.cleaned_data['displayName']
                 return redirect('/')
         else:
-            #print()
-            #print(UserProfile.objects.filter(user_id = request.user.id).first().author_id)
-            #print()
-            profile_id = UserProfile.objects.filter(user_id = request.user.id).first()
-            #post_form = forms.IntegerField(widget=forms.HiddenInput(), initial=123)
-            post_form = NewPostForm(initial={'author_id': profile_id})
+            profile_id = UserProfile.objects.filter(user_id = request.user).first()
+            post_form = NewPostForm(initial={'user_id': profile_id})
             args = {'userprofile':userprofile,
                     'post_form':post_form} # pass in the whole user object
             return render(request, 'post.html', args)

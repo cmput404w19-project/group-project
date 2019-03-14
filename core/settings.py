@@ -141,8 +141,6 @@ if '/app' in os.environ['HOME']:
     import django_heroku
     django_heroku.settings(locals())
 
-APPEND_SLASH = False
-
 # reset password
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")

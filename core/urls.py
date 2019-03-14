@@ -54,4 +54,7 @@ urlpatterns = [
 
     # post endpoints
     path('posts/<str:post_id>', views.PostById().as_view()),
+
+    # comment endpoints
+    path('posts/<str:post_id>/comment', views.Comments().as_view()),
 ]

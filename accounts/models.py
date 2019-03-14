@@ -51,7 +51,8 @@ class Post(models.Model):
     # post id  Unique Primary key
     post_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # author   Foreign key to user
-    author_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+
     # title
     title = models.CharField(max_length=80,default="")
     # description
@@ -105,7 +106,7 @@ class Comment(models.Model):
     # comment id
     comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # author   Foreign key to user
-    author_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     # comment  
     content = models.CharField(max_length=100, default="")
     # contentType
