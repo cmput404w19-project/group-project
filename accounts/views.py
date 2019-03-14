@@ -24,9 +24,35 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from django.http import HttpResponseRedirect
 
 def home(request):
-    postList = Post.objects.all()
-    # TODO filter posts in such a way that we can see only the ones we need
-    commentList = Comment.objects.all()
+    postList = []
+    if request.user.is_authenticated:
+        # postList = Post.objects.all()
+        user = UserProfile.objects.filter(user_id = request.user).first()
+        # TODO filter posts in such a way that we can see only the ones we need
+        # All post that can see 
+        # PUBLIC post
+        public_post = Post.objects.filter(visibility="PUBLIC").all()
+        for post in public_post:
+            postList.append({"p":post})
+        # users own post
+        own_post = Post.objects.filter(user_id=user.author_id).all()
+        for post in own_post:
+            postList.append({"p":post})
+        # see friends post  (private to friends)
+        # get a list of friends userprofile object
+        friends_userprofile = find_friends(user)
+        for friend in friends_userprofile:
+            # get all the friends private post
+            friendPrivatePosts = Post.objects.filter(visibility="FRIENDS", user_id=friend).all()
+            for post in friendPrivatePosts:
+                postList.append({"p":post})
+        # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
+
+
+        # now get the comments(comment list) of each post that is visible to this user  
+        for post in postList:
+            post["cl"] = Comment.objects.filter(post_id=post["p"].post_id).all()
+
 
 
     # TODO we need a way to somehow get the comment objects for each specific post
@@ -34,16 +60,19 @@ def home(request):
     # so that we can render the post and the comment belong to that post correctly
     if request.user.is_authenticated:
         profile = UserProfile.objects.filter(user_id = request.user).first()
-        context = {'list': postList, 'clist': commentList, 'userprofile_id': profile.author_id}
+        context = {'list': postList, 'userprofile_id': profile.author_id}
     else:
-        context = {'list': postList, 'clist': commentList}
+        context = {'list': postList}
     return render(request, 'home.html', context)
 
 
-@api_view()
-def friend_list(request):
-    # the currently authenticated user
-    user = UserProfile.objects.filter(user_id = request.user).first()
+
+def find_friends(user):
+    """ 
+    This function will take in the userprofile object and find all the friends of the current user
+    Input: request
+    Return: a list of all friends userprofile object
+    """
 
     # all the people the current user is following
     following_list = Follow.objects.filter(follower_id = user.author_id).all()
@@ -58,15 +87,25 @@ def friend_list(request):
     # this is a list of the author_ids of all friends of the currently authenticated user
     friend_list = list(set(following_id_list) & set(follower_id_list))
 
+    return friend_list
+
+
+@api_view()
+def friend_list(request):
+
+    # the currently authenticated user
+    user = UserProfile.objects.filter(user_id = request.user).first()
+
+    friendlist = find_friends(user)
+
     # a list of author objects of the friends
     friends = list()
-    context = {'flist': friends}
 
     # populate the list of friends with the json of the authors
-    for author_id in friend_list:
+    for author_id in friendlist:
         f = UserProfile.objects.filter(author_id = author_id).first()
         friends.append(UserSerializers(f).data)
-
+    context = {'flist': friends}
     return render(request,'friends.html', context)
 
 class SignUp(generic.CreateView):

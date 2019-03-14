@@ -45,19 +45,19 @@
       {%for post in list%}
       <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em"><br>
         <div class = "Post">
-          <a href="author/{{post.user_id}}" id="user_profile">{{post.user_id}}</a>
-          <p>{{post.title}}</p>
-          <p>{{post.description}}</p>
+          <a href="author/{{post.p.user_id}}" id="user_profile">{{post.p.user_id}}</a>
+          <p>{{post.p.title}}</p>
+          <p>{{post.p.description}}</p>
           <hr class="w3-clear">
-          <p>{{post.content}}</p>
+          <p>{{post.p.content}}</p>
           <div class="w3-row-padding" style="margin:0 -16px">
             <div class="w3-half">
-              <img src={{post.uploadFile}} style="width:100%" alt={{post.title}} class="w3-margin-bottom">
+              <img src={{post.p.uploadFile}} style="width:100%" alt={{post.p.title}} class="w3-margin-bottom">
             </div>
           </div>
         </div>
         <hr class="w3-clear">
-        {%for comment in clist%}
+        {%for comment in post.cl%}
         <div class = "Comment">
           <a style="font-family: 'Muli', sans-serif;" href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}}</a><a class="a-dec" style="font-family: 'Muli', sans-serif;"> : {{comment.content}}</a>
         </div>
@@ -68,9 +68,9 @@
           -->
           <br>
           <p>{{ user.username }} :</p>
-          <form action="/posts/{{ post.post_id }}/comment" method="POST" class="form">
+          <form action="/posts/{{ post.p.post_id }}/comment" method="POST" class="form">
             <input name="user_id" type="hidden" value="{{ userprofile_id }}" >
-            <input name="post_id" type="hidden" value="{{ post.post_id }}">
+            <input name="post_id" type="hidden" value="{{ post.p.post_id }}">
             {% csrf_token %}
             <input style="width: 100%" name="content" type="text">
             <div>
