@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import UserProfile, Post, Follow, FriendRequest, Comment
+from .models import * 
 
 from django.contrib.auth.models import User
 
@@ -47,7 +47,13 @@ def home(request):
             for post in friendPrivatePosts:
                 postList.append({"p":post})
         # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
-
+        all_visible_post_object = PostVisibleTo.objects.filter(user_id=user.author_id).all()
+        for i in all_visible_post_object:
+            post = Post.objects.filter(post_id=i.post_id)
+            postList.append({"p":post})
+        # see friends of friends post
+        
+        # see our own server's post
 
         # now get the comments(comment list) of each post that is visible to this user  
         for post in postList:
