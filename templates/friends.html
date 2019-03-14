@@ -3,5 +3,25 @@
 {% block title %}Friends{% endblock %}
 
 {% block content %}
-<p> Hi !</p>
+
+{%for friend in flist%}
+    <div class="friend">
+        <a href="author/{{friend.displayName}}"> 
+            author_id: {{friend.author_id}}  
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp         
+            user_id: {{friend.displayName}}
+        </a>
+        <style type="text/css">
+        div.friend{  
+            margin-right:25px;
+            background-color: lightcyan;
+            margin-left: 50px;
+            font-size: 25px;
+            margin-top: 25px;
+        }
+        </style>
+    </div>
+{%endfor%}
 {% endblock %}
+

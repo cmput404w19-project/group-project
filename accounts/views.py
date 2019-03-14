@@ -20,6 +20,8 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from .forms import NewPostForm, CreateComment,EditProfileForm#, FriendRequest
+from django.shortcuts import get_list_or_404, get_object_or_404
+from django.http import HttpResponseRedirect
 
 def home(request):
     postList = Post.objects.all()
@@ -72,6 +74,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializers
 
+class UnFollow(APIView):
+    def post(self, request, pk):
+        print("------------------------")
+        obj = Follow.objects.get(pk=pk)
+        obj.delete()
+        return redirect('/')
+
 class FriendRequest(APIView):
     """
     post:
@@ -87,9 +96,7 @@ class FriendRequest(APIView):
         data['following_id']=request.data['friend']['id'].split('/')[-1]
         friend_request_serializer = FriendRequestSerializer(data=data)
         follow_serializer = FollowSerializer(data=data)
-
         failed = 0
-
         if friend_request_serializer.is_valid():
             friend_request_serializer.save()
         else:
@@ -111,16 +118,18 @@ class AuthorProfile(APIView):
     def get(self, request, author_id):
         #here author_id is a displayname, we may change it later!!!
         thisUser = UserProfile.objects.filter(user_id = request.user).first()
-        userprofile = UserProfile.objects.filter(displayName = author_id).first()
-        args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
+        #user1 = UserProfile.objects.filter(user_id)
+        postUser = UserProfile.objects.filter(displayName = author_id).first()
+        author_id1 = thisUser.author_id
+        author_id2 = postUser.author_id
+        print(thisUser)
+        print(postUser)
+        print(author_id)
+        is_following = Follow.objects.filter(follower_id = author_id1, following_id = author_id2).first()
+        print(is_following)
+        args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
         return render(request, 'profile.html', args)
 
-    # def post(self, request, author_id):
-        # serializer = FollowSerializer(data=request.data)
-        # if serializer.is_valid():
-            # serializer.save()
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostById(APIView):
     """

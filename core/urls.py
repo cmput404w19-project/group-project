@@ -46,18 +46,21 @@ urlpatterns = [
     # Friend Requests
     re_path(r'friendrequest/?$', views.FriendRequest().as_view()),
 
+    #unfollow
+    re_path(r'unfollowrequest/(?P<pk>[0-9]+)?$', views.UnFollow().as_view(), name="unfollowrequest"),
+
     # all public 
     re_path(r'posts/?$', views.PublicPosts().as_view()),
 
     # handle get/post for author posting
     path(r'author/posts', views.AuthorPosts().as_view()),
     # author endpoints
-    path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
-
+    path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+    
     # post endpoints
     path('posts/<str:post_id>', views.PostById().as_view()),
-
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
+    path(r'posts/<str:post_id>', views.PostById().as_view()),
 
 ]

@@ -14,5 +14,6 @@ urlpatterns = [
     path('profile/', login_required(views.profile, login_url="/accounts/login/"), name='profile'),
     path('profile/post/', login_required(views.post_page, login_url="/accounts/login/"), name='post'),
     path('friends/', login_required(views.friend_list, login_url="/accounts/login/"), name='friends'),
+    path('friends/author/<str:author_id>/', views.AuthorProfile().as_view()),
     path('login/', anonymous_required(LoginView.as_view(template_name='registration/login.html'), redirect_to="/"), name="login"),
 ]

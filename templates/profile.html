@@ -15,7 +15,13 @@
 		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
 	
 	{%elif not thisUser.author_id%}
-		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+    <a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+
+  {%elif is_following%}
+    <form action="{% url 'unfollowrequest' pk=is_following.pk %}" data-method="DELETE" method="POST">
+      {%  csrf_token %}
+      <input id="DeleteButton" type="submit" class="btn btn-default" value="UnFollow">
+    </form>
 
 	{%else%}
 		<input id="FollowButton" type="button" class="btn btn-default" value="Follow">
