@@ -48,7 +48,7 @@ svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
 	text-align: center;
 	top: 30%;
 	left: 50%;
-	transform: translate(-65%, -50%);	
+	transform: translate(-65%, -50%);
 }
 
 .middle{
@@ -75,17 +75,15 @@ svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
 
 .a-dec{
 	text-decoration: none;
-	text-align: center;
 	font-size: 15pt;
 	text-transform: uppercase;
-	color: white;
 	margin-left: 15pt;
 	margin-right: 15pt;
 }
 
 .a-dec:hover{
 	text-decoration: none;
-	color: white;
+  color: black
 }
 
 

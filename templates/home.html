@@ -59,7 +59,7 @@
         <hr class="w3-clear">
         {%for comment in clist%}
         <div class = "Comment">
-          <a href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}} : {{comment.content}}</a>
+          <a href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}}</a><a class="a-dec">: {{comment.content}}</a>
         </div>
         {%endfor%}
         <div class="w3-container" style="position:relative">
@@ -71,8 +71,9 @@
             <input name="user_id" type="hidden" value="{{ userprofile_id }}" >
             <input name="post_id" type="hidden" value="{{ post.post_id }}">
             {% csrf_token %}
-            <input name="content" type="text">
+            <input style="width: 100%" name="content" type="text">
             <div>
+            <br>
             <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Comment</button>
             </div>
           </form>
