@@ -19,7 +19,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
 
-from .forms import NewPostForm, CreateComment,EditProfileForm, FriendRequest
+from .forms import NewPostForm, CreateComment,EditProfileForm#, FriendRequest
 
 def home(request):
     postList = Post.objects.all()
