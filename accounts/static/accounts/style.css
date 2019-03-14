@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Raleway:400,300,800|Dancing+Script:400|Roboto+Condensed");
+@import url("http://fonts.googleapis.com/css?family=Raleway:400,300,800|Dancing+Script:400|Roboto+Condensed|Open+Sans");
 
 * {
 	/* making the website to be full page */
@@ -34,9 +34,13 @@
 	background: white;
 }
 
-svg{
-	width: 100%;
-	height: 100%;
+svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
+	width: 110%;
+	height: 110%;
+}
+
+#notlogin{
+	font-weight: bold;
 }
 
 .middle2{
@@ -44,7 +48,7 @@ svg{
 	text-align: center;
 	top: 30%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-65%, -50%);	
 }
 
 .middle{
@@ -52,9 +56,15 @@ svg{
 	height: 30%;
 	text-align: center;
 	position: absolute;
-	top: 50%;
+	top: 55%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.button-font{
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
+	font-size: 13pt;
 }
 
 .button-s{
