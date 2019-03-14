@@ -19,7 +19,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
 
-from .forms import NewPostForm, CreateComment,EditProfileForm
+from .forms import NewPostForm, CreateComment,EditProfileForm#, FriendRequest
 
 def home(request):
     postList = Post.objects.all()
@@ -78,6 +78,7 @@ class FriendRequest(APIView):
     """
     def post(self, request):
         # follow = Follow.objects.create()
+        print(request)
         data = dict()
         data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
         data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
@@ -108,7 +109,6 @@ class AuthorProfile(APIView):
     """
     def get(self, request, author_id):
         #here author_id is a displayname, we may change it later!!!
-        print(author_id)
         thisUser = UserProfile.objects.filter(user_id = request.user).first()
         userprofile = UserProfile.objects.filter(displayName = author_id).first()
         args = {'userprofile':userprofile,'thisUser': thisUser} # pass in the whole user object
@@ -127,7 +127,6 @@ class PostById(APIView):
     Get post for given {post_id}
     """
     def get(self, request, post_id):
-        print(post_id)
         post = Post.objects.filter(post_id = post_id).first()
         comment = Comment.objects.filter(comment_id = comment_id).first()
         serializer = PostSerializer(post, comment)
@@ -159,10 +158,7 @@ class Comments(APIView):
 
     def post(self, request, post_id):
         form = CreateComment(request.POST)
-        print("GOT FORM")
-        print(form)
         if form.is_valid():
-            print("VALID FORM")
             form.save()
             return redirect('/')
         return redirect('/')
@@ -218,7 +214,6 @@ def post_page(request):
         userprofile = UserProfile.objects.filter(user_id = request.user).first()
         if request.method == "POST":
             form = NewPostForm(request.POST)
-            print(form)
             if form.is_valid():
                 form.save()
                 return redirect('/')
