@@ -28,6 +28,10 @@ def home(request):
     # TODO filter posts in such a way that we can see only the ones we need
     commentList = Comment.objects.all()
 
+
+    # TODO we need a way to somehow get the comment objects for each specific post
+    # and then add that list of comment objects to that post object
+    # so that we can render the post and the comment belong to that post correctly
     if request.user.is_authenticated:
         profile = UserProfile.objects.filter(user_id = request.user).first()
         context = {'list': postList, 'clist': commentList, 'userprofile_id': profile.author_id}
