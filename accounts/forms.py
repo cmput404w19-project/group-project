@@ -1,6 +1,6 @@
 from django import forms
 from .models import UserProfile
-from .models import Post, Comment
+from .models import Post, Comment, Follow
 from django.forms.widgets import HiddenInput
 
 class EditProfileForm(forms.ModelForm):
@@ -47,4 +47,3 @@ class CreateComment(forms.ModelForm):
         super(CreateComment, self).__init__(*args, **kwargs)
         self.fields['user_id'].widget = HiddenInput()
         self.fields['post_id'].widget = HiddenInput()
-

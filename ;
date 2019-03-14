@@ -19,7 +19,6 @@
 
 	{%else%}
 		<input id="FollowButton" type="button" class="btn btn-default" value="Follow">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script type="text/javascript"}>
       document.getElementById("FollowButton").onclick = updateRelation;
 
@@ -45,7 +44,7 @@
             method: "post",
             headers: {
               "Content-Type": "application/json",
-              'X-CSRFToken': Cookies.get('csrftoken')
+              'X_CSRFTOKEN': "{{ csrf_token }}"
             },
             body: JSON.stringify(data)
           });

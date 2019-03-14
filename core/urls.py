@@ -19,6 +19,8 @@ from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from accounts import views
 
+from django.contrib.auth.decorators import login_required
+
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 
@@ -57,4 +59,5 @@ urlpatterns = [
 
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
+
 ]
