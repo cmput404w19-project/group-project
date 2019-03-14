@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Raleway:400,300,800|Dancing+Script:400|Roboto+Condensed|Open+Sans");
+@import url("http://fonts.googleapis.com/css?family=Raleway:400,300,800|Dancing+Script:400|Roboto+Condensed|Open+Sans|Muli");
 
 * {
 	/* making the website to be full page */
@@ -77,10 +77,7 @@ svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
 
 .a-dec{
 	text-decoration: none;
-	font-size: 15pt;
-	text-transform: uppercase;
-	margin-left: 15pt;
-	margin-right: 15pt;
+	font-size: 1em;
 }
 
 .a-dec:hover{

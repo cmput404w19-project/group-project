@@ -44,23 +44,24 @@ def friend_list(request):
     following_list_serial = FollowSerializer(following_list, many=True)
     following_id_list = list(following_list_serial.data[i]['following_id'] for i in range(len(following_list_serial.data)))
 
-    # all the people who follow the current user 
+    # all the people who follow the current user
     follower_list = Follow.objects.filter(following_id = user.author_id).all()
     follower_list_serial = FollowSerializer(follower_list, many=True)
     follower_id_list = list(follower_list_serial.data[i]['follower_id'] for i in range(len(follower_list_serial.data)))
 
     # this is a list of the author_ids of all friends of the currently authenticated user
     friend_list = list(set(following_id_list) & set(follower_id_list))
-    
+
     # a list of author objects of the friends
     friends = list()
-    
+    context = {'flist': friends}
+
     # populate the list of friends with the json of the authors
     for author_id in friend_list:
         f = UserProfile.objects.filter(author_id = author_id).first()
         friends.append(UserSerializers(f).data)
 
-    return Response(friends)
+    return render(request,'friends.html', context)
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm

@@ -59,13 +59,14 @@
         <hr class="w3-clear">
         {%for comment in clist%}
         <div class = "Comment">
-          <a href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}}</a><a class="a-dec">: {{comment.content}}</a>
+          <a style="font-family: 'Muli', sans-serif;" href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}}</a><a class="a-dec" style="font-family: 'Muli', sans-serif;"> : {{comment.content}}</a>
         </div>
         {%endfor%}
         <div class="w3-container" style="position:relative">
           <!--<div class="comment_add" style="position:relative">{{ user.username }} :</div>
             <div class="comment_add" style="position:relative"><p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p></div>
           -->
+          <br>
           <p>{{ user.username }} :</p>
           <form action="/posts/{{ post.post_id }}/comment" method="POST" class="form">
             <input name="user_id" type="hidden" value="{{ userprofile_id }}" >
