@@ -4,24 +4,27 @@
 
 {% block content %}
 
-{%for friend in flist%}
-    <div class="friend">
-        <a href="author/{{friend.displayName}}"> 
-            author_id: {{friend.author_id}}  
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp         
-            user_id: {{friend.displayName}}
-        </a>
-        <style type="text/css">
-        div.friend{  
-            margin-right:25px;
-            background-color: lightcyan;
-            margin-left: 50px;
-            font-size: 25px;
-            margin-top: 25px;
-        }
-        </style>
-    </div>
-{%endfor%}
-{% endblock %}
 
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
+
+    <!-- Middle Column -->
+    <div class="w3-col" style="position:relative">
+      {%for friend in flist%}
+      <div class="w3-container w3-card w3-white w3-round " style="position:relative;"><br>
+
+        <div class = "friend">
+          <a href="author/{{friend.displayName}}">user_id: {{friend.displayName}}
+            <!--&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            author_id: {{friend.author_id}}-->
+          </a>
+        </div>
+
+      </div>
+      {%endfor%}
+      <!-- End Middle Column -->
+    </div>
+
+</div>
+
+{% endblock %}

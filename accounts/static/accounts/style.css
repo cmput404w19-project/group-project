@@ -64,7 +64,7 @@ svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
 }
 
 .button-color1{
-	background: #38d39f; 
+	background: #38d39f;
 	color:white;
 	border-color: #38d39f;
 	margin-top: 30pt;
@@ -78,7 +78,7 @@ svg#e37c00f5-ff96-45aa-87ea-1a24b78ba7bd{
 
 
 .button-color2{
-	background: white; 
+	background: white;
 	color:#38d39f;
 	border-color: #38d39f;
 }
@@ -136,4 +136,12 @@ border-color: #6b717a;
 background-color: black;
 color:#FFF;
 border-color: black;
+}
+
+.friend{
+    text-align: left;
+		margin-left: 1.5em;
+		margin-bottom: 1em;
+    font-size: 25px;
+
 }
