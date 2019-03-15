@@ -26,7 +26,10 @@ https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-w
 https://docs.djangoproject.com/en/2.1/topics/testing/overview/
 https://django-testing-docs.readthedocs.io/en/latest/index.html
 ### Login and Logout tutorial
-https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
+author: Will Vincent 
+https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
+https://wsvincent.com/django-user-authentication-tutorial-signup/ 
+https://wsvincent.com/django-user-authentication-tutorial-password-reset/
 ### Model: 
 Reference: **Django model documentations**
 https://docs.djangoproject.com/en/2.1/topics/db/models/ 
