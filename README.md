@@ -43,6 +43,8 @@ author: Vitor Freitas
 https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
 ### Views:
 cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view<br/>
+</br>Django class-based view documentation:
+</br>https://docs.djangoproject.com/en/2.1/topics/class-based-views/
 
 ### HTML:
 https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
