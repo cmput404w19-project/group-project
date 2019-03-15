@@ -88,11 +88,11 @@
           <!--p>{{post.p.content}}</p-->
           <meta id="media_url" name="media_url" content="{{MEDIA_URL}}{{post.p.image64}}" />
           <img id="image" style="display:inline" src="{{MEDIA_URL}}{{post.p.image64}}" width=500 onerror="this.style.display='none'">
-          <div class="w3-row-padding" style="margin:0 -16px">
+          <!-- <div class="w3-row-padding" style="margin:0 -16px">
             <div class="w3-half">
               <img src={{post.p.uploadFile}} style="width:100%" alt={{post.p.title}} class="w3-margin-bottom" onerror="this.style.display='none'">
             </div>
-          </div>
+          </div> -->
           <p style="color:#c0c4c3">Description : {{post.p.description}}</p>
           {% if post.p.refPost != "" %}
           <div class="refPost">
