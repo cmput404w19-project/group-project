@@ -209,14 +209,35 @@ class PostById(APIView):
             commentList.append({"comment":comment})
         context = {'post': post, 'commentList': commentList}
         return render(request, 'showPost.html', context)
+    
 
 class postDelete(APIView):
+    #delete post
     def post(self, request, post_id):
         obj = Post.objects.filter(post_id=post_id).first()
         obj.delete()
         return redirect('/')
 
+
+class EditPost(APIView):
+
+    def get(self, request, post_id):
+        post = Post.objects.filter(post_id = post_id).first()
+        context = {'post': post}
+        return render(request, 'editpost.html', context)
         
+    def post(self, request, post_id):
+        new_data = request.data.copy()
+        post = Post.objects.filter(post_id = post_id).first()
+        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
+        new_data.__setitem__("user_id", user_id)
+        serializer = PostSerializer(post, data=new_data)
+
+        if not serializer.is_valid():
+            return Response({'serializer': serializer})
+        serializer.save()
+        return redirect('/')
+
 class PublicPosts(APIView):
     """
     get:
@@ -242,7 +263,7 @@ class Comments(APIView):
         # return Response(serializer.data)
 
     def post(self, request, post_id):
-        form = CreateComment(request.POST)
+        form = CreateComment(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect('/#'+str(post_id))
@@ -284,6 +305,8 @@ class AuthorPosts(APIView):
             return Response({'serializer': serializer})
         serializer.save()
         return redirect('/')
+
+
 
 
 def profile(request):
