@@ -36,3 +36,6 @@ https://docs.djangoproject.com/en/2.1/topics/db/models/
 ### Create UserProfile by Signal:
 author: Vitor Freitas
 https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
+### Views:
+cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view<br/>
+
