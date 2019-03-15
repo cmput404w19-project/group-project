@@ -21,14 +21,15 @@ Contributors:
 
 
 # References
-### Login and Logout and SignUp
-author: Will Vincent
-</br>https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
-</br>https://wsvincent.com/django-user-authentication-tutorial-signup/
-</br>https://wsvincent.com/django-user-authentication-tutorial-password-reset/
+### TestCase
+https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
+https://docs.djangoproject.com/en/2.1/topics/testing/overview/
+https://django-testing-docs.readthedocs.io/en/latest/index.html
+### Login and Logout tutorial
+https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
 ### Model: 
 Reference: **Django model documentations**
-</br>https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+https://docs.djangoproject.com/en/2.1/topics/db/models/ 
 ### Create UserProfile by Signal:
 author: Vitor Freitas
-</br>https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
+https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
