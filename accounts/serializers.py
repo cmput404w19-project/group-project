@@ -4,6 +4,9 @@ from .models import FriendRequest
 from .models import Follow
 from rest_framework import serializers
 
+from drf_extra_fields.fields import Base64ImageField
+from drf_extra_fields.fields import Base64FileField
+
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
@@ -12,11 +15,26 @@ class UserSerializers(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     #user_id = serializers.HiddenField(default=self.get_serializer_context())
+    image64 = Base64ImageField(required=False)
+    file64 = Base64FileField(required=False)
+
     class Meta:
         model = Post
-        fields = ('post_id', 'title', 'source', 'origin', 'description',
-                'contentType', 'user_id', 'content', 'visibility', 'category')
+        fields = ('post_id', 'title', 'source', 'origin', 'description', 'contentType',
+        'user_id', 'content', 'visibility', 'category', 'image64', 'file64')
         #read_only_fields = ('user_id',)
+
+
+class PDFBase64File(Base64FileField):
+    ALLOWED_TYPES = ['pdf']
+
+    def get_file_extension(self, filename, decoded_file):
+        try:
+            PyPDF2.PdfFileReader(io.BytesIO(decoded_file))
+        except PyPDF2.utils.PdfReadError as e:
+            logger.warning(e)
+        else:
+            return 'pdf'
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):

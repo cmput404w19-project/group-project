@@ -17,6 +17,18 @@
     <div>visibility: {{post.visibility}}</div>
     <div>unlisted: {{post.unlisted}}</div>
     <br>
+    <div>image:</div>
+    <br>
+        <!--<div id='imageURL' style="display:none">{{post.image64}}</div>-->
+    <img id="image" src="{{MEDIA_URL}}{{post.image64}}">
+    <br>
+    <!--
+    <div>file: {{post.file64}}</div>
+    <br>
+
+    <a href="{{MEDIA_URL}}{{post.file64}}">download</a>
+    <br>
+    -->
     {%for comments in commentList%}
         Comment:<br>
         <div>post_id: {{comments.comment.post_id}}</div>
@@ -27,5 +39,21 @@
         <div>publish_time: {{comments.comment.publish_time}}</div>
         <br>
     {%endfor%}
+
+    <script>
+        function getImage() {
+            var imageURL = document.getElementById('imageURL').innerHTML;
+            alert(imageURL)
+            var image = document.createElement("image");
+            image.src = imageURL;
+            image.height = 200;
+            image.width = 200;
+            //optionally set a css class on the image
+            //image.setAttribute("class", "image");
+            //document.getElementById("image").appendChild(image);
+        }
+
+        //getImage();
+    </script>
 </div>
 {% endblock %}

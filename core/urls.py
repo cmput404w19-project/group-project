@@ -26,6 +26,11 @@ from rest_framework.documentation import include_docs_urls
 
 from rest_framework_swagger.views import get_swagger_view
 
+from core import settings
+from django.views.static import serve
+from django.conf.urls.static import static
+
+
 router=DefaultRouter()
 router.register('users', views.UserViewSet)
 
@@ -70,4 +75,6 @@ urlpatterns = [
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
     path(r'posts/<str:post_id>', views.PostById().as_view()),
 
-]
+    # get user uploaded image
+    #path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User # default user table in Django auth
 from django.db.models.signals import post_save
 from django.utils import timezone
-import uuid 
+import uuid
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     # user id
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # user name
-    displayName = models.CharField(max_length=20, default="") 
+    displayName = models.CharField(max_length=20, default="")
     # bio
     bio = models.CharField(max_length=100, default="")
     # which server is hosting this user info
@@ -75,6 +75,12 @@ class Post(models.Model):
     # unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
     unlisted = models.BooleanField(default=False)
 
+    # image64: store image
+    image64 = models.ImageField(upload_to='usr_img/', default="")
+    # image64: store image NOT FINISHED
+    file64 = models.FileField(upload_to='usr_file/', default="")
+
+
     def __str__(self):
             return self.title
 
@@ -107,7 +113,7 @@ class Comment(models.Model):
     comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # author   Foreign key to user
     user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    # comment  
+    # comment
     content = models.CharField(max_length=100, default="")
     # contentType
     contentType = models.CharField(max_length=20, choices=typeChoice, default="text/plain")
@@ -136,7 +142,7 @@ class Follow(models.Model):
 class FriendRequest(models.Model):
     """
     Friend request status
-    """	
+    """
     statusChoice = (
         ("Accept","Accept"),
         ("Decline","Decline"),

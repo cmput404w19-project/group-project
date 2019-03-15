@@ -56,6 +56,8 @@
           {% endif %}
           <hr class="w3-clear">
           <p>{{post.p.content}}</p>
+          <meta id="media_url" name="media_url" content="{{MEDIA_URL}}{{post.p.image64}}" />
+          <img id="image" style="display:inline" src="{{MEDIA_URL}}{{post.p.image64}}" width=500 onerror="this.style.display='none'">
           <div class="w3-row-padding" style="margin:0 -16px">
             <div class="w3-half">
               <img src={{post.p.uploadFile}} style="width:100%" alt={{post.p.title}} class="w3-margin-bottom">
@@ -119,4 +121,15 @@
 </div>
 
     {% endif %}
+
+    
+    <script type="text/javascript">
+        function loadImage(){
+            media_url = document.getElementById("media_url").getAttribute("content");
+            alert(media_url)
+            image = document.getElementById("image")
+            image.src = media_url;
+            image.style.display = "inline";
+        }
+    </script>
     {% endblock %}

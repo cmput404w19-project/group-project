@@ -6,7 +6,7 @@
 <div class="post_container">
     <form action="{% url 'make_post' %}" method="POST">
         {% csrf_token %}
-        Title<input name="title"/>
+        Title<input id="title" name="title"/>
         <br>
         Description<input name="description">
         <br>
@@ -17,16 +17,18 @@
         Category<input name="category">
         <br>
         ContantType
-        <select name="contentType">
-            <option value="text/markdown">
-                text/markdown
-            </option>
+        <select id="section" name="contentType" onchange="changeShownPage()">
             <option value="text/plain">
                 text/plain
             </option>
+            <option value="text/markdown">
+                text/markdown
+            </option>
+            <!--
             <option value="application/base64">
                 application/base64
             </option>
+            -->
             <option value="image/png;base64">
                 image/png;base64
             </option>
@@ -35,15 +37,32 @@
             </option>
         </select>
         <br>
-        Content
-        <textarea name="content" class="form-control text-area" type="text" maxLength="512" required="true"></textarea>
+        <div id="textarea" style="display:inline">
+            Content
+            <textarea id="texta" name="content" class="form-control text-area" type="text" maxLength="512"></textarea>
+        </div>
+        <br>
+        <div id="uploadImage" style="display:none">
+            Please choose your image
+            <br>
+            <input id="image" type="file" accept="image/png, image/jpeg">
+            <textarea id="imageText" type="text" name="image64" style="display:none"></textarea>
+            <img id="image64" height="300" >
+        </div>
+        <div id="uploadFile" style="display:none">
+            Please choose your file
+            <br>
+            <input id="file" type="file"  >
+            <textarea id="fileText" type="text" name="file64" style="display:none"></textarea>
+        </div>
+        <br>
         Visibility
         <select name="visibility">
-            <option value="PRIVATE">
-                private to me
-            </option>
             <option value="PUBLIC">
                 public to everyone
+            </option>
+            <option value="PRIVATE">
+                private to me
             </option>
             <option value="FRIENDS">
                 private to my friends
@@ -63,6 +82,72 @@
         <input type="submit" value="Save"/>
     </form>
 
+    <script>
+        document.getElementById("image").addEventListener("change", readImage);
+        document.getElementById("file").addEventListener("change", readFile);
+
+        function changeShownPage() {
+            selection = document.getElementById("section");
+            textarea = document.getElementById("textarea");
+            uploadImage = document.getElementById("uploadImage");
+            uploadFile = document.getElementById("uploadFile");
+            texta = document.getElementById("texta");
+            image = document.getElementById("image");
+            file = document.getElementById("file");
+            if ((selection.value == "image/png;base64")||(selection.value == "image/jpeg;base64")) {
+                texta.value = '';
+                file.value = '';
+                textarea.style.display = 'none';
+                uploadImage.style.display = 'inline';
+                uploadFile.style.display = 'none';
+            }
+            else if (selection.value == "application/base64"){
+                texta.value = '';
+                image.value = '';
+                textarea.style.display = 'none';
+                uploadImage.style.display = 'none';
+                uploadFile.style.display = 'inline';
+            }
+            else{
+                image.value = '';
+                file.value = '';
+                textarea.style.display = 'inline';
+                uploadImage.style.display = 'none';
+                uploadFile.style.display = 'none';
+            }
+        }
+
+        function readImage() {
+            if (this.files && this.files[0]) {
+                var FR= new FileReader();
+                FR.addEventListener("load", function(e) {
+                    document.getElementById("image64").src = e.target.result;
+                    document.getElementById("image").src = e.target.result;
+                    document.getElementById("imageText").value = e.target.result;
+                    alert(e.target.result)
+                });
+                FR.readAsDataURL( this.files[0] );
+            }
+        }
+
+        function readFile() {
+            if (this.files && this.files[0]) {
+                var FR= new FileReader();
+                FR.addEventListener("load", function(e) {
+                    //alert(e.target.result)
+                    document.getElementById("file").src = e.target.result;
+                    document.getElementById("fileText").value = e.target.result;
+                    alert(e.target.result)
+                });
+                FR.readAsDataURL( this.files[0] );
+            }
+        }
+
+        function base64AddPadding(str) {
+            return str + Array((4 - str.length % 4) % 4 + 1).join('=');
+        }
+
+    </script>
 
 </div>
 {% endblock %}
