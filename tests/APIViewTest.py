@@ -17,7 +17,7 @@ class FriendRequestTest(TestCase):
         kehan1 = UserProfile()
         thisId = uuid.uuid4()
         kehan1.author_id=thisId 
-        kehan1.user_id = User.objects.create_user(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
+        kehan1.user_id = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
         kehan1.displayName="kehan1"
         kehan1.bio="bio"
         kehan1.host="host"
@@ -29,7 +29,7 @@ class FriendRequestTest(TestCase):
         kehan2 = UserProfile()
         thisId2 = uuid.uuid4()
         kehan2.author_id=thisId 
-        kehan2.user_id = User.objects.create_user(username='kehan_wang2', email="kehan1@ualberta.ca",password="Mypossword123")
+        kehan2.user_id = User.objects.create_superuser(username='kehan_wang2', email="kehan1@ualberta.ca",password="Mypossword123")
         kehan2.displayName="kehan2"
         kehan2.bio="bio2"
         kehan2.host="host2"
@@ -53,9 +53,8 @@ class FriendRequestTest(TestCase):
 class HomeTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username = 'kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.save()
+        self.user = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
+        #self.user.save()
         global kehan1  
         thisId = uuid.uuid4()
         kehan1 = UserProfile()
@@ -80,9 +79,7 @@ class HomeTest(TestCase):
 
 class AuthorProfileTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username = 'kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.save()
+        self.user = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
         global kehan1  
         thisId = uuid.uuid4()
         kehan1 = UserProfile()
@@ -109,9 +106,7 @@ class AuthorProfileTest(TestCase):
 class PostTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username = 'kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.save()
+        self.user = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
         global kehan1  
         thisId = uuid.uuid4()
         kehan1 = UserProfile()
@@ -167,9 +162,7 @@ class PostTest(TestCase):
 class AuthorPostsTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username='kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.save()
+        self.user = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
 
         global kehan1
         thisId = uuid.uuid4()
@@ -197,9 +190,7 @@ class AuthorPostsTest(TestCase):
 class unFollowTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(username='kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.save()
+        self.user = User.objects.create_superuser(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123")
 
         global kehan1
         global kehan2

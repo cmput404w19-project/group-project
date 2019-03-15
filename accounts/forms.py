@@ -3,6 +3,9 @@ from .models import UserProfile
 from .models import Post, Comment, Follow
 from django.forms.widgets import HiddenInput
 
+# Reference: Django custom form documentaiton
+# https://docs.djangoproject.com/en/2.1/topics/forms/
+
 class EditProfileForm(forms.ModelForm):
     # model that is linked to
     class Meta:

@@ -39,7 +39,7 @@
 </head>
 
 <div class="post_container" style="margin-left:10%; margin-top:2%; margin-right:20%">
-    <p class="login-title" style="font-size: 2.7em">Edit Post</p>
+    <p class="login-title" style="font-size: 2.7em; margin-left: 2em">Edit Post</p>
 
     <form action="{% url 'editpost' post.post_id %}" method="POST">
         {% csrf_token %}
@@ -207,7 +207,7 @@
                 {%endif%}
             </div>
             <div class="btn">
-                <input type="submit" value="Edit" style="font-size: 1.5em;">
+                <input class="btn btn-default" type="submit" value="Edit" style="font-size: 1.5em; margin-left: 0em">
             </div>
         </div>
 
