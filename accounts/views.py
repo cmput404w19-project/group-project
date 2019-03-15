@@ -27,7 +27,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
-# Reference: Django class-based view 
+# Reference: Django class-based view
 # https://docs.djangoproject.com/en/2.1/topics/class-based-views/
 
 def home(request):
@@ -143,10 +143,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UnFollow(APIView):
     def post(self, request, pk):
-        print("------------------------")
+        #print("------------------------")
         obj = Follow.objects.get(pk=pk)
+        name = obj.following_id.displayName
+        #print(name)
         obj.delete()
-        return redirect('/')
+        return redirect('/author/' + str(name))
 
 class FriendRequest(APIView):
     """
