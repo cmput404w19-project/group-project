@@ -3,83 +3,143 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="post_container">
+
+<head>
+    <style type="text/css">
+        .part{
+            display: block;
+            margin:5px;
+        }
+        .btn{
+            margin-left: 8em;
+        }
+        label {
+            display: inline-block;
+            width: 200px;
+            text-align: right;
+        }
+        input, select{
+            vertical-align: top;
+            margin-left: 1.5em;
+        }
+        .upload{
+            text-align: left;
+            margin-left: 5em;
+            width: 100%;
+        }
+        .upload_label{
+            font-size: 0.8em;
+        }
+        #texta{
+            vertical-align: top;
+            margin-left: 10%;
+            width: 90%;
+        }
+    </style>
+</head>
+
+<div class="post_container" style="margin-left:10%; margin-top:2%; margin-right:20%">
+    <p class="login-title" style="font-size: 2.7em">New Post</p>
+
     <form action="{% url 'make_post' %}" method="POST">
         {% csrf_token %}
-        Title<input id="title" name="title"/>
-        <br>
-        Description<input name="description">
-        <br>
-        Source<input name="source">
-        <br>
-        Origin<input name="origin">
-        <br>
-        Category<input name="category">
-        <br>
-        ContantType
-        <select id="section" name="contentType" onchange="changeShownPage()">
-            <option value="text/plain">
-                text/plain
-            </option>
-            <option value="text/markdown">
-                text/markdown
-            </option>
-            <!--
-            <option value="application/base64">
-                application/base64
-            </option>
-            -->
-            <option value="image/png;base64">
-                image/png;base64
-            </option>
-            <option value="image/jpeg;base64">
-                image/jpeg;base64
-            </option>
-        </select>
-        <br>
-        <div id="textarea" style="display:inline">
-            Content
-            <textarea id="texta" name="content" class="form-control text-area" type="text" maxLength="512"></textarea>
+        <div class="part" style="font-size: 1.2em; font-family:Muli">
+            <div>
+                 <label for="title">Title: </label>
+                 <input id="title" name="title"/>
+            </div>
+            <div>
+                 <label for="description">Description: </label>
+                 <input id="description" name="description"/>
+            </div>
+            <div>
+                 <label for="source">Source: </label>
+                 <input id="source" name="source"/>
+            </div>
+            <div>
+                 <label for="origin">Origin: </label>
+                 <input id="origin" name="origin"/>
+            </div>
+            <div>
+                 <label for="category">Category: </label>
+                 <input id="category" name="category"/>
+            </div>
+            <div>
+                 <label for="contentType">ContantType: </label>
+                 <select id="section" name="contentType" onchange="changeShownPage()">
+                     <option value="text/plain">
+                         text/plain
+                     </option>
+                     <option value="text/markdown">
+                         text/markdown
+                     </option>
+                     <!--
+                     <option value="application/base64">
+                         application/base64
+                     </option>
+                     -->
+                     <option value="image/png;base64">
+                         image/png;base64
+                     </option>
+                     <option value="image/jpeg;base64">
+                         image/jpeg;base64
+                     </option>
+                 </select>
+            </div>
+            <div id="textarea" style="display:inline">
+                <label for="textarea">Content: </label>
+                <div >
+                    <textarea id="texta" name="content" class="form-control text-area" type="text" maxLength="512"  rows="8" style="font-size:16pt"></textarea>
+                </div>
+            </div>
+            <div class="upload">
+                <div id="uploadImage" style="display:none">
+                    <label class="upload_label" for="image">Please choose your image: </label>
+                    <input id="image" type="file" accept="image/png, image/jpeg">
+                    <textarea id="imageText" type="text" name="image64" style="display:none"></textarea>
+                    <img id="image64" height="300" >
+                </div>
+            </div>
+            <div class="upload"
+                <div id="uploadFile" style="display:none">
+                    <label class="upload_label" for="file">Please choose your file: </label>
+                    <input id="file" type="file"  >
+                    <textarea id="fileText" type="text" name="file64" style="display:none"></textarea>
+                </div>
+            </div>
+            <div>
+                <label for="visibility">Visibility: </label>
+                <select name="visibility">
+                    <option value="PUBLIC">
+                        public to everyone
+                    </option>
+                    <option value="PRIVATE">
+                        private to me
+                    </option>
+                    <option value="FRIENDS">
+                        private to my friends
+                    </option>
+                    <option value="FOAF">
+                        private to friends of friends
+                    </option>
+                    <option value="SERVERONLY">
+                        private to friends on my host
+                    </option>
+                </select>
+            </div>
+            <div>
+                <!--br>
+                Or select who can see your posts-->
+            </div>
+            <div>
+                <label for="unlisted">Unlisted: </label>
+                <input type="checkbox" name="unlisted" value="True">
+            </div>
+            <div class="btn">
+                <input type="submit" value="Save" style="font-size: 1.5em;">
+            </div>
         </div>
-        <br>
-        <div id="uploadImage" style="display:none">
-            Please choose your image
-            <br>
-            <input id="image" type="file" accept="image/png, image/jpeg">
-            <textarea id="imageText" type="text" name="image64" style="display:none"></textarea>
-            <img id="image64" height="300" >
-        </div>
-        <div id="uploadFile" style="display:none">
-            Please choose your file
-            <br>
-            <input id="file" type="file"  >
-            <textarea id="fileText" type="text" name="file64" style="display:none"></textarea>
-        </div>
-        <br>
-        Visibility
-        <select name="visibility">
-            <option value="PUBLIC">
-                public to everyone
-            </option>
-            <option value="PRIVATE">
-                private to me
-            </option>
-            <option value="FRIENDS">
-                private to my friends
-            </option>
-            <option value="FOAF">
-                private to friends of friends
-            </option>
-            <option value="SERVERONLY">
-                private to friends on my host
-            </option>
-        </select>
-        <br>
-        Or select who can see your posts
-        <br>
-        Unlisted
-        <input type="checkbox" name="unlisted" value="True"><br>
-        <input type="submit" value="Save"/>
+
     </form>
 
     <script>
