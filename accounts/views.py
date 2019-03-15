@@ -223,7 +223,7 @@ class Comments(APIView):
         form = CreateComment(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('/#'+str(post_id))
         return redirect('/')
 
 '''
