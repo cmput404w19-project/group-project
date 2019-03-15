@@ -80,7 +80,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UnFollow(APIView):
     def post(self, request, pk):
-        print("------------------------")
         obj = Follow.objects.get(pk=pk)
         obj.delete()
         return redirect('/')
@@ -92,7 +91,6 @@ class FriendRequest(APIView):
     """
     def post(self, request):
         # follow = Follow.objects.create()
-        print(request)
         data = dict()
         data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
         data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
@@ -126,11 +124,7 @@ class AuthorProfile(APIView):
         postUser = UserProfile.objects.filter(displayName = author_id).first()
         author_id1 = thisUser.author_id
         author_id2 = postUser.author_id
-        print(thisUser)
-        print(postUser)
-        print(author_id)
         is_following = Follow.objects.filter(follower_id = author_id1, following_id = author_id2).first()
-        print(is_following)
         args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
         return render(request, 'profile.html', args)
 
