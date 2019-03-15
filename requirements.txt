@@ -7,3 +7,4 @@ markdown
 gunicorn
 pytz
 coreapi
+django-extra-fields
