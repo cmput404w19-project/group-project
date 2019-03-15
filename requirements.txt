@@ -8,3 +8,4 @@ gunicorn
 pytz
 coreapi
 django-extra-fields
+Pillow
