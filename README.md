@@ -39,3 +39,23 @@ https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-s
 ### Views:
 cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view<br/>
 
+### HTML:
+https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
+https://www.w3schools.com/css/css_inline-block.asp
+https://www.w3schools.com/css/tryit.asp?filename=trycss_inline-block_span1
+https://www.w3schools.com/cssref/pr_class_position.asp
+https://www.w3schools.com/cssref/tryit.asp?filename=trycss_position_relative
+https://www.w3schools.com/cssref/tryit.asp?filename=trycss_font-style
+Author:Phrogz
+https://stackoverflow.com/questions/5067279/how-to-align-this-span-to-the-right-of-the-div
+https://stackoverflow.com/questions/21376788/how-to-display-3-buttons-on-the-same-line-in-css
+https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_social&stacked=h
+https://www.zmrenwu.com/post/8/
+Author:dusai
+https://zhuanlan.zhihu.com/p/44939567
+https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp
+Django Documentation
+https://docs.djangoproject.com/zh-hans/2.1/
+
+
+
