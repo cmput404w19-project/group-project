@@ -75,6 +75,10 @@ class Post(models.Model):
     # unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
     unlisted = models.BooleanField(default=False)
 
+    # Refereces about upload and load img/files
+    # https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+    # https://stackoverflow.com/questions/17710147/image-convert-to-base64
+    # https://github.com/Hipo/drf-extra-fields#base64filefield
     # image64: store image
     image64 = models.ImageField(upload_to='usr_img/', default="")
     # image64: store image NOT FINISHED

@@ -52,11 +52,11 @@
                  <label for="description">Description: </label>
                  <input id="description" name="description"/>
             </div>
-            <div>
+            <div style="display: none">
                  <label for="source">Source: </label>
                  <input id="source" name="source"/>
             </div>
-            <div>
+            <div style="display: none">
                  <label for="origin">Origin: </label>
                  <input id="origin" name="origin"/>
             </div>
@@ -184,7 +184,7 @@
                     document.getElementById("image64").src = e.target.result;
                     document.getElementById("image").src = e.target.result;
                     document.getElementById("imageText").value = e.target.result;
-                    alert(e.target.result)
+                    //alert(e.target.result)
                 });
                 FR.readAsDataURL( this.files[0] );
             }
