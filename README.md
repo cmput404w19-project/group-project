@@ -24,8 +24,8 @@ Contributors:
 ### Login and Logout tutorial
 https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
 ### Model: 
-</br>Reference: **Django model documentations**
-</br>https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+Reference: **Django model documentations**
+https://docs.djangoproject.com/en/2.1/topics/db/models/ 
 ### Create UserProfile by Signal:
-</br>author: Vitor Freitas
-</br>https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
+author: Vitor Freitas
+https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
