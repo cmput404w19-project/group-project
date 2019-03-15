@@ -25,7 +25,7 @@
     <!-- Left Column -->
     <div class="w3-col m3">
       <!-- Profile -->
-      <div class="w3-card w3-round w3-white">
+      <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
         <div class="w3-container">
           <h4 class="w3-center" style="font-family:Muli; font-size: 1.5em">{{ user.username }}</h4>
           <br>
@@ -47,13 +47,26 @@
         <div class = "Post">
           <a class="a-dec2" href="author/{{post.p.user_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em;">{{post.p.user_id}}</a>
           <p style="font-size: 1.3em; font-weight: bold; margin-top:1em">{{post.p.title}}</p>
+          {%if user.username == post.p.user_id.displayName%}
+
+          <a herf="#" class="btn btn-primary button-color2">Edit</a>
+
+            <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
+              {% csrf_token %}
+              <div>
+              <br>
+              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
+              </div>
+            </form>
+          {%endif%}
+          <!--
           {% if post.p.user_id == userprofile.author_id%}
           <div class="btn-group">
-            <!-- need add on view, url, then edit edit_post, and here-->
             <a href="/accounts/post/edit" class="btn btn-default">Edit</a>
             <a href="{% url 'password_reset' %}" class="btn btn-default">Delete</a>
           </div>
           {% endif %}
+          -->
           <hr class="w3-clear">
           <p id="contentType" style="display:none">{{post.p.contentType}}</p>
           {% if post.p.contentType == "text/plain"%}
@@ -97,15 +110,7 @@
             </div>
           </form>
 
-          {%if user.username == post.p.user_id.displayName%}
-            <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
-              {% csrf_token %}
-              <div>
-              <br>
-              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
-              </div>
-            </form>
-          {%endif%}
+
 
 
           <br>
