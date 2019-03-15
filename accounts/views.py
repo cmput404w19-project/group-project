@@ -39,7 +39,7 @@ def home(request):
         for post in public_post:
             postList.append({"p":post})
         # users own post
-        own_post = Post.objects.filter(user_id=user.author_id).all()
+        own_post = Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all()
         for post in own_post:
             postList.append({"p":post})
         # see friends post  (private to friends)
