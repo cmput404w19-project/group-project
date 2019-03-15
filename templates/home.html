@@ -52,8 +52,14 @@
           </div>
           {%if user.username == post.p.user_id.displayName%}
 
-          <a herf="#" class="btn btn-primary button-color2">Edit</a>
+          <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
+            {% csrf_token %}
+            <div>
+            <br>
+            <button class="btn btn-primary button-color2" name="submit" type="submit" class="btn btn-primary">Edit</button>
 
+            </div>
+          </form>
             <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
               {% csrf_token %}
               <div>
@@ -112,13 +118,14 @@
             <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Comment</button>
             </div>
           </form>
-
+<!--
           {%if user.username == post.p.user_id.displayName%}
             <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
               {% csrf_token %}
               <div>
               <br>
               <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Edit</button>
+
               </div>
             </form>
           {%endif%}
@@ -133,7 +140,7 @@
             </form>
           {%endif%}
 
-
+-->
 
           <br>
         </div>
