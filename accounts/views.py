@@ -143,6 +143,7 @@ class FriendRequest(APIView):
         # follow = Follow.objects.create()
         print(request)
         data = dict()
+        print(data)
         data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
         data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
         data['follower_id']=request.data['author']['id'].split('/')[-1]
