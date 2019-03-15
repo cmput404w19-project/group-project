@@ -54,13 +54,15 @@
               'X-CSRFToken': Cookies.get('csrftoken')
             },
             body: JSON.stringify(data)
+          }).then((resp) => {
+            window.location.replace("/author/{{ userprofile.displayName }}");
           });
 
         if (document.getElementById("FollowButton").value == "Follow"){
-          document.getElementById("FollowButton").value="Following";
+          document.getElementById("FollowButton").value="UnFollow";
           document.getElementById("FollowButton").disable=true;
         }
-        else if(document.getElementById("FollowButton").value == "Following"){
+        else if(document.getElementById("FollowButton").value == "UnFollow"){
           document.getElementById("FollowButton").disable=true;
         }
       }
