@@ -59,12 +59,13 @@ urlpatterns = [
     #path(r'author/posts', views.AuthorPosts().as_view()),
     path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
     path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
-    
+
     # author endpoints
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
 
     # post endpoints
-    path('posts/<str:post_id>', views.PostById().as_view()),
+    path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
+    path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
     path(r'posts/<str:post_id>', views.PostById().as_view()),

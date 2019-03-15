@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="post_container">
+    Post:<br>
+    <div>post_id: {{post.post_id}}</div>
+    <div>user_id: {{post.user_id}}</div>
+    <div>title: {{post.title}}</div>
+    <div>source: {{post.source}}</div>
+    <div>origin: {{post.origin}}</div>
+    <div>contentType: {{post.contentType}}</div>
+    <div>content: {{post.content}}</div>
+    <div>category: {{post.category}}</div>
+    <div>publish_time: {{post.publish_time}}</div>
+    <div>visibility: {{post.visibility}}</div>
+    <div>unlisted: {{post.unlisted}}</div>
+    <br>
+    {%for comments in commentList%}
+        Comment:<br>
+        <div>post_id: {{comments.comment.post_id}}</div>
+        <div>comment_id: {{comments.comment.comment_id}}</div>
+        <div>user_id: {{comments.comment.user_id}}</div>
+        <div>content: {{comments.comment.content}}</div>
+        <div>contentType: {{comments.comment.contentType}}</div>
+        <div>publish_time: {{comments.comment.publish_time}}</div>
+        <br>
+    {%endfor%}
+</div>
+{% endblock %}

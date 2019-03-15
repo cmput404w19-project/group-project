@@ -190,10 +190,13 @@ class PostById(APIView):
     Get post for given {post_id}
     """
     def get(self, request, post_id):
-        post = Post.objects.filter(post_id = post_id).first()
-        comment = Comment.objects.filter(comment_id = comment_id).first()
-        serializer = PostSerializer(post, comment)
-        return Response(serializer.data)
+        post = Post.objects.filter(post_id = post_id).all().first()
+        commentList=[]
+        comments = Comment.objects.filter(post_id = post_id).all()
+        for comment in comments:
+            commentList.append({"comment":comment})
+        context = {'post': post, 'commentList': commentList}
+        return render(request, 'showPost.html', context)
 
 class PublicPosts(APIView):
     """
@@ -226,27 +229,7 @@ class Comments(APIView):
             return redirect('/#'+str(post_id))
         return redirect('/')
 
-'''
-class AuthorPosts(APIView):
-    """
-    get:
-    Get all posts visible to current user
 
-    post:
-    Create a new post as current user
-    """
-    def get(self, request):
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-'''
 class AuthorPosts(APIView):
     """
     get:
@@ -267,14 +250,6 @@ class AuthorPosts(APIView):
         serializer = PostSerializer()
         return Response({'serializer':serializer})
 
-    '''
-    def post(self, request):
-        serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    '''
     def post(self, request):
         #profile = get_object_or_404(Profile, pk=pk)
         #print(request.data.user_id)
