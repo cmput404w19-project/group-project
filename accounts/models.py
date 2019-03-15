@@ -173,6 +173,8 @@ class Images(models.Model):
 def create_profile(sender, **kwargs):
     if kwargs['created']:
         user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
-
+        if not kwargs['instance'].is_staff:
+            kwargs['instance'].is_active = False
+            kwargs['instance'].save()
 
 post_save.connect(create_profile, sender=User)
