@@ -91,3 +91,7 @@ https://www.django-rest-framework.org/tutorial/3-class-based-views/<br/>
 http://www.chenxm.cc/article/244.html<br/>
 http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf<br/>
 https://segmentfault.com/a/1190000010970988<br/>
+
+License
+=======================
+Generally everything is LICENSE'D under the Apache 2 license by Frederic Sauve-Hoover, Kehan Wang, Chengze Li, Zhaozhen Liang, Xinrui Lu
