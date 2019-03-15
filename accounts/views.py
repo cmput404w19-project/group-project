@@ -61,7 +61,7 @@ def home(request):
 
         # now get the comments(comment list) of each post that is visible to this user
         for post in postList:
-            post["cl"] = Comment.objects.filter(post_id=post["p"].post_id).all()
+            post["cl"] = Comment.objects.filter(post_id=post["p"].post_id).order_by("publish_time").all()
 
 
 
