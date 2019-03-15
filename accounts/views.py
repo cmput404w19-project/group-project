@@ -27,6 +27,9 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
+# Reference: Django class-based view 
+# https://docs.djangoproject.com/en/2.1/topics/class-based-views/
+
 def home(request):
     postList = []
     if request.user.is_authenticated:
@@ -209,10 +212,11 @@ class PostById(APIView):
             commentList.append({"comment":comment})
         context = {'post': post, 'commentList': commentList}
         return render(request, 'showPost.html', context)
-    
+
 
 class postDelete(APIView):
     #delete post
+    #referenced answered by cutteeth from https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view
     def post(self, request, post_id):
         obj = Post.objects.filter(post_id=post_id).first()
         obj.delete()
@@ -225,7 +229,7 @@ class EditPost(APIView):
         post = Post.objects.filter(post_id = post_id).first()
         context = {'post': post}
         return render(request, 'editpost.html', context)
-        
+
     def post(self, request, post_id):
         new_data = request.data.copy()
         post = Post.objects.filter(post_id = post_id).first()
@@ -291,6 +295,10 @@ class AuthorPosts(APIView):
         return Response({'serializer':serializer})
 
     def post(self, request):
+        # Reference
+        # https://www.django-rest-framework.org/tutorial/3-class-based-views/
+        # http://www.chenxm.cc/article/244.html
+        # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
         #profile = get_object_or_404(Profile, pk=pk)
         #print(request.data.user_id)
         new_data = request.data.copy()
@@ -334,6 +342,8 @@ def edit_profile(request):
         return render(request, 'edit_profile.html', args)
 
 def post_page(request):
+    # Reference
+    # https://segmentfault.com/a/1190000010970988
     if request.user.is_authenticated:
         # user has login
         userprofile = UserProfile.objects.filter(user_id = request.user).first()

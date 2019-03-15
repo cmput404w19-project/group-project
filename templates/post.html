@@ -5,6 +5,7 @@
 {% block content %}
 
 <head>
+    // Reference: https://www.jianshu.com/p/db2620e94a9b
     <style type="text/css">
         .part{
             display: block;
@@ -151,6 +152,8 @@
         document.getElementById("file").addEventListener("change", readFile);
 
         function changeShownPage() {
+            // Referencee
+            // https://ilusm.iteye.com/blog/232236
             selection = document.getElementById("section");
             textarea = document.getElementById("textarea");
             uploadImage = document.getElementById("uploadImage");
@@ -180,7 +183,8 @@
                 uploadFile.style.display = 'none';
             }
         }
-
+        // Reference
+        // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
         function readImage() {
             if (this.files && this.files[0]) {
                 var FR= new FileReader();
@@ -207,6 +211,8 @@
             }
         }
 
+        // Reference
+        // https://stackoverflow.com/questions/2941995/python-ignore-incorrect-padding-error-when-base64-decoding/49459036
         function base64AddPadding(str) {
             return str + Array((4 - str.length % 4) % 4 + 1).join('=');
         }

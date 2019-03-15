@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 import uuid
 import json
 
-#this test is reference from https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
-
+#this test is reference answered by Pedro M Duarte from https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
+# create superuser answered by Sam Dolan from https://stackoverflow.com/questions/3495114/how-to-create-admin-user-in-django-tests-py
 class FriendRequestTest(TestCase):
 
     def setUp(self):

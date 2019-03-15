@@ -1,3 +1,9 @@
+# References: Django documentation
+# https://docs.djangoproject.com/en/2.1/_modules/django/contrib/auth/decorators/
+
+# author: yetty  https://djangosnippets.org/users/yetty/
+# https://djangosnippets.org/snippets/2969/
+
 from django.http import HttpResponseRedirect
 
 def anonymous_required( view_function, redirect_to = None ):

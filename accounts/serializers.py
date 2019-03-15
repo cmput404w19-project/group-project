@@ -7,6 +7,9 @@ from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from drf_extra_fields.fields import Base64FileField
 
+# Reference: django rest framework documentation
+# https://www.django-rest-framework.org
+
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
