@@ -83,6 +83,8 @@ class Post(models.Model):
     image64 = models.ImageField(upload_to='usr_img/', default="")
     # image64: store image NOT FINISHED
     file64 = models.FileField(upload_to='usr_file/', default="")
+    # refPost: a text post can ref to a image post
+    refPost = models.CharField(max_length=200, default="")
 
 
     def __str__(self):
