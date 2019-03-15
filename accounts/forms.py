@@ -32,6 +32,9 @@ class NewPostForm(forms.ModelForm):
                 'unlisted'
                 ]
     def __init__(self, *args, **kwargs):
+        # Reference
+        # https://www.itgank.com/archives/2557
+        # https://stackoverflow.com/questions/604266/django-set-default-form-values
         super(NewPostForm, self).__init__(*args, **kwargs)
         self.fields['user_id'].widget = HiddenInput()
 
