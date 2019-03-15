@@ -74,6 +74,7 @@ urlpatterns = [
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
     path(r'posts/<str:post_id>', views.PostById().as_view()),
+    path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost')
 
     # get user uploaded image
     #path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

@@ -78,9 +78,10 @@ def home(request):
     # TODO we need a way to somehow get the comment objects for each specific post
     # and then add that list of comment objects to that post object
     # so that we can render the post and the comment belong to that post correctly
+    user = request.user
     if request.user.is_authenticated:
         profile = UserProfile.objects.filter(user_id = request.user).first()
-        context = {'list': postList, 'userprofile_id': profile.author_id}
+        context = {'list': postList, 'userprofile_id': profile.author_id, 'user':user}
     else:
         context = {'list': postList}
     return render(request, 'home.html', context)
@@ -209,6 +210,13 @@ class PostById(APIView):
         context = {'post': post, 'commentList': commentList}
         return render(request, 'showPost.html', context)
 
+class postDelete(APIView):
+    def post(self, request, post_id):
+        obj = Post.objects.filter(post_id=post_id).first()
+        obj.delete()
+        return redirect('/')
+
+        
 class PublicPosts(APIView):
     """
     get:
