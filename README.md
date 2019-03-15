@@ -23,12 +23,12 @@ Contributors:
 # References
 ### Login and Logout and SignUp
 author: Will Vincent
-https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
+</br>https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
 </br>https://wsvincent.com/django-user-authentication-tutorial-signup/
 </br>https://wsvincent.com/django-user-authentication-tutorial-password-reset/
 ### Model: 
 Reference: **Django model documentations**
-https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+</br>https://docs.djangoproject.com/en/2.1/topics/db/models/ 
 ### Create UserProfile by Signal:
 author: Vitor Freitas
 </br>https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
