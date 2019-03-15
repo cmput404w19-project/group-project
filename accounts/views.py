@@ -53,7 +53,7 @@ def home(request):
         # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
         all_visible_post_object = PostVisibleTo.objects.filter(user_id=user.author_id).all()
         for i in all_visible_post_object:
-            post = Post.objects.filter(post_id=i.post_id)
+            post = Post.objects.filter(post_id=i.post_id.post_id).first()
             postList.append({"p":post})
         # see friends of friends post
 
