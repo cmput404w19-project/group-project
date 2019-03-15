@@ -74,9 +74,15 @@ urlpatterns = [
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
     path(r'posts/<str:post_id>', views.PostById().as_view()),
+<<<<<<< Updated upstream
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost')
     # edit my post
     
+=======
+    path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
+    path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
+
+>>>>>>> Stashed changes
     # get user uploaded image
     #path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

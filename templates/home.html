@@ -113,7 +113,29 @@
             </div>
           </form>
 
+<<<<<<< Updated upstream
 
+=======
+          {%if user.username == post.p.user_id.displayName%}
+            <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
+              {% csrf_token %}
+              <div>
+              <br>
+              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Edit</button>
+              </div>
+            </form>
+          {%endif%}
+
+          {%if user.username == post.p.user_id.displayName%}
+            <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
+              {% csrf_token %}
+              <div>
+              <br>
+              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
+              </div>
+            </form>
+          {%endif%}
+>>>>>>> Stashed changes
 
 
           <br>
