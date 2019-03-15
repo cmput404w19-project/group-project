@@ -183,3 +183,6 @@ color:white;
 .profile{
 	color: black;
 }
+span.a {
+  display: inline; /* the default for span */
+}
