@@ -12,7 +12,7 @@ Contributors / Licensing
 ========================
 
 Contributors:
-  
+
     Chengze Li (chengze2@ualberta.ca)
     Frederic Sauve-Hoover (rsauveho@ualberta.ca)
     Xinrui Lu (xinrui7@ualberta.ca)
@@ -22,18 +22,22 @@ Contributors:
 
 # References
 ### TestCase
-Answered by Pedro M Duarte: 
+Answered by Pedro M Duarte:
 </br>https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests<br/>
 https://docs.djangoproject.com/en/2.1/topics/testing/overview/<br/>
 https://django-testing-docs.readthedocs.io/en/latest/index.html<br/>
 ### Login and Logout tutorial
-author: Will Vincent 
-<br/>https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
-<br/>https://wsvincent.com/django-user-authentication-tutorial-signup/ 
+author: Will Vincent
+<br/>https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
+<br/>https://wsvincent.com/django-user-authentication-tutorial-signup/
 <br/>https://wsvincent.com/django-user-authentication-tutorial-password-reset/
-### Model: 
+### Model:
+#### models
 Reference: **Django model documentations**
-https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+https://docs.djangoproject.com/en/2.1/topics/db/models/
+#### Upload
+https://stackoverflow.com/questions/17710147/image-convert-to-base64<br/>
+https://github.com/Hipo/drf-extra-fields#base64filefield<br/>
 ### Create UserProfile by Signal:
 author: Vitor Freitas
 https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
@@ -57,6 +61,26 @@ https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp
 <br/>Django Documentation
 <br/>https://docs.djangoproject.com/zh-hans/2.1/
-
-
-
+### Post
+#### Handle Markdown
+https://github.com/showdownjs/showdown<br/>
+https://github.com/showdownjs/showdown/wiki/Tutorial:-Markdown-editor-using-Showdown<br/>
+#### css
+https://www.jianshu.com/p/db2620e94a9b<br/>
+#### Hidden Fields
+https://ilusm.iteye.com/blog/232236<br/>
+#### Read File/Image
+https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL<br/>
+#### Static Media Path
+https://docs.djangoproject.com/en/2.1/howto/static-files/<br/>
+https://stackoverflow.com/questions/5517950/django-media-url-and-media-root<br/>
+#### base64 padding
+https://stackoverflow.com/questions/2941995/python-ignore-incorrect-padding-error-when-base64-decoding/49459036<br/>
+#### Form
+https://www.itgank.com/archives/2557<br/>
+https://stackoverflow.com/questions/604266/django-set-default-form-values<br/>
+#### Api
+https://www.django-rest-framework.org/tutorial/3-class-based-views/<br/>
+http://www.chenxm.cc/article/244.html<br/>
+http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf<br/>
+https://segmentfault.com/a/1190000010970988<br/>
