@@ -27,6 +27,9 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
+# Reference: Django class-based view 
+# https://docs.djangoproject.com/en/2.1/topics/class-based-views/
+
 def home(request):
     postList = []
     if request.user.is_authenticated:
