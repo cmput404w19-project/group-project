@@ -162,6 +162,7 @@ class FriendRequest(APIView):
         if failed:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+        #return render(request,'friend_requests.html', context)
 
 class AuthorProfile(APIView):
     """

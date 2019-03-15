@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Post{% endblock %}
 
 {% block content %}
 <div class="container" style="margin-left:10%; margin-top:3%">
-	<p class="login-title" style="font-size: 2.7em">Profile</p>
+	<p class="login-title" style="font-size: 2.7em">Post</p>
 	<form method="post">
 		{% csrf_token %}
 		{{ form.as_p }}
 		<br>
-		<button class="btn btn-default" type="submit">Save</button>
+		<button class="btn btn-default" type="submit">Edit</button>
 	</form>
 </div>
 {% endblock %}

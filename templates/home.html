@@ -43,11 +43,17 @@
     <!-- Middle Column -->
     <div class="w3-col m9" style="position:relative">
       {%for post in list%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em" id="{{post.p.post_id}}"><br>
+      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em; margin-bottom: 1.5em" id="{{post.p.post_id}}"><br>
         <div class = "Post">
-          <a href="author/{{post.p.user_id}}" id="user_profile">{{post.p.user_id}}</a>
-          <p>{{post.p.title}}</p>
-          <p>{{post.p.description}}</p>
+          <a class="a-dec2" href="author/{{post.p.user_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em;">{{post.p.user_id}}</a>
+          <p style="font-size: 1.3em; font-weight: bold; margin-top:1em">{{post.p.title}}</p>
+          {% if post.p.user_id == userprofile.author_id%}
+          <div class="btn-group">
+            <!-- need add on view, url, then edit edit_post, and here-->
+            <a href="/accounts/post/edit" class="btn btn-default">Edit</a>
+            <a href="{% url 'password_reset' %}" class="btn btn-default">Delete</a>
+          </div>
+          {% endif %}
           <hr class="w3-clear">
           <p>{{post.p.content}}</p>
           <div class="w3-row-padding" style="margin:0 -16px">
@@ -55,30 +61,34 @@
               <img src={{post.p.uploadFile}} style="width:100%" alt={{post.p.title}} class="w3-margin-bottom">
             </div>
           </div>
+          <p style="color:#c0c4c3">Description : {{post.p.description}}</p>
         </div>
-        <hr class="w3-clear">
+
+        <div class="container" style="background-color: #f2f2f2; margin-bottom:1em; max-width: 100%">
+          <br>
         {%for comment in post.cl%}
-        <div class = "Comment">
-          <a style="font-family: 'Muli', sans-serif;" href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}}</a><a class="a-dec" style="font-family: 'Muli', sans-serif;"> : {{comment.content}}</a>
+        <div class = "Comment" style="margin-left: 1.5%">
+          <a class="a-dec2" style="font-family: 'Muli'; font-size: 1.1em" href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}} : </a><a class="a-dec" style="font-family: 'Muli', sans-serif;">{{comment.content}}</a>
         </div>
         {%endfor%}
-        <div class="w3-container" style="position:relative">
+        <div class="container" style="position:relative">
           <!--<div class="comment_add" style="position:relative">{{ user.username }} :</div>
             <div class="comment_add" style="position:relative"><p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p></div>
           -->
           <br>
-          <p>{{ user.username }} :</p>
+          <p style="font-style: oblique; font-size:1.1em; color:#c0c4c3">{{ user.username }} :</p>
           <form action="/posts/{{ post.p.post_id }}/comment" method="POST" class="form">
             <input name="user_id" type="hidden" value="{{ userprofile_id }}" >
             <input name="post_id" type="hidden" value="{{ post.p.post_id }}">
             {% csrf_token %}
-            <input style="width: 100%" name="content" type="text">
+            <input name="content" type="text">
             <div>
             <br>
             <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Comment</button>
             </div>
           </form>
           <br>
+        </div>
         </div>
       </div>
       {%endfor%}

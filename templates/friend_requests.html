@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Friends{% endblock %}
+{% block title %}FriendRequests{% endblock %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
 
     <!-- Middle Column -->
     <div class="w3-col" style="position:relative">
-      <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friends</p>
+      <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friend Requests</p>
       {%for friend in flist%}
       <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%"><br>
 
@@ -20,7 +20,11 @@
             author_id: {{friend.author_id}}-->
           </a>
         </div>
-
+        <div class="btn-group">
+          <!-- need edit view to link to this page-->
+          <a href="#" class="btn btn-default">Accept</a>
+          <a href="#" class="btn btn-default">Decline</a>
+        </div>
       </div>
       {%endfor%}
       <!-- End Middle Column -->
