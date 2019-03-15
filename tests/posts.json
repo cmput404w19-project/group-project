@@ -49,14 +49,14 @@
     "visibility": "SERVERONLY"
   },
   {
-        "post_id": "8efacc06-c1ba-4867-99a1-ab65a019b994",
-        "title": "Test_post2",
-        "source": "http://localhost:8000",
-        "origin": "http://localhost:8000",
-        "description": "This is a test Description",
-        "contentType": "text/plain",
-        "content": "asd",
-        "author_id": "dc865f88-8c8f-45d8-b530-538abb5018ab",
-        "visibility": "PUBLIC"
-    }
+    "post_id": "8efacc06-c1ba-4867-99a1-ab65a019b994",
+    "title": "Test_post2",
+    "source": "http://localhost:8000",
+    "origin": "http://localhost:8000",
+    "description": "This is a test Description",
+    "contentType": "text/plain",
+    "content": "asd",
+    "author_id": "dc865f88-8c8f-45d8-b530-538abb5018ab",
+    "visibility": "PUBLIC"
+  }
 }
