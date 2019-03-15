@@ -46,6 +46,7 @@
       <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em; margin-bottom: 1.5em" id="{{post.p.post_id}}"><br>
         <div class = "Post">
           <a class="a-dec2" href="author/{{post.p.user_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em;">{{post.p.user_id}}</a>
+          <p class="publish_time" style=" " align="right" > {{post.p.publish_time}} </p>
           <p style="font-size: 1.3em; font-weight: bold; margin-top:1em">{{post.p.title}}</p>
           {% if post.p.user_id == userprofile.author_id%}
           <div class="btn-group">
