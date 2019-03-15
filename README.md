@@ -45,7 +45,12 @@ https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-s
 cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view
 </br>Django class-based view documentation:
 </br>https://docs.djangoproject.com/en/2.1/topics/class-based-views/
-
+### Decorator for checking Login require and annoymous require
+Django decorator documentation:
+</br>https://docs.djangoproject.com/en/2.1/_modules/django/contrib/auth/decorators/
+</br>annoymous require:
+</br>author: yetty  https://djangosnippets.org/users/yetty/
+</br>https://djangosnippets.org/snippets/2969/
 ### HTML:
 https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://www.w3schools.com/css/css_inline-block.asp
