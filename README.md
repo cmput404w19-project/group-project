@@ -22,14 +22,15 @@ Contributors:
 
 # References
 ### TestCase
-Answered by Pedro M Duarte: https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests<br/>
+Answered by Pedro M Duarte: 
+</br>https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests<br/>
 https://docs.djangoproject.com/en/2.1/topics/testing/overview/<br/>
 https://django-testing-docs.readthedocs.io/en/latest/index.html<br/>
 ### Login and Logout tutorial
-author: Will Vincent <br/>
-https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
-https://wsvincent.com/django-user-authentication-tutorial-signup/ 
-https://wsvincent.com/django-user-authentication-tutorial-password-reset/
+author: Will Vincent 
+<br/>https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
+<br/>https://wsvincent.com/django-user-authentication-tutorial-signup/ 
+<br/>https://wsvincent.com/django-user-authentication-tutorial-password-reset/
 ### Model: 
 Reference: **Django model documentations**
 https://docs.djangoproject.com/en/2.1/topics/db/models/ 
@@ -41,21 +42,21 @@ cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-
 
 ### HTML:
 https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
-https://www.w3schools.com/css/css_inline-block.asp
-https://www.w3schools.com/css/tryit.asp?filename=trycss_inline-block_span1
-https://www.w3schools.com/cssref/pr_class_position.asp
-https://www.w3schools.com/cssref/tryit.asp?filename=trycss_position_relative
-https://www.w3schools.com/cssref/tryit.asp?filename=trycss_font-style
-Author:Phrogz
-https://stackoverflow.com/questions/5067279/how-to-align-this-span-to-the-right-of-the-div
-https://stackoverflow.com/questions/21376788/how-to-display-3-buttons-on-the-same-line-in-css
-https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_social&stacked=h
-https://www.zmrenwu.com/post/8/
-Author:dusai
-https://zhuanlan.zhihu.com/p/44939567
-https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp
-Django Documentation
-https://docs.djangoproject.com/zh-hans/2.1/
+<br/>https://www.w3schools.com/css/css_inline-block.asp
+<br/>https://www.w3schools.com/css/tryit.asp?filename=trycss_inline-block_span1
+<br/>https://www.w3schools.com/cssref/pr_class_position.asp
+<br/>https://www.w3schools.com/cssref/tryit.asp?filename=trycss_position_relative
+<br/>https://www.w3schools.com/cssref/tryit.asp?filename=trycss_font-style
+<br/>Author:Phrogz
+<br/>https://stackoverflow.com/questions/5067279/how-to-align-this-span-to-the-right-of-the-div
+<br/>https://stackoverflow.com/questions/21376788/how-to-display-3-buttons-on-the-same-line-in-css
+<br/>https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_social&stacked=h
+<br/>https://www.zmrenwu.com/post/8/
+<br/>Author:dusai
+<br/>https://zhuanlan.zhihu.com/p/44939567
+<br/>https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp
+<br/>Django Documentation
+<br/>https://docs.djangoproject.com/zh-hans/2.1/
 
 
 
