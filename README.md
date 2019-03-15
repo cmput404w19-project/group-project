@@ -1,25 +1,38 @@
-CMPUT404-project-socialdistribution
+CMPUT404-Winter-2019-Group-Project-socialdistribution
 ===================================
 [![Build Status](https://travis-ci.org/cmput404w19-project/group-project.svg?branch=master)](https://travis-ci.org/cmput404w19-project/group-project)
 
+
+## The project is running on Heroku
+https://cmput404w19-project.herokuapp.com
 
 
 
 Contributors / Licensing
 ========================
 
-Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
-
-All text is licensed under the CC-BY-SA 4.0 http://creativecommons.org/licenses/by-sa/4.0/deed.en_US
-
 Contributors:
+  
+    Chengze Li (chengze2@ualberta.ca)
+    Frederic Sauve-Hoover (rsauveho@ualberta.ca)
+    Xinrui Lu (xinrui7@ualberta.ca)
+    Kehan Wang (kehan1@ualberta.ca)
+    Zhaozhen Liang (zhaozhen@ualberta.ca)
 
-    Karim Baaba
-    Ali Sajedi
-    Kyle Richelhoff
-    Chris Pavlicek
-    Derek Dowling
-    Olexiy Berjanskii
-    Erin Torbiak
-    Abram Hindle
-    Braedy Kuzma
+
+# References
+### TestCase
+Answered by Pedro M Duarte: https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests<br/>
+https://docs.djangoproject.com/en/2.1/topics/testing/overview/<br/>
+https://django-testing-docs.readthedocs.io/en/latest/index.html<br/>
+### Login and Logout tutorial
+author: Will Vincent <br/>
+https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
+https://wsvincent.com/django-user-authentication-tutorial-signup/ 
+https://wsvincent.com/django-user-authentication-tutorial-password-reset/
+### Model: 
+Reference: **Django model documentations**
+https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+### Create UserProfile by Signal:
+author: Vitor Freitas
+https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html

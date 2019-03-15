@@ -122,7 +122,13 @@
             <div class="upload">
                 <div id="uploadImage" style="display:none">
                     <label class="upload_label" for="image">Please choose your image: </label>
-                    <input id="image" type="file" accept="image/png, image/jpeg">
+                    {% if post.image64 %}
+                        <input id="image" type="file" accept="image/png, image/jpeg" value={{post.image64}}>
+                    {% elif post.file64 %}
+                        <input id="image" type="file" accept="image/png, image/jpeg" value={{post.image64}}>
+                    {%else%}
+                        <input id="image" type="file" accept="image/png, image/jpeg">
+                    {%endif%}
                     <textarea id="imageText" type="text" name="image64" style="display:none"></textarea>
                     <img id="image64" height="300" >
                 </div>

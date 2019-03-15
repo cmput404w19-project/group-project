@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 import uuid
 import json
 
-#this test is reference from https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
+#this test is reference from answered by https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
 
 class FriendRequestTest(TestCase):
 
