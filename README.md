@@ -22,11 +22,11 @@ Contributors:
 
 # References
 ### TestCase
-Answered by Pedro M Duarte: https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
-https://docs.djangoproject.com/en/2.1/topics/testing/overview/
-https://django-testing-docs.readthedocs.io/en/latest/index.html
+Answered by Pedro M Duarte: https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests<br/>
+https://docs.djangoproject.com/en/2.1/topics/testing/overview/<br/>
+https://django-testing-docs.readthedocs.io/en/latest/index.html<br/>
 ### Login and Logout tutorial
-author: Will Vincent 
+author: Will Vincent <br/>
 https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/ 
 https://wsvincent.com/django-user-authentication-tutorial-signup/ 
 https://wsvincent.com/django-user-authentication-tutorial-password-reset/
