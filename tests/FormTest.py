@@ -5,7 +5,7 @@ from django.test import Client
 from accounts.forms import *
 from accounts.models import *
 import uuid
-#this is referenced from https://micropyramid.com/blog/django-unit-test-cases-with-forms-and-views/
+
 class EditProfileFormTest(TestCase):
     
     def setUp(self):

@@ -166,10 +166,7 @@ class Images(models.Model):
 
 def create_profile(sender, **kwargs):
     if kwargs['created']:
-        # create a user profile for the user object that is just created
         user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
-        uu = User.objects.filter(id=kwargs['instance'].id).first()
-        uu.is_active = False
-        uu.save()
+
 
 post_save.connect(create_profile, sender=User)

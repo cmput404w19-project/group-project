@@ -3,32 +3,22 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container" style="margin-left:10%; margin-top:3%">
-
-	<p class="login-title" style="font-size: 2.7em">Profile</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Displayname : {{ userprofile.displayName }} </p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Profile ID :  {{ userprofile.author_id}}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Bio :  {{ userprofile.bio }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Host :  {{ userprofile.host }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> GitHub :  {{ userprofile.github }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Url :  {{ userprofile.url }}</p>
-	<br>
-
+<div class="container">
+	<h1>Profile</h1>
+	<p> Profile ID:  {{ userprofile.author_id}}</p>
+  <p> Displayname: {{ userprofile.displayName }} </p>
+	<p> Bio:  {{ userprofile.bio }}</p>
+	<p> Host:  {{ userprofile.host }}</p>
+	<p> GitHub:  {{ userprofile.github }}</p>
+	<p> Url:  {{ userprofile.url }}</p>
 	{%if thisUser.author_id == userprofile.author_id%}
 		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
-
+	
 	{%elif not thisUser.author_id%}
-    <a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
-
-  {%elif is_following%}
-    <form action="{% url 'unfollowrequest' pk=is_following.pk %}" data-method="DELETE" method="POST">
-      {%  csrf_token %}
-      <input id="DeleteButton" type="submit" class="btn btn-default" value="UnFollow">
-    </form>
+		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
 
 	{%else%}
 		<input id="FollowButton" type="button" class="btn btn-default" value="Follow">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script type="text/javascript"}>
       document.getElementById("FollowButton").onclick = updateRelation;
 
@@ -49,12 +39,12 @@
               }
 
       function updateRelation(){
-        fetch('/friendrequest',
+        fetch('/friendrequest', 
           {
             method: "post",
             headers: {
               "Content-Type": "application/json",
-              'X-CSRFToken': Cookies.get('csrftoken')
+              'X_CSRFTOKEN': "{{ csrf_token }}"
             },
             body: JSON.stringify(data)
           });
@@ -68,7 +58,6 @@
         }
       }
 		</script>
-
 </div>
 
 {%endif%}
