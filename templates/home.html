@@ -113,9 +113,6 @@
             </div>
           </form>
 
-<<<<<<< Updated upstream
-
-=======
           {%if user.username == post.p.user_id.displayName%}
             <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
               {% csrf_token %}
@@ -135,7 +132,7 @@
               </div>
             </form>
           {%endif%}
->>>>>>> Stashed changes
+
 
 
           <br>
