@@ -59,6 +59,16 @@ def home(request):
 
         # see our own server's post
 
+        # sort posts by publish_time
+        #print(type(postList))
+        #print(postList[0]['p'].publish_time < postList[1]['p'].publish_time)
+        if(len(postList) > 1):
+            for i in range(0,len(postList)):
+                for j in range(0,len(postList)-i-1):
+                    if(postList[j]['p'].publish_time < postList[j+1]['p'].publish_time):
+                        (postList[j],postList[j+1])=(postList[j+1],postList[j])
+
+
         # now get the comments(comment list) of each post that is visible to this user
         for post in postList:
             post["cl"] = Comment.objects.filter(post_id=post["p"].post_id).order_by("publish_time").all()
