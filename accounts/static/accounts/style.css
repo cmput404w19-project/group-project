@@ -186,3 +186,12 @@ color:white;
 span.a {
   display: inline; /* the default for span */
 }
+#outer
+{
+    width:100%;
+
+}
+.inner
+{
+    display: inline-block;
+}

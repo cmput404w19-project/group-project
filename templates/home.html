@@ -48,9 +48,11 @@
           <a class="a-dec2" href="author/{{post.p.user_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em">{{post.p.user_id}}</a>
           <div style="margin-bottom: 1em; margin-top: 1em">
           <span class="a" style="font-size: 1.3em; font-weight: bold">{{post.p.title}}</span>
-          <p class="publish_time" >Post ID: {{post.p.post_id}} </p>
+          <!--<p class="publish_time" >Post ID: {{post.p.post_id}} </p>-->
           <span  class="publish_time a" style="float:right; color: #c0c4c3" > {{post.p.publish_time}} </span>
           </div>
+
+
           {%if user.username == post.p.user_id.displayName%}
 
           <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
@@ -61,6 +63,8 @@
 
             </div>
           </form>
+
+
             <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
               {% csrf_token %}
               <div>
@@ -68,6 +72,7 @@
               <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
               </div>
             </form>
+
           {%endif%}
           <!--
           {% if post.p.user_id == userprofile.author_id%}
@@ -94,6 +99,7 @@
             </div>
           </div>
           <p style="color:#c0c4c3">Description : {{post.p.description}}</p>
+          <p style="color:#c0c4c3">Post ID: {{post.p.post_id}}</p>
           {% if post.p.refPost != "" %}
           <div class="refPost">
               <a href="{{post.p.refPost}}">Reference Post</a>
