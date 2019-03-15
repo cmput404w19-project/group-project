@@ -213,6 +213,7 @@ class PostById(APIView):
 
 class postDelete(APIView):
     #delete post
+    #referenced answered by cutteeth from https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view
     def post(self, request, post_id):
         obj = Post.objects.filter(post_id=post_id).first()
         obj.delete()

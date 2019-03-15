@@ -5,7 +5,7 @@ from django.test import Client
 from accounts.forms import *
 from accounts.models import *
 import uuid
-
+#referenced from https://django-testing-docs.readthedocs.io/en/latest/index.html
 class EditProfileFormTest(TestCase):
     
     def setUp(self):
