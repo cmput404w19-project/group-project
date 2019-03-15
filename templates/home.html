@@ -55,7 +55,14 @@
           </div>
           {% endif %}
           <hr class="w3-clear">
+          <p id="contentType" style="display:none">{{post.p.contentType}}</p>
+          {% if post.p.contentType == "text/plain"%}
           <p>{{post.p.content}}</p>
+          {% endif %}
+          {% if post.p.contentType == "text/markdown"%}
+          <p class="toMarkdown">{{post.p.content}}</p>
+          {% endif %}
+          <!--p>{{post.p.content}}</p-->
           <meta id="media_url" name="media_url" content="{{MEDIA_URL}}{{post.p.image64}}" />
           <img id="image" style="display:inline" src="{{MEDIA_URL}}{{post.p.image64}}" width=500 onerror="this.style.display='none'">
           <div class="w3-row-padding" style="margin:0 -16px">
@@ -134,7 +141,7 @@
 
     {% endif %}
 
-    
+
     <script type="text/javascript">
         function loadImage(){
             media_url = document.getElementById("media_url").getAttribute("content");
@@ -143,5 +150,19 @@
             image.src = media_url;
             image.style.display = "inline";
         }
+        function showInMarkdown(){
+            //type = document.getElementById("contentType").innerHTML;
+            //alert(type)
+            var list = document.getElementsByClassName("toMarkdown");
+            var converter = new showdown.Converter();
+            for (key of list){
+                //alert(key.innerHTML)
+                key.innerHTML = converter.makeHtml(key.innerHTML);
+            }
+            //alert(text)
+            //var html = converter.makeHtml(text);
+            //document.getElementById("toMarkdown").innerHTML = html;
+        }
+        showInMarkdown();
     </script>
     {% endblock %}

@@ -3,6 +3,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+
 <div class="post_container">
     Post:<br>
     <div>post_id: {{post.post_id}}</div>
@@ -12,6 +13,9 @@
     <div>origin: {{post.origin}}</div>
     <div>contentType: {{post.contentType}}</div>
     <div>content: {{post.content}}</div>
+    <div>content:
+        <div id="toMarkdown" >{{post.content}}</div>
+    </div>
     <div>category: {{post.category}}</div>
     <div>publish_time: {{post.publish_time}}</div>
     <div>visibility: {{post.visibility}}</div>
@@ -53,6 +57,18 @@
             //document.getElementById("image").appendChild(image);
         }
 
+        function showInMarkdown(){
+            var text = document.getElementById("toMarkdown").innerHTML;
+            //alert(text);
+            //text = '# hello, markdown!';
+            //alert(text)
+            converter = new showdown.Converter();
+            html = converter.makeHtml(text);
+            //alert(html);
+            document.getElementById("toMarkdown").innerHTML = html;
+        }
+
+        showInMarkdown();
         //getImage();
     </script>
 </div>
