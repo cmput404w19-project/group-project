@@ -8,7 +8,7 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = [
-                 'displayName',
+                 #'displayName',
                  'bio',
                  'host',
                  'github',
