@@ -8,7 +8,7 @@ install:
 script:
 - python manage.py makemigrations
 - python manage.py migrate
-- python manage.py test tests/
+- python manage.py test tests/ --pattern="*Test.py"
 deploy:
   provider: heroku
   api_key:
