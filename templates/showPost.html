@@ -24,13 +24,13 @@
     <div>image:</div>
     <br>
         <!--<div id='imageURL' style="display:none">{{post.image64}}</div>-->
-    <img id="image" src="{{MEDIA_URL}}{{post.image64}}">
+    <img id="image" src="{{MEDIA_URL}}{{post.image64}}" width=500 onerror="this.style.display='none'">
     <br>
     <!--
     <div>file: {{post.file64}}</div>
     <br>
 
-    <a href="{{MEDIA_URL}}{{post.file64}}">download</a>
+    <a href="{{MEDIA_URL}}{{post.file64}} width=500 onerror="this.style.display='none'"">download</a>
     <br>
     -->
     {%for comments in commentList%}
