@@ -5,6 +5,11 @@ from django.utils import timezone
 import uuid
 
 # Create your models here.
+
+# Reference: Django model documentations
+#https://docs.djangoproject.com/en/2.1/topics/db/models/ 
+
+
 class UserProfile(models.Model):
     """
     User Information
@@ -176,6 +181,10 @@ class Images(models.Model):
     # path to image
     pass
 
+
+# using signal to tigger to create
+# https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
+# author: Vitor Freitas
 def create_profile(sender, **kwargs):
     if kwargs['created']:
         user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
