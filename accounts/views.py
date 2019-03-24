@@ -27,6 +27,8 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
+DEBUG = False 
+
 # Reference: Django class-based view
 # https://docs.djangoproject.com/en/2.1/topics/class-based-views/
 
@@ -143,9 +145,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UnFollow(APIView):
     def post(self, request, pk):
-        #print("------------------------")
         obj = Follow.objects.get(pk=pk)
-        name = obj.following_id.displayName
+        name = obj.following_id.author_id
         #print(name)
         obj.delete()
         return redirect('/author/' + str(name))
@@ -187,16 +188,18 @@ class AuthorProfile(APIView):
     """
     def get(self, request, author_id):
         #here author_id is a displayname, we may change it later!!!
+        # now the author_id is uuid
         thisUser = UserProfile.objects.filter(user_id = request.user).first()
-        #user1 = UserProfile.objects.filter(user_id)
-        postUser = UserProfile.objects.filter(displayName = author_id).first()
+        postUser = UserProfile.objects.filter(author_id = author_id).first()
         author_id1 = thisUser.author_id
         author_id2 = postUser.author_id
-        print(thisUser)
-        print(postUser)
-        print(author_id)
+        if DEBUG:
+            print(thisUser)
+            print(postUser)
+            print(author_id)
         is_following = Follow.objects.filter(follower_id = author_id1, following_id = author_id2).first()
-        print(is_following)
+        if DEBUG:
+            print(is_following)
         args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
         return render(request, 'profile.html', args)
 

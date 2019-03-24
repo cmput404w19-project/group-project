@@ -45,7 +45,7 @@
       {%for post in list%}
       <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em; margin-bottom: 1.5em" id="{{post.p.post_id}}"><br>
         <div class = "Post">
-          <a class="a-dec2" href="author/{{post.p.user_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em">{{post.p.user_id}}</a>
+          <a class="a-dec2" href="author/{{post.p.user_id.author_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em">{{post.p.user_id}}</a>
           <div style="margin-bottom: 1em; margin-top: 1em">
           <span class="a" style="font-size: 1.3em; font-weight: bold">{{post.p.title}}</span>
           <!--<p class="publish_time" >Post ID: {{post.p.post_id}} </p>-->
@@ -111,7 +111,7 @@
           <br>
         {%for comment in post.cl%}
         <div class = "Comment" style="margin-left: 1.5%">
-          <a class="a-dec2" style="font-family: 'Muli'; font-size: 1.1em" href="author/{{comment.user_id}}" id="user_profile">{{comment.user_id}} : </a><a class="a-dec" style="font-family: 'Muli', sans-serif;">{{comment.content}}</a>
+          <a class="a-dec2" style="font-family: 'Muli'; font-size: 1.1em" href="author/{{comment.user_id.author_id}}" id="user_profile">{{comment.user_id}} : </a><a class="a-dec" style="font-family: 'Muli', sans-serif;">{{comment.content}}</a>
         </div>
         {%endfor%}
         <div class="container" style="position:relative">
