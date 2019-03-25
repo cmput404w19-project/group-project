@@ -265,11 +265,10 @@ class AuthorPosts(APIView):
     #login_url="/accounts/login/"
 
     def get(self, request):
-        print(request.body)
-        print("get the GET request")
-        posts = Post.objects.all()
-        serializer = PostSerializer()
-        return Response({'serializer':serializer})
+        # here we need to return all the posts that are visible for the current user
+        posts = Post.objects.filter(visibility="PUBLIC")
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         # Reference
