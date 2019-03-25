@@ -56,8 +56,12 @@ def home(request):
         # so this will be our post api path
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
 
-    return render(request, 'home.html', context)
+        return render(request, 'home.html', context)
 
+
+    else:
+        # not login 
+        return render(request, 'landingPage.html')
 
 
 def find_friends(user):
