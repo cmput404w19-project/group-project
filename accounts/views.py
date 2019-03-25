@@ -266,8 +266,41 @@ class AuthorPosts(APIView):
 
     def get(self, request):
         # here we need to return all the posts that are visible for the current user
-        posts = Post.objects.filter(visibility="PUBLIC")
-        serializer = PostSerializer(posts, many=True)
+
+        postList = []
+
+        # 
+        user = UserProfile.objects.filter(user_id = request.user).first()
+        # PUBLIC post
+        public_post = Post.objects.filter(visibility="PUBLIC").all()
+        postList += list(public_post)
+        # users own post
+        own_post = Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all()
+        postList += list(own_post)
+        # see friends post  (private to friends)
+        # get a list of friends userprofile object
+        friends_userprofile = find_friends(user)
+        for friend in friends_userprofile:
+            # get all the friends private post
+            friendPrivatePosts = Post.objects.filter(visibility="FRIENDS", user_id=friend).all()
+            postList += list(friendPrivatePosts)
+        # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
+        all_visible_post_object = PostVisibleTo.objects.filter(user_id=user.author_id).all()
+        for i in all_visible_post_object:
+            post = Post.objects.filter(post_id=i.post_id.post_id).first()
+            postList += list(post)
+
+        # TODO
+        # ask remotely to other server for visible posts
+
+        # sort all the post according to the publish time
+        # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
+        # author: Triptych https://stackoverflow.com/users/43089/triptych
+        postList.sort(key=lambda x: x.publish_time)
+
+       
+
+        serializer = PostSerializer(postList, many=True)
         return Response(serializer.data)
 
     def post(self, request):
