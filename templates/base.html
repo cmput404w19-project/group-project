@@ -34,14 +34,11 @@
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-              <!-- {% if not user.is_authenticated %}
-                <li><a href="/accounts/signup/" style=" font-size:17pt; color:white;">Register</a></li>
-              {% endif %} -->
               {% if user.is_authenticated %}
                 <li><a href="/accounts/profile/" style="font-size:17pt; color:white;">Profile</a></li>
                 <li><a href="/accounts/friends/" style=" font-size:17pt; color:white;">Friends</a></li>
                 <li><a href="/accounts/friendrequest/" style=" font-size:17pt; color:white;">Friend Requests</a></li>
-               {% endif %}
+              {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->

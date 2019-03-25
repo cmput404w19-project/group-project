@@ -5,164 +5,42 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-
-<!--
-  <p> i am here</p>
-  <div class="allPost">
-  {%for post in list%}
-  <div class = "Post">
-  <li>{{post.title}}</li>
-  <li>{{post.description}}</li>
-  </div>
-  {%endfor%}
-  </div>
--->
-<!-- Page Container -->
-
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
-  <!-- The Grid -->
-  <div class="w3-row">
-    <!-- Left Column -->
-    <div class="w3-col m3">
-      <!-- Profile -->
-      <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
-        <div class="w3-container">
-          <h4 class="w3-center" style="font-family:Muli; font-size: 1.5em">{{ user.username }}</h4>
-          <br>
-          <div class="btn-group btn-group-justified">
-            <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
-            <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
-          </div>
-          <hr>
-          <div class="w3-center">
-            <p><a href="{% url 'make_post' %}" class="btn btn-default">Make Post</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Middle Column -->
-    <div class="w3-col m9" style="position:relative">
-      {%for post in list%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em; margin-bottom: 1.5em" id="{{post.p.post_id}}"><br>
-        <div class = "Post">
-          <a class="a-dec2" href="author/{{post.p.user_id.author_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em">{{post.p.user_id}}</a>
-          <div style="margin-bottom: 1em; margin-top: 1em">
-          <span class="a" style="font-size: 1.3em; font-weight: bold">{{post.p.title}}</span>
-          <!--<p class="publish_time" >Post ID: {{post.p.post_id}} </p>-->
-          <span  class="publish_time a" style="float:right; color: #c0c4c3" > {{post.p.publish_time}} </span>
-          </div>
-
-
-          {%if user.username == post.p.user_id.displayName%}
-
-          <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
-            {% csrf_token %}
-            <div>
+  <!-- Page Container -->
+  <div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
+    <!-- The Grid -->
+    <div class="w3-row">
+      <!-- Left Column -->
+      <div class="w3-col m3">
+        <!-- Profile -->
+        <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
+          <div class="w3-container">
+            <h4 class="w3-center" style="font-family:Muli; font-size: 1.5em">{{ userprofile.displayName }}</h4>
             <br>
-            <button class="btn btn-primary button-color2" name="submit" type="submit" class="btn btn-primary">Edit</button>
-
+            <div class="btn-group btn-group-justified">
+              <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
+              <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
             </div>
-          </form>
-
-
-            <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
-              {% csrf_token %}
-              <div>
-              <br>
-              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
-              </div>
-            </form>
-
-          {%endif%}
-          <!--
-          {% if post.p.user_id == userprofile.author_id%}
-          <div class="btn-group">
-            <a href="/accounts/post/edit" class="btn btn-default">Edit</a>
-            <a href="{% url 'password_reset' %}" class="btn btn-default">Delete</a>
+            <hr>
+            <div class="w3-center">
+              <p><a href="{% url 'make_post' %}" class="btn btn-default">Make Post</a></p>
+            </div>
           </div>
-          {% endif %}
-          -->
-          <hr class="w3-clear">
-          <p id="contentType" style="display:none">{{post.p.contentType}}</p>
-          {% if post.p.contentType == "text/plain"%}
-          <p>{{post.p.content}}</p>
-          {% endif %}
-          {% if post.p.contentType == "text/markdown"%}
-          <p class="toMarkdown">{{post.p.content}}</p>
-          {% endif %}
-          <!--p>{{post.p.content}}</p-->
-          <meta id="media_url" name="media_url" content="{{MEDIA_URL}}{{post.p.image64}}" />
-          <img id="image" style="display:inline" src="{{MEDIA_URL}}{{post.p.image64}}" width=500 onerror="this.style.display='none'">
-          <!-- <div class="w3-row-padding" style="margin:0 -16px">
-            <div class="w3-half">
-              <img src={{post.p.uploadFile}} style="width:100%" alt={{post.p.title}} class="w3-margin-bottom" onerror="this.style.display='none'">
-            </div>
-          </div> -->
-          <p style="color:#c0c4c3">Description : {{post.p.description}}</p>
-          <p style="color:#c0c4c3">Post ID: {{post.p.post_id}}</p>
-          {% if post.p.refPost != "" %}
-          <div class="refPost">
-              <a href="{{post.p.refPost}}">Reference Post</a>
-          </div>
-          {% endif %}
-        </div>
+        </div>   <!--Profile End-->
+      </div>  <!--Left Column End-->
 
-        <div class="container" style="background-color: #f2f2f2; margin-bottom:1em; max-width: 100%">
-          <br>
-        {%for comment in post.cl%}
-        <div class = "Comment" style="margin-left: 1.5%">
-          <a class="a-dec2" style="font-family: 'Muli'; font-size: 1.1em" href="author/{{comment.user_id.author_id}}" id="user_profile">{{comment.user_id}} : </a><a class="a-dec" style="font-family: 'Muli', sans-serif;">{{comment.content}}</a>
-        </div>
-        {%endfor%}
-        <div class="container" style="position:relative">
-          <!--<div class="comment_add" style="position:relative">{{ user.username }} :</div>
-            <div class="comment_add" style="position:relative"><p contenteditable="true" class="w3-border w3-padding">{{Comment.content}}</p></div>
-          -->
-          <br>
-          <p style="font-style: oblique; font-size:1.1em; color:#c0c4c3">{{ user.username }} :</p>
-          <form action="/posts/{{ post.p.post_id }}/comment" method="POST" class="form">
-            <input name="user_id" type="hidden" value="{{ userprofile_id }}" >
-            <input name="post_id" type="hidden" value="{{ post.p.post_id }}">
-            {% csrf_token %}
-            <input name="content" type="text">
-            <div>
-            <br>
-            <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Comment</button>
-            </div>
-          </form>
-<!--
-          {%if user.username == post.p.user_id.displayName%}
-            <form action="{% url 'editpost'  post.p.post_id %}" method="GET" class="form">
-              {% csrf_token %}
-              <div>
-              <br>
-              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Edit</button>
+      <!-- Middle Column -->
+      <div class="w3-col m9" style="position:relative">
+        <!--Posts-->
 
-              </div>
-            </form>
-          {%endif%}
 
-          {%if user.username == post.p.user_id.displayName%}
-            <form action="{% url 'deletepost'  post.p.post_id %}" method="POST" class="form">
-              {% csrf_token %}
-              <div>
-              <br>
-              <button class="btn btn-default" name="submit" type="submit" class="btn btn-primary">Delete</button>
-              </div>
-            </form>
-          {%endif%}
 
--->
 
-          <br>
-        </div>
-        </div>
-      </div>
-      {%endfor%}
-      <!-- End Middle Column -->
-    </div>
-  </div>
-</div>
+        <!--Posts Ends-->
+      </div> <!-- End Middle Column -->
+    </div> <!--Grid End-->
+  </div> <!--Page Container End-->
+
+  
 
 {% else %}
 <div class="wrapper">
@@ -185,7 +63,7 @@
   </div>
 </div>
 
-    {% endif %}
+{% endif %}
 
 
     <script type="text/javascript">
@@ -211,4 +89,5 @@
         }
         showInMarkdown();
     </script>
-    {% endblock %}
+
+{% endblock %}
