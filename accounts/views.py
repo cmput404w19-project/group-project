@@ -258,14 +258,15 @@ class AuthorPosts(APIView):
     post:
     Create a new post as current user
     """
-    renderer_classes = [TemplateHTMLRenderer]
+    # renderer_classes = [TemplateHTMLRenderer]
     #model = Post
-    template_name = '../templates/post.html'
+    # template_name = '../templates/post.html'
     #fields = ['title', 'description','content', 'content-options', 'isibility-select']
     #login_url="/accounts/login/"
 
     def get(self, request):
         print(request.body)
+        print("get the GET request")
         posts = Post.objects.all()
         serializer = PostSerializer()
         return Response({'serializer':serializer})

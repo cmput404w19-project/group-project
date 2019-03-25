@@ -39,35 +39,46 @@
       </div> <!-- End Middle Column -->
     </div> <!--Grid End-->
   </div> <!--Page Container End-->
-
-  <!-- Following will be the JavaScript that create the views for Posts -->
-
-
 {% endif %}
 
+<!-- Following will be the JavaScript that create the views for Posts -->
+<script type="text/javascript">
 
-    <script type="text/javascript">
-        function loadImage(){
-            media_url = document.getElementById("media_url").getAttribute("content");
-            alert(media_url)
-            image = document.getElementById("image")
-            image.src = media_url;
-            image.style.display = "inline";
-        }
-        function showInMarkdown(){
-            //type = document.getElementById("contentType").innerHTML;
-            //alert(type)
-            var list = document.getElementsByClassName("toMarkdown");
-            var converter = new showdown.Converter();
-            for (key of list){
-                //alert(key.innerHTML)
-                key.innerHTML = converter.makeHtml(key.innerHTML);
-            }
-            //alert(text)
-            //var html = converter.makeHtml(text);
-            //document.getElementById("toMarkdown").innerHTML = html;
-        }
-        showInMarkdown();
-    </script>
+  function loadImage(){
+      media_url = document.getElementById("media_url").getAttribute("content");
+      alert(media_url)
+      image = document.getElementById("image")
+      image.src = media_url;
+      image.style.display = "inline";
+  }
+  function showInMarkdown(){
+      //type = document.getElementById("contentType").innerHTML;
+      //alert(type)
+      var list = document.getElementsByClassName("toMarkdown");
+      var converter = new showdown.Converter();
+      for (key of list){
+          //alert(key.innerHTML)
+          key.innerHTML = converter.makeHtml(key.innerHTML);
+      }
+      //alert(text)
+      //var html = converter.makeHtml(text);
+      //document.getElementById("toMarkdown").innerHTML = html;
+  }
+  showInMarkdown();
+
+  // send a GET request to server API for Post data (in JSON format)
+  function getPostData(url){
+    $.ajax({
+      type: 'GET',
+      url: url,
+      success: function(posts){
+        $.each(posts, function(i, post){
+          console.log(post);
+        });
+      }
+    });
+  }
+  getPostData("{{ author_post_api_url }}");
+</script>
 
 {% endblock %}
