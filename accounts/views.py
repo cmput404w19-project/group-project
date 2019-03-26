@@ -299,17 +299,9 @@ class AuthorPosts(APIView):
         postList.sort(key=lambda x: x.published, reverse=True)
 
         serializer_post = GETPostSerializer(postList, many=True)
-        # after we get all the post information 
-        # for each post,
-        #   we need to get its author information
-        #   comments and for each comment,
-        #       get author information
         
-            # UserSerializers()
-       
-
         # print(Response(serializer.data).data)
-        return Response(serializer_post.data)
+        return Response({"query":"posts", "count":len(postList), "posts":serializer_post.data})
 
     def post(self, request):
         # Reference
