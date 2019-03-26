@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from drf_extra_fields.fields import Base64ImageField
 from drf_extra_fields.fields import Base64FileField
+import datetime
 
 # Reference: django rest framework documentation
 # https://www.django-rest-framework.org
@@ -79,8 +80,10 @@ class GETPostSerializer(serializers.ModelSerializer):
     def get_post_id(self, obj):
         return obj.post_id
     def get_publishTime(self, obj):
-        
-        return Post.objects.filter(post_id=obj.post_id).first().published
+        # author: Aneesh R S  https://stackoverflow.com/users/4795365/aneesh-r-s
+        # https://stackoverflow.com/questions/29796212/convert-django-datetime-format-to-template-type-formatting
+        publishTime = Post.objects.filter(post_id=obj.post_id).first().published
+        return publishTime.strftime('%b %d, %Y, %I:%M %p')
 
 class PDFBase64File(Base64FileField):
     ALLOWED_TYPES = ['pdf']
