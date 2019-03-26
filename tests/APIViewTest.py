@@ -172,34 +172,34 @@ class PostTest(TestCase):
         self.assertTrue(request.status_code, 200)
 
 
-class AuthorPostsTest(TestCase):
+# class AuthorPostsTest(TestCase):
 
-    def setUp(self):
-        self.user = User.objects.create(username='kehan_wang')
-        self.user.set_password('Mypossword123')
-        self.user.is_active = True
-        self.user.save()
+#     def setUp(self):
+#         self.user = User.objects.create(username='kehan_wang')
+#         self.user.set_password('Mypossword123')
+#         self.user.is_active = True
+#         self.user.save()
 
-        global kehan1
-        thisId = uuid.uuid4()
-        kehan1 = UserProfile()
-        thisId = uuid.uuid4()
-        kehan1.author_id=thisId 
-        kehan1.user_id = self.user
-        kehan1.displayName="kehan1"
-        kehan1.bio="bio"
-        kehan1.host="host"
-        kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-        kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-        kehan1.save()
+#         global kehan1
+#         thisId = uuid.uuid4()
+#         kehan1 = UserProfile()
+#         thisId = uuid.uuid4()
+#         kehan1.author_id=thisId 
+#         kehan1.user_id = self.user
+#         kehan1.displayName="kehan1"
+#         kehan1.bio="bio"
+#         kehan1.host="host"
+#         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
+#         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
+#         kehan1.save()
     
-    def test_authorpost(self):
-        c = Client()
-        login = c.login(username='kehan_wang',password='Mypossword123')
-        self.assertTrue(login)
-        request = self.client.get('http://127.0.0.1:8000/author/posts/')
+#     def test_authorpost(self):
+#         c = Client()
+#         login = c.login(username='kehan_wang',password='Mypossword123')
+#         self.assertTrue(login)
+#         request = self.client.get('http://127.0.0.1:8000/author/posts/')
         
-        self.assertEqual(request.status_code, 200)
+#         self.assertEqual(request.status_code, 200)
 
 
 
