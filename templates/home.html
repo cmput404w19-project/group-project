@@ -76,14 +76,57 @@
         $.each(author_post_response.posts, function(i, post){
           // console.log(post);
           // following would be creating elements and render them
-          var MiddleColumn = document.getElementById("#MiddleColumn"); 
+
           var Post1stOutterDiv = document.createElement("div");
           var br = document.createElement("br");
+          Post1stOutterDiv.classList.add("w3-container");
+          Post1stOutterDiv.classList.add("w3-card");
+          Post1stOutterDiv.classList.add("w3-white");
+          Post1stOutterDiv.classList.add("w3-round");
+          Post1stOutterDiv.classList.add("post1st");
+          // https://www.w3schools.com/jsref/prop_html_id.asp
+          // w3school
+          Post1stOutterDiv.id = post.id;
           Post1stOutterDiv.append(br);
+
           var Post2ndOutterDiv = document.createElement("div");
+          Post2ndOutterDiv.classList.add("Post");
+
           var userprofile_name_a = document.createElement("a");
-          // userprofile_name_a.innerHTML = post.author.; // change it to be 
+          userprofile_name_a.classList.add("a-dec2");
+          userprofile_name_a.classList.add("post-author-text");
+          userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
+          userprofile_name_a.href = "/author/"+post.author.id;
+          userprofile_name_a.innerHTML = post.author.displayName;
+          userprofile_name_a.id = "user_profile";
+
           var Post3rdDiv = document.createElement("div");
+          var Post3rdDiv_spanTitle = document.createElement("span");
+          Post3rdDiv_spanTitle.classList.add("span-a");       
+          Post3rdDiv_spanTitle.classList.add("Post3rdDiv_span");          
+          Post3rdDiv_spanTitle.innerHTML = post.title;
+          var Post3rdDiv_spanPublishTime = document.createElement("span");
+          Post3rdDiv_spanPublishTime.classList.add("span-a");
+          Post3rdDiv_spanPublishTime.classList.add("post3rddiv_spanPublishTime");
+          Post3rdDiv_spanPublishTime.innerHTML = post.published;
+
+          var new_hr = document.createElement("hr");
+          new_hr.classList.add("w3-clear");
+
+          // check for confidential authentication 
+          // if the current user is indeed the user who made this post
+          // show the button for Editing and Deleting the post
+
+
+
+          Post2ndOutterDiv.appendChild(userprofile_name_a);
+          Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
+          Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
+          Post2ndOutterDiv.appendChild(Post3rdDiv);
+          Post2ndOutterDiv.appendChild(new_hr);
+
+          Post1stOutterDiv.appendChild(Post2ndOutterDiv);
+          document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
           
         });
       }
@@ -91,15 +134,15 @@
   }
 
 
-  function getAuthorData(url, userObject){
-    $.ajax({
-      type: 'GET',
-      url: url,
-      success: function(user, userObject){
+  // function getAuthorData(url, userObject){
+  //   $.ajax({
+  //     type: 'GET',
+  //     url: url,
+  //     success: function(user, userObject){
 
-      }
-    });
-  }
+  //     }
+  //   });
+  // }
 
   // call the function the send GET request for Post data
   getPostData("{{ author_post_api_url }}");

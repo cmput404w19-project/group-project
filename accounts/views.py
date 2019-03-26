@@ -296,12 +296,14 @@ class AuthorPosts(APIView):
         # sort all the post according to the publish time
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
-        postList.sort(key=lambda x: x.published, reverse=True)
+        postList.sort(key=lambda post: post.published, reverse=True)
 
         serializer_post = GETPostSerializer(postList, many=True)
         
         # print(Response(serializer.data).data)
         return Response({"query":"posts", "count":len(postList), "posts":serializer_post.data})
+
+
 
     def post(self, request):
         # Reference

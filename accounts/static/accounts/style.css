@@ -9,6 +9,30 @@
 }
 
 
+.post3rddiv{
+	margin-bottom: 1em; 
+	margin-top: 1em;
+}
+
+.post3rddiv_spanPublishTime{
+	float:right; 
+	color: #c0c4c3;
+}
+
+.post3rddiv_span{
+	font-size: 1.3em; 
+	font-weight: bold;
+}
+.post1st{
+	position:relative;
+	margin-left: 1.5em; 
+	margin-bottom: 1.5em;
+}
+
+.post-author-text{
+	font-family: 'Muli'; 
+}
+
 .wrapper{
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -183,9 +207,10 @@ color:white;
 .profile{
 	color: black;
 }
-span.a {
+.span-a {
   display: inline; /* the default for span */
 }
+
 #outer
 {
     width:100%;

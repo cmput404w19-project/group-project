@@ -60,6 +60,7 @@ class GETPostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()  # include the comments data into the post
     author = serializers.SerializerMethodField()  # include the author data into the post
     id = serializers.SerializerMethodField('get_post_id') # change the name in json
+    published = serializers.SerializerMethodField('get_publishTime')
 
     class Meta:
         model = Post
@@ -77,7 +78,9 @@ class GETPostSerializer(serializers.ModelSerializer):
         return AuthorSerializers(post_author).data
     def get_post_id(self, obj):
         return obj.post_id
-
+    def get_publishTime(self, obj):
+        
+        return Post.objects.filter(post_id=obj.post_id).first().published
 
 class PDFBase64File(Base64FileField):
     ALLOWED_TYPES = ['pdf']

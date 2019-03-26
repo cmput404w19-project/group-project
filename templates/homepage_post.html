@@ -25,13 +25,13 @@
     <div id="MiddleColumn" class="w3-col m9" style="position:relative">
       <!--Posts-->
       {%for post in list%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; margin-left: 1.5em; margin-bottom: 1.5em" id="{{post.p.post_id}}"><br>
+      <div class="w3-container w3-card w3-white w3-round post1st" id="{{post.p.post_id}}"><br>
         <div class = "Post">
-          <a class="a-dec2" href="author/{{post.p.user_id.author_id}}" id="user_profile" style="font-family: 'Muli'; font-size: 1.5em">{{post.p.user_id}}</a>
-          <div style="margin-bottom: 1em; margin-top: 1em">
-          <span class="a" style="font-size: 1.3em; font-weight: bold">{{post.p.title}}</span>
-          <!--<p class="publish_time" >Post ID: {{post.p.post_id}} </p>-->
-          <span  class="publish_time a" style="float:right; color: #c0c4c3" > {{post.p.publish_time}} </span>
+          <a class="a-dec2 post-author-text" href="author/{{post.p.user_id.author_id}}" id="user_profile">{{post.p.user_id}}</a>
+          <div class="post3rddiv">
+            <span class="a post3rddiv_span" >{{post.p.title}}</span>
+            <!--<p class="publish_time" >Post ID: {{post.p.post_id}} </p>-->
+            <span  class="post3rddiv_spanPublishTime a" > {{post.p.publish_time}} </span>
           </div>
 
 
