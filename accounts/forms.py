@@ -30,7 +30,7 @@ class NewPostForm(forms.ModelForm):
                 'contentType',
                 'content',
                 'category',
-                'publish_time',
+                'published',
                 'visibility',
                 'unlisted'
                 ]

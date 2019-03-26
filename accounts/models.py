@@ -74,7 +74,7 @@ class Post(models.Model):
     category = models.CharField(max_length=80, default="")
     # size: page size
     # published: timestamp ISO
-    publish_time = models.DateTimeField(default=timezone.now)
+    published = models.DateTimeField(default=timezone.now)
     # visibility: ["PUBLIC","FOAF","FRIENDS","PRIVATE","SERVERONLY"]
     visibility = models.CharField(max_length=20, default="PUBLIC", choices=visibilityChoice)
     # unlisted: unlisted means it is public if you know the post name -- use this for images, it's so images don't show up in timelines
@@ -129,8 +129,8 @@ class Comment(models.Model):
     # contentType
     contentType = models.CharField(max_length=20, choices=typeChoice, default="text/plain")
     # published
-    publish_time = models.DateTimeField(default=timezone.now)
-    # post id (maybe?)
+    published = models.DateTimeField(default=timezone.now)
+    # post id 
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 

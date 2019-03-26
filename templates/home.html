@@ -29,7 +29,7 @@
       </div>  <!--Left Column End-->
 
       <!-- Middle Column -->
-      <div class="w3-col m9" style="position:relative">
+      <div id="MiddleColumn" class="w3-col m9" style="position:relative">
         <!--Posts-->
 
 
@@ -71,13 +71,37 @@
     $.ajax({
       type: 'GET',
       url: url,
-      success: function(posts){
-        $.each(posts, function(i, post){
-          console.log(post);
+      success: function(author_post_response){
+        console.log(author_post_response);
+        $.each(author_post_response.posts, function(i, post){
+          // console.log(post);
+          // following would be creating elements and render them
+          var MiddleColumn = document.getElementById("#MiddleColumn"); 
+          var Post1stOutterDiv = document.createElement("div");
+          var br = document.createElement("br");
+          Post1stOutterDiv.append(br);
+          var Post2ndOutterDiv = document.createElement("div");
+          var userprofile_name_a = document.createElement("a");
+          // userprofile_name_a.innerHTML = post.author.; // change it to be 
+          var Post3rdDiv = document.createElement("div");
+          
         });
       }
     });
   }
+
+
+  function getAuthorData(url, userObject){
+    $.ajax({
+      type: 'GET',
+      url: url,
+      success: function(user, userObject){
+
+      }
+    });
+  }
+
+  // call the function the send GET request for Post data
   getPostData("{{ author_post_api_url }}");
 </script>
 

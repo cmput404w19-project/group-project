@@ -8,7 +8,7 @@ from .models import *
 
 from django.contrib.auth.models import User
 
-from .serializers import UserSerializers, PostSerializer, FollowSerializer, FriendRequestSerializer
+from .serializers import *
 
 from rest_framework.decorators import api_view
 
@@ -296,12 +296,20 @@ class AuthorPosts(APIView):
         # sort all the post according to the publish time
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
-        postList.sort(key=lambda x: x.publish_time)
+        postList.sort(key=lambda x: x.published, reverse=True)
 
+        serializer_post = GETPostSerializer(postList, many=True)
+        # after we get all the post information 
+        # for each post,
+        #   we need to get its author information
+        #   comments and for each comment,
+        #       get author information
+        
+            # UserSerializers()
        
 
-        serializer = PostSerializer(postList, many=True)
-        return Response(serializer.data)
+        # print(Response(serializer.data).data)
+        return Response(serializer_post.data)
 
     def post(self, request):
         # Reference
