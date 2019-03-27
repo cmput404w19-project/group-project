@@ -119,9 +119,41 @@
 
 
 
+          if ("{{userprofile.author_id}}"==post.author.id){
+            var DeleteprofileButton = document.createElement("button");
+            DeleteprofileButton.innerHTML = "DELETE";
+          }
+          
+          ////this shows plaintext description
+          Post3rdDiv.appendChild(br);
+          if (post.contentType === "text/plain"){
+            var Post3rdDiv_spanDescription = document.createElement("h4");
+            //Post3rdDiv_spanDescription.classList.add("span-a");
+            Post3rdDiv_spanDescription.classList.add("post3rddiv_spanDescription");
+            Post3rdDiv_spanDescription.innerHTML = post.content;
+          }
+          else if(post.contentType==="text/markdown"){
+            showInMarkdown();
+          }
+          
+          ///this shows comment button and input
+          var PostCommentInput = document.createElement("input");
+          var PostCommentButton = document.createElement("button");
+          PostCommentButton.innerHTML = "Comment";
+
+
           Post2ndOutterDiv.appendChild(userprofile_name_a);
           Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
+          //Post3rdDiv.appendChild(br);
           Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
+          //Post3rdDiv.appendChild(br);
+          Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
+
+          Post3rdDiv.appendChild(DeleteprofileButton);
+          Post3rdDiv.appendChild(br);
+          Post3rdDiv.appendChild(PostCommentButton);
+          Post3rdDiv.appendChild(PostCommentInput);
+
           Post2ndOutterDiv.appendChild(Post3rdDiv);
           Post2ndOutterDiv.appendChild(new_hr);
 
