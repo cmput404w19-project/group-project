@@ -77,6 +77,7 @@ urlpatterns = [
     path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
     # comment endpoints
     path('posts/<str:post_id>/comment', views.Comments().as_view()),
+    path('posts/<str:post_id>/comment/', views.Comments().as_view()),
     path(r'posts/<str:post_id>', views.PostById().as_view()),
 
 
