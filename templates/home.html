@@ -147,9 +147,12 @@
           //Post3rdDiv.appendChild(br);
           Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
           //Post3rdDiv.appendChild(br);
-          Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
-
-          Post3rdDiv.appendChild(DeleteprofileButton);
+          if (post.contentType === "text/plain"){
+            Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
+          }
+          if ("{{userprofile.author_id}}"==post.author.id) {
+            Post3rdDiv.appendChild(DeleteprofileButton);
+          }
           Post3rdDiv.appendChild(br);
           Post3rdDiv.appendChild(PostCommentButton);
           Post3rdDiv.appendChild(PostCommentInput);

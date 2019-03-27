@@ -265,7 +265,7 @@ class AuthorPosts(APIView):
         """
         postList = []
         # request user 
-        user = UserProfile.objects.filter(user_id = request.user).first()
+        user = UserProfile.objects.filter(user_id=request.user).first()
         # PUBLIC post  
         #(This will return for the remote server request)
         public_post = Post.objects.filter(visibility="PUBLIC").all()
@@ -356,7 +356,6 @@ def edit_profile(request):
         form = EditProfileForm(request.POST, instance=userprofile)
         if form.is_valid():
             form.save()
-
             # text = form.cleaned_data['displayName']
             return redirect('/accounts/profile')
     else:
