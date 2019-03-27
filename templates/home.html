@@ -46,7 +46,7 @@
 
   function loadImage(){
       media_url = document.getElementById("media_url").getAttribute("content");
-      alert(media_url)
+      //alert(media_url)
       image = document.getElementById("image")
       image.src = media_url;
       image.style.display = "inline";
@@ -64,7 +64,7 @@
       //var html = converter.makeHtml(text);
       //document.getElementById("toMarkdown").innerHTML = html;
   }
-  showInMarkdown();
+
 
   // send a GET request to server API for Post data (in JSON format)
   function getPostData(url){
@@ -109,17 +109,17 @@
           Post3rdDiv_spanPublishTime.classList.add("span-a");
           Post3rdDiv_spanPublishTime.classList.add("post3rddiv_spanPublishTime");
           Post3rdDiv_spanPublishTime.innerHTML = post.published;
-
+    
           var new_hr = document.createElement("hr");
           new_hr.classList.add("w3-clear");
+
 
           // check for confidential authentication
           // if the current user is indeed the user who made this post
           // show the button for Editing and Deleting the post
 
           
-          var test = document.createElement("h5");
-          test.innerHTML = "asdfasd";
+          
 
           if ("{{userprofile.author_id}}"==post.author.id){
             var DeleteprofileForm = document.createElement("form");
@@ -127,7 +127,7 @@
             var csrf = document.createElement("input");
             csrf.setAttribute("type","hidden");
             csrf.setAttribute("name","csrfmiddlewaretoken");
-            csrf.setAttribute("value","{{ csrf_token }}")
+            csrf.setAttribute("value","{{ csrf_token }}");
             DeleteprofileForm.appendChild(csrf);
 
 
@@ -143,7 +143,6 @@
           }
 
           
-          
           ////this shows plaintext description
           Post3rdDiv.appendChild(br);
           if (post.contentType === "text/plain"){
@@ -151,11 +150,30 @@
             //Post3rdDiv_spanDescription.classList.add("span-a");
             Post3rdDiv_spanDescription.classList.add("post3rddiv_spanDescription");
             Post3rdDiv_spanDescription.innerHTML = post.content;
+            
           }
           else if(post.contentType==="text/markdown"){
-            showInMarkdown();
+            var markdownText = document.createElement("p");
+            markdownText.classList.add("toMarkdown");
+            markdownText.innerHTML = post.content;
+
           }
           
+          else if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+            var meta = document.createElement("meta");
+            meta.id = "media_url";
+            meta.name = "media_url";
+            meta.content = "{{MEDIA_URL}}"+post.image64;
+            
+            var image = document.createElement("img");
+            image.id = "image";
+            image.style = "display:inline";
+            image.src = "{{MEDIA_URL}}"+post.image64;
+            image.width = 500;
+            image.onerror = "this.style.display='none'";
+            
+          }
+
           ///this shows comment button and input
           var PostCommentInput = document.createElement("input");
           var PostCommentButton = document.createElement("button");
@@ -165,30 +183,38 @@
 
           Post2ndOutterDiv.appendChild(userprofile_name_a);
           Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
-          //Post3rdDiv.appendChild(br);
+          Post3rdDiv.appendChild(br);
           Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
-          //Post3rdDiv.appendChild(br);
-
-          if (post.contentType === "text/plain"){
-            Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
-          }
+          Post3rdDiv.appendChild(br);
+          
+          
           if ("{{userprofile.author_id}}"==post.author.id) {
             Post3rdDiv.appendChild(DeleteprofileForm);
           }
 
+          if (post.contentType === "text/plain"){
+            Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
+          }
+          if (post.contentType === "text/markdown"){
+            Post3rdDiv.appendChild(markdownText);
+          }
+          if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+            Post3rdDiv.appendChild(meta);
+            Post3rdDiv.appendChild(image);
+          }
 
 
-          Post3rdDiv.appendChild(br);
-          Post3rdDiv.appendChild(test);
+          
           Post3rdDiv.appendChild(PostCommentButton);
           Post3rdDiv.appendChild(PostCommentInput);
 
           Post2ndOutterDiv.appendChild(Post3rdDiv);
+          
           Post2ndOutterDiv.appendChild(new_hr);
-
           Post1stOutterDiv.appendChild(Post2ndOutterDiv);
           document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
-
+          showInMarkdown();
+          loadImage();
         });
       }
     });
@@ -211,6 +237,7 @@
 
   // call the function the send GET request for Post data
   getPostData("{{ author_post_api_url }}");
+  
 </script>
 
   
