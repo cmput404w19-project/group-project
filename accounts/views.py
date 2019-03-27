@@ -29,6 +29,8 @@ import copy
 
 from django.http import HttpResponseNotFound
 
+from django.core.paginator import Paginator
+
 DEBUG = False
 
 # Reference: Django class-based view
@@ -57,8 +59,6 @@ def home(request):
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
 
         return render(request, 'home.html', context)
-
-
     else:
         # not login
         return render(request, 'landingPage.html')
@@ -297,10 +297,22 @@ class AuthorPosts(APIView):
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
         postList.sort(key=lambda post: post.published, reverse=True)
+        # 
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+        paginator = Paginator(postList,pageSize)
+        postList = paginator.get_page(request.GET.get('page'))
         # make the return JSON in the consistent format (also include all the post information including: comments,authors)
         serializer_post = GETPostSerializer(postList, many=True)
-        return Response({"query":"posts", "count":len(postList), "posts":serializer_post.data})
+        response = {"query":"posts", "count":len(postList), "posts":serializer_post.data, "size":pageSize}
+        if postList.has_next():
+            print(request.get_host())
+            response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number()) 
+        if postList.has_previous():
+            response["previous"] = str(request.get_host())+"/author/posts?page="+str(postList.previous_page_number())
 
+        return Response(response)
 
 
     def post(self, request):
