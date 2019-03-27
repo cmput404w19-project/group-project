@@ -258,49 +258,47 @@ class AuthorPosts(APIView):
     post:
     Create a new post as current user
     """
-    # renderer_classes = [TemplateHTMLRenderer]
-    #model = Post
-    # template_name = '../templates/post.html'
-    #fields = ['title', 'description','content', 'content-options', 'isibility-select']
-    #login_url="/accounts/login/"
-
     def get(self, request):
-        # here we need to return all the posts that are visible for the current user
-
+        """
+        here we need to return all the posts that are visible for the current user
+        This will work even if the request user is unknown or does not exist in our server
+        """
         postList = []
-
-        #
+        # request user 
         user = UserProfile.objects.filter(user_id = request.user).first()
-        # PUBLIC post
+        # PUBLIC post  
+        #(This will return for the remote server request)
         public_post = Post.objects.filter(visibility="PUBLIC").all()
         postList += list(public_post)
-        # users own post
+        # users own post 
+        #(This will not return since we don't have inforamtion about remote user's post information)
         own_post = Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all()
         postList += list(own_post)
         # see friends post  (private to friends)
-        # get a list of friends userprofile object
-        friends_userprofile = find_friends(user)
+        #(This will return for the remote server request since there could be remote server user friends with our server user)
+        friends_userprofile = find_friends(user) # get a list of friends userprofile object
         for friend in friends_userprofile:
             # get all the friends private post
             friendPrivatePosts = Post.objects.filter(visibility="FRIENDS", user_id=friend).all()
             postList += list(friendPrivatePosts)
         # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
+        #(This will return for the remote server request)
         all_visible_post_object = PostVisibleTo.objects.filter(user_id=user.author_id).all()
         for i in all_visible_post_object:
             post = Post.objects.filter(post_id=i.post_id.post_id).first()
             postList += list(post)
 
         # TODO
-        # ask remotely to other server for visible posts
+        # ask remotely to other servers for visible posts (must avoid duplicate posts)
+        # firend of friends (must avoid duplicate posts)
+
 
         # sort all the post according to the publish time
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
         postList.sort(key=lambda post: post.published, reverse=True)
-
+        # make the return JSON in the consistent format (also include all the post information including: comments,authors)
         serializer_post = GETPostSerializer(postList, many=True)
-
-        # print(Response(serializer.data).data)
         return Response({"query":"posts", "count":len(postList), "posts":serializer_post.data})
 
 
