@@ -29,7 +29,7 @@ import copy
 
 from django.http import HttpResponseNotFound
 
-DEBUG = False 
+DEBUG = False
 
 # Reference: Django class-based view
 # https://docs.djangoproject.com/en/2.1/topics/class-based-views/
@@ -42,14 +42,14 @@ def home(request):
 
     # Things that need to pass into the html
     # -userprofile
-    # -post api url 
+    # -post api url
 
     # check for basic token auth (Django built-in)
     if request.user.is_authenticated:
-        # check if we actually have this user 
+        # check if we actually have this user
         # if not return 404
         if len(User.objects.filter(id=request.user.id)) != 1:
-            return HttpResponseNotFound("The user information is not found")         
+            return HttpResponseNotFound("The user information is not found")
         # get userprofile information
         context["userprofile"] = UserProfile.objects.filter(user_id=request.user).first()
         # since this is our server, no need domain name for the url just the path
@@ -60,7 +60,7 @@ def home(request):
 
 
     else:
-        # not login 
+        # not login
         return render(request, 'landingPage.html')
 
 
@@ -269,7 +269,7 @@ class AuthorPosts(APIView):
 
         postList = []
 
-        # 
+        #
         user = UserProfile.objects.filter(user_id = request.user).first()
         # PUBLIC post
         public_post = Post.objects.filter(visibility="PUBLIC").all()
@@ -299,7 +299,7 @@ class AuthorPosts(APIView):
         postList.sort(key=lambda post: post.published, reverse=True)
 
         serializer_post = GETPostSerializer(postList, many=True)
-        
+
         # print(Response(serializer.data).data)
         return Response({"query":"posts", "count":len(postList), "posts":serializer_post.data})
 
@@ -326,6 +326,22 @@ class AuthorPosts(APIView):
         return redirect('/')
 
 
+class MakePost(APIView):
+    """
+    get:
+    Render a making post html visible to current user
+    """
+    renderer_classes = [TemplateHTMLRenderer]
+    #model = Post
+    template_name = '../templates/post.html'
+    #fields = ['title', 'description','content', 'content-options', 'isibility-select']
+    #login_url="/accounts/login/"
+
+    def get(self, request):
+        print(request.body)
+        posts = Post.objects.all()
+        serializer = PostSerializer()
+        return Response({'serializer':serializer})
 
 
 def profile(request):

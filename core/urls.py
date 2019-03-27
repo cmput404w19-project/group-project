@@ -64,6 +64,8 @@ urlpatterns = [
     #path(r'author/posts', views.AuthorPosts().as_view()),
     path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
     path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
+    path(r'author/makepost/', views.MakePost().as_view(), name='render_post'),
+    path(r'author/makepost', views.MakePost().as_view(), name='render_post'),
 
     # author endpoints
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
