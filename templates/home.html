@@ -145,10 +145,10 @@
           ////this shows plaintext description
           Post3rdDiv.appendChild(br);
           if (post.contentType === "text/plain"){
-            var Post3rdDiv_spanDescription = document.createElement("h4");
-            //Post3rdDiv_spanDescription.classList.add("span-a");
-            Post3rdDiv_spanDescription.classList.add("post3rddiv_spanDescription");
-            Post3rdDiv_spanDescription.innerHTML = post.content;
+            var Post3rdDiv_spanContent = document.createElement("h4");
+            //Post3rdDiv_spanContent.classList.add("span-a");
+            Post3rdDiv_spanContent.classList.add("Post3rdDiv_spanContent");
+            Post3rdDiv_spanContent.innerHTML = post.content;
             
           }
           else if(post.contentType==="text/markdown"){
@@ -174,6 +174,13 @@
             
           }
 
+          var description = document.createElement("p");
+          description.innerHTML = "Description: " + post.description;
+          description.style = "color:#c0c4c3";
+          
+          var postID = document.createElement("p");
+          postID.innerHTML = "postID: " + post.id;
+          postID.style = "color:#c0c4c3";
 
           ///this shows comment button and input
 
@@ -199,7 +206,7 @@
           }
 
           if (post.contentType === "text/plain"){
-            Post3rdDiv.appendChild(Post3rdDiv_spanDescription);
+            Post3rdDiv.appendChild(Post3rdDiv_spanContent);
           }
           if (post.contentType === "text/markdown"){
             Post3rdDiv.appendChild(markdownText);
@@ -209,7 +216,8 @@
             Post3rdDiv.appendChild(image);
           }
 
-
+          Post3rdDiv.appendChild(description);
+          Post3rdDiv.appendChild(postID);
           
           Post3rdDiv.appendChild(PostCommentButton);
           Post3rdDiv.appendChild(PostCommentInput);
