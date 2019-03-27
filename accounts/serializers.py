@@ -14,7 +14,7 @@ class UserSerializers(serializers.ModelSerializer):
         fields = ('author_id', 'displayName', 'host')
 
 class AuthorSerializers(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField('get_author_id') 
+    id = serializers.SerializerMethodField('get_author_id')
 
     class Meta:
         model = UserProfile
@@ -35,21 +35,27 @@ class PostSerializer(serializers.ModelSerializer):
         #read_only_fields = ('user_id',)
 
 class CommentSerializer(serializers.ModelSerializer):
-    comment = serializers.SerializerMethodField() # change the name to comment
-    id = serializers.SerializerMethodField('get_comment_id')
-    author = serializers.SerializerMethodField()
+    #comment = serializers.SerializerMethodField() # content
+    id = serializers.SerializerMethodField('get_comment_id') #comment_id
+    #author = serializers.SerializerMethodField() #user_id
     class Meta:
         model = Comment
-        fields = ('author','comment','contentType','published','id')
+        fields = ('user_id','content','contentType','published','id', 'post_id')
+    '''
     def get_comment(self, obj):
         return obj.content
+    '''
+
     def get_comment_id(self, obj):
         return obj.comment_id
+    '''
+
     def get_author(self, obj):
         # just use this tmp not to change later
         user = User.objects.filter(username=obj.user_id).first()
         comment_author = UserProfile.objects.filter(user_id=user).first()
         return AuthorSerializers(comment_author).data
+    '''
 
 class GETPostSerializer(serializers.ModelSerializer):
     #user_id = serializers.HiddenField(default=self.get_serializer_context())

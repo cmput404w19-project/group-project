@@ -118,8 +118,7 @@
           // if the current user is indeed the user who made this post
           // show the button for Editing and Deleting the post
 
-          
-          
+
 
           if ("{{userprofile.author_id}}"==post.author.id){
             var DeleteprofileForm = document.createElement("form");
@@ -142,7 +141,7 @@
             DeleteprofileForm.appendChild(DeleteButtonDiv);
           }
 
-          
+
           ////this shows plaintext description
           Post3rdDiv.appendChild(br);
           if (post.contentType === "text/plain"){
@@ -158,6 +157,7 @@
             markdownText.innerHTML = post.content;
 
           }
+
           
           else if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
             var meta = document.createElement("meta");
@@ -174,11 +174,17 @@
             
           }
 
+
           ///this shows comment button and input
+
           var PostCommentInput = document.createElement("input");
+          PostCommentInput.id = "input" + post.id;
           var PostCommentButton = document.createElement("button");
           PostCommentButton.innerHTML = "Comment";
-          
+          PostCommentButton.onclick=function(){
+              addComment(post.id,post.author.id,post.author.displayName)
+          } ;
+
 
 
           Post2ndOutterDiv.appendChild(userprofile_name_a);
@@ -236,10 +242,12 @@
   // }
 
   // call the function the send GET request for Post data
-  getPostData("{{ author_post_api_url }}");
-  
+
+
+  getPostData("{{ author_post_api_url }}?size=10");
+
 </script>
 
-  
+
 
 {% endblock %}
