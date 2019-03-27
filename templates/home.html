@@ -117,7 +117,7 @@
           // if the current user is indeed the user who made this post
           // show the button for Editing and Deleting the post
 
-          
+
           var test = document.createElement("h5");
           test.innerHTML = "asdfasd";
 
@@ -142,8 +142,8 @@
             DeleteprofileForm.appendChild(DeleteButtonDiv);
           }
 
-          
-          
+
+
           ////this shows plaintext description
           Post3rdDiv.appendChild(br);
           if (post.contentType === "text/plain"){
@@ -155,12 +155,17 @@
           else if(post.contentType==="text/markdown"){
             showInMarkdown();
           }
-          
+
           ///this shows comment button and input
+
           var PostCommentInput = document.createElement("input");
+          PostCommentInput.id = "input" + post.id;
           var PostCommentButton = document.createElement("button");
           PostCommentButton.innerHTML = "Comment";
-          
+          PostCommentButton.onclick=function(){
+              addComment(post.id,post.author.id,post.author.displayName)
+          } ;
+
 
 
           Post2ndOutterDiv.appendChild(userprofile_name_a);
@@ -213,6 +218,6 @@
   getPostData("{{ author_post_api_url }}?size=10");
 </script>
 
-  
+
 
 {% endblock %}
