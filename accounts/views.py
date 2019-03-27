@@ -228,6 +228,7 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+
 class Comments(APIView):
     """
     get:
@@ -241,13 +242,43 @@ class Comments(APIView):
         # comments = Comment.objects.filter(post_id = post_id)
         # serializer = CommentSerializer(comments, many=True)
         # return Response(serializer.data)
-
+    '''
     def post(self, request, post_id):
         form = CreateComment(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect('/#'+str(post_id))
         return redirect('/')
+    '''
+
+
+    def post(self, request, post_id):
+        #data = request.data
+        #print(data)
+
+        comment_data = dict()
+        #comment_data['query'] == 'addcomment'
+        post = Post.objects.filter(post_id=post_id)
+        comment_data['user_id'] = request.data['author']['id'].split('/')[-1]
+        comment_data['content'] = request.data['comment']['content']
+        comment_data['post_id'] = post_id
+        comment_data['contentType'] = request.data['comment']['contentType']
+
+        print(comment_data)
+        failed = False
+
+        comment_serializer = CommentSerializer(data=comment_data)
+
+        if comment_serializer.is_valid():
+            comment_serializer.save()
+        else:
+            failed = True
+        if not failed:
+            return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"success": True, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class AuthorPosts(APIView):
@@ -264,13 +295,13 @@ class AuthorPosts(APIView):
         This will work even if the request user is unknown or does not exist in our server
         """
         postList = []
-        # request user 
+        # request user
         user = UserProfile.objects.filter(user_id=request.user).first()
-        # PUBLIC post  
+        # PUBLIC post
         #(This will return for the remote server request)
         public_post = Post.objects.filter(visibility="PUBLIC").all()
         postList += list(public_post)
-        # users own post 
+        # users own post
         #(This will not return since we don't have inforamtion about remote user's post information)
         own_post = Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all()
         postList += list(own_post)
@@ -297,7 +328,7 @@ class AuthorPosts(APIView):
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
         postList.sort(key=lambda post: post.published, reverse=True)
-        # 
+        #
         pageSize = request.GET.get('size')
         if not pageSize:
             pageSize = 50
@@ -308,7 +339,7 @@ class AuthorPosts(APIView):
         response = {"query":"posts", "count":len(postList), "posts":serializer_post.data, "size":pageSize}
         if postList.has_next():
             print(request.get_host())
-            response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number()) 
+            response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number())
         if postList.has_previous():
             response["previous"] = str(request.get_host())+"/author/posts?page="+str(postList.previous_page_number())
 
