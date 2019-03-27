@@ -44,13 +44,7 @@
 <!-- Following will be the JavaScript that create the views for Posts -->
 <script type="text/javascript">
 
-  function loadImage(){
-      media_url = document.getElementById("media_url").getAttribute("content");
-      //alert(media_url)
-      image = document.getElementById("image")
-      image.src = media_url;
-      image.style.display = "inline";
-  }
+  
   function showInMarkdown(){
       //type = document.getElementById("contentType").innerHTML;
       //alert(type)
@@ -160,18 +154,18 @@
 
 
           else if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
-            var meta = document.createElement("meta");
-            meta.id = "media_url";
-            meta.name = "media_url";
-            meta.content = "{{MEDIA_URL}}"+post.image64;
-
-            var image = document.createElement("img");
-            image.id = "image";
-            image.style = "display:inline";
-            image.src = "{{MEDIA_URL}}"+post.image64;
-            image.width = 500;
-            image.onerror = "this.style.display='none'";
-
+            var meta1 = document.createElement("meta");
+            meta1.id = "media_url";
+            meta1.name = "media_url";
+            meta1.content = post.image64;
+            
+            var imageshow = document.createElement("img");
+            imageshow.id = "image";
+            imageshow.style = "display:inline";
+            imageshow.src = post.image64;
+            imageshow.width = 500;
+            imageshow.onerror = "this.style.display='none'";
+            //loadImage();
           }
 
           var description = document.createElement("p");
@@ -181,6 +175,9 @@
           var postID = document.createElement("p");
           postID.innerHTML = "postID: " + post.id;
           postID.style = "color:#c0c4c3";
+          
+          var testcomment = document.createElement("p");
+          testcomment.innerHTML = post.title;
 
           ///this shows comment button and input
 
@@ -208,16 +205,21 @@
           if (post.contentType === "text/plain"){
             Post3rdDiv.appendChild(Post3rdDiv_spanContent);
           }
+
           if (post.contentType === "text/markdown"){
             Post3rdDiv.appendChild(markdownText);
           }
+
           if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
-            Post3rdDiv.appendChild(meta);
-            Post3rdDiv.appendChild(image);
+            Post3rdDiv.appendChild(meta1);
+            Post3rdDiv.appendChild(imageshow);
+            
           }
 
           Post3rdDiv.appendChild(description);
           Post3rdDiv.appendChild(postID);
+
+          Post3rdDiv.appendChild(testcomment)
 
           Post3rdDiv.appendChild(PostCommentButton);
           Post3rdDiv.appendChild(PostCommentInput);
@@ -236,6 +238,14 @@
   //reference answered by kodmasin from https://stackoverflow.com/questions/1795701/django-reverse-for-javascript
   function generete_some_url(id){
     return "{% url 'deletepost' post_id=112233 %}".replace("112233", id);
+  }
+
+  function loadImage(){
+      media_url = document.getElementById("media_url").getAttribute("content");
+      //alert(media_url)
+      image = document.getElementById("image")
+      image.src = media_url;
+      image.style.display = "inline";
   }
 
 
