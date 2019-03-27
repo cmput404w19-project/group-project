@@ -327,7 +327,7 @@ class AuthorPosts(APIView):
 class MakePost(APIView):
     """
     get:
-    Render a making post html visible to current user
+    Render a making post html page to current user
     """
     renderer_classes = [TemplateHTMLRenderer]
     #model = Post
@@ -336,7 +336,7 @@ class MakePost(APIView):
     #login_url="/accounts/login/"
 
     def get(self, request):
-        print(request.body)
+        #print(request.body)
         posts = Post.objects.all()
         serializer = PostSerializer()
         return Response({'serializer':serializer})
