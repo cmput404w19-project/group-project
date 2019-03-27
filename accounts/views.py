@@ -259,9 +259,9 @@ class Comments(APIView):
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         post = Post.objects.filter(post_id=post_id)
-        comment_data['user_id'] = request.data['author']['id'].split('/')[-1]
-        comment_data['content'] = request.data['comment']['content']
-        comment_data['post_id'] = post_id
+        comment_data['user_id'] = request.data['comment']['author']['id'].split('/')[-1]
+        comment_data['content'] = request.data['comment']['comment']
+        comment_data['post_id'] = post_id #request.data['psot'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
 
         print(comment_data)
