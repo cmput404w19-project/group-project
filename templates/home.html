@@ -72,7 +72,7 @@
           // following would be creating elements and render them
 
           var Post1stOutterDiv = document.createElement("div");
-          var br = document.createElement("br");
+          // var br = document.createElement("br");
           Post1stOutterDiv.classList.add("w3-container");
           Post1stOutterDiv.classList.add("w3-card");
           Post1stOutterDiv.classList.add("w3-white");
@@ -81,7 +81,7 @@
           // https://www.w3schools.com/jsref/prop_html_id.asp
           // w3school
           Post1stOutterDiv.id = post.id;
-          Post1stOutterDiv.append(br);
+          Post1stOutterDiv.append(generate_br());
 
           var Post2ndOutterDiv = document.createElement("div");
           Post2ndOutterDiv.classList.add("Post");
@@ -97,7 +97,7 @@
           var Post3rdDiv = document.createElement("div");
           var Post3rdDiv_spanTitle = document.createElement("span");
           Post3rdDiv_spanTitle.classList.add("span-a");
-          Post3rdDiv_spanTitle.classList.add("Post3rdDiv_span");
+          Post3rdDiv_spanTitle.style = "font-size: 1.3em;font-weight: bold;";
           Post3rdDiv_spanTitle.innerHTML = post.title;
           var Post3rdDiv_spanPublishTime = document.createElement("span");
           Post3rdDiv_spanPublishTime.classList.add("span-a");
@@ -137,7 +137,7 @@
 
 
           ////this shows plaintext description
-          Post3rdDiv.appendChild(br);
+          Post3rdDiv.appendChild(generate_br());
           if (post.contentType === "text/plain"){
             var Post3rdDiv_spanContent = document.createElement("h4");
             //Post3rdDiv_spanContent.classList.add("span-a");
@@ -193,44 +193,46 @@
 
           Post2ndOutterDiv.appendChild(userprofile_name_a);
           Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
-          Post3rdDiv.appendChild(br);
+          Post3rdDiv.appendChild(generate_br());
           Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
-          Post3rdDiv.appendChild(br);
-
-
-          if ("{{userprofile.author_id}}"==post.author.id) {
-            Post3rdDiv.appendChild(DeleteprofileForm);
-          }
-
-          if (post.contentType === "text/plain"){
-            Post3rdDiv.appendChild(Post3rdDiv_spanContent);
-          }
-
-          if (post.contentType === "text/markdown"){
-            Post3rdDiv.appendChild(markdownText);
-          }
-
-          if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
-            Post3rdDiv.appendChild(meta1);
-            Post3rdDiv.appendChild(imageshow);
-            
-          }
-
-          Post3rdDiv.appendChild(description);
-          Post3rdDiv.appendChild(postID);
-
-          Post3rdDiv.appendChild(testcomment)
-
-          Post3rdDiv.appendChild(PostCommentButton);
-          Post3rdDiv.appendChild(PostCommentInput);
+          Post3rdDiv.appendChild(generate_br());
 
           Post2ndOutterDiv.appendChild(Post3rdDiv);
 
+          if ("{{userprofile.author_id}}"==post.author.id) {
+            Post2ndOutterDiv.appendChild(DeleteprofileForm);
+          }
+
           Post2ndOutterDiv.appendChild(new_hr);
+
+          if (post.contentType === "text/plain"){
+            Post2ndOutterDiv.appendChild(Post3rdDiv_spanContent);
+          }
+
+          if (post.contentType === "text/markdown"){
+            Post2ndOutterDiv.appendChild(markdownText);
+          }
+
+          if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+            Post2ndOutterDiv.appendChild(meta1);
+            Post2ndOutterDiv.appendChild(imageshow);
+            
+          }
+
+          Post2ndOutterDiv.appendChild(description);
+          Post2ndOutterDiv.appendChild(postID);
+
+          // Post2ndOutterDiv.appendChild(testcomment)
+
+          Post2ndOutterDiv.appendChild(PostCommentButton);
+          Post2ndOutterDiv.appendChild(PostCommentInput);
+
+          
+
           Post1stOutterDiv.appendChild(Post2ndOutterDiv);
           document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
           showInMarkdown();
-          loadImage();
+          // loadImage();
         });
       }
     });
@@ -248,7 +250,9 @@
       image.style.display = "inline";
   }
 
-
+  function generate_br(){
+    return document.createElement("br");
+  }
 
     // Reference:
     // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
