@@ -179,42 +179,8 @@
           postID.innerHTML = "postID: " + post.id;
           postID.style = "color:#c0c4c3";
 
-          
-          //var testcomment = document.createElement("p");
-          //testcomment.innerHTML = post.comments;
-          var userprofile_name_a = document.createElement("a");
-          userprofile_name_a.classList.add("a-dec2");
-          userprofile_name_a.classList.add("post-author-text");
-          userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
-          userprofile_name_a.href = "/author/"+post.author.id;
-          userprofile_name_a.innerHTML = post.author.displayName;
-          userprofile_name_a.id = "user_profile";
-
-
-          var commentListDiv = document.createElement("div");
-          commentLength = post.comments.length;
-          if (commentLength > 0){
-            for (i=0; i<commentLength;i++) {
-              //var comment = document.createElement("p");
-
-              var commentUsername = document.createElement("a");
-              commentUsername.href = "/author/"+post.comments[i].author.id;
-              commentUsername.innerHTML = post.comments[i].author.displayName;
-              commentUsername.id = "user_profile";
-
-              var comment = document.createElement("span");
-              comment.innerHTML = ": "+ post.comments[i].comment;
-              //comment.appendChild(comment);
-              commentListDiv.appendChild(commentUsername);
-              commentListDiv.appendChild(comment);
-              commentListDiv.appendChild(document.createElement("br"));
-              
-              //commentListDiv.appendChild(br);
-            }
-          }
-          commentListDiv.class = "container";
-          commentListDiv.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
-
+          var testcomment = document.createElement("p");
+          testcomment.innerHTML = post.title;
 
           ///this shows comment button and input
 
@@ -224,9 +190,7 @@
           PostCommentButton.innerHTML = "Comment";
           PostCommentButton.onclick=function(){
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
-              "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}");
-              window.location.href = '/#'+String(post.id);
-              window.location.reload();
+              "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
           } ;
           //alert("{{userprofile.author_id}}")
 
@@ -263,7 +227,7 @@
           Post2ndOutterDiv.appendChild(description);
           Post2ndOutterDiv.appendChild(postID);
 
-          Post2ndOutterDiv.appendChild(commentListDiv)
+          // Post2ndOutterDiv.appendChild(testcomment)
 
           Post2ndOutterDiv.appendChild(PostCommentButton);
           Post2ndOutterDiv.appendChild(PostCommentInput);
@@ -273,7 +237,7 @@
           Post1stOutterDiv.appendChild(Post2ndOutterDiv);
           document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
           showInMarkdown();
-
+          // loadImage();
         });
       }
     });
