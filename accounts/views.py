@@ -153,8 +153,7 @@ class FriendRequest(APIView):
         #return render(request,'friend_requests.html', context)
 
 class AuthorProfile(APIView):
-    #renderer_classes = [TemplateHTMLRenderer]
-    #template_name = '../templates/profile.html'
+
     def get(self, request, author_id):
         profileContent = dict()
         #print(UserProfile.objects.filter(author_id = author_id).first())
@@ -190,14 +189,15 @@ class AuthorProfile(APIView):
         args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
         return render(request, 'profile.html', args)
 '''
-'''
-class GetAuthorProfile(APIView):
-    def get(self, request, author_id):
-        data = dict()
-        data['thisUser'] = request.user
-        data['postUser'] = request.data['author']['id'].split('/')[-1]
-        return Response()
-'''
+
+def GetAuthorProfile(request):
+    if request.user.is_authenticated:
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        content = dict()
+        content["UserProfile"] = user
+        return render(request, 'profile.html', content)
+    return HttpResponseNotFound("you are not logged in!")
+
 
 class PostById(APIView):
     """

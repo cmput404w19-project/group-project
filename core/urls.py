@@ -71,7 +71,7 @@ urlpatterns = [
 
     # author endpoints
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
-
+    
     # post endpoints
     path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
     path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),

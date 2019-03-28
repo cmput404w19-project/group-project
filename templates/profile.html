@@ -3,25 +3,65 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container" style="margin-left:10%; margin-top:3%">
+<div id = "profile1" class="container" style="margin-left:10%; margin-top:3%">
 	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 	<script type="text/javascript">
 
-		function getProfile(url){
-			//let url = "/author"+author_id;
-			fetch(url,{
-				method:"GET",
-      	credentials:"same-origin",
-      	body:JSON.stringify(data),
-    		headers:{
-      		"Content-Type":"application/json",
-        	'X-CSRFToken': Cookies.get('csrftoken')
-      	},
+		function getAuthorData(url, userObject){
+		  $.ajax({
+		    type: 'GET',
+		    url: url,
+		    success: function(profileContent){
+					console.log(profileContent);
+        var Displayname = document.createElement("p");
+				Displayname.innerHTML = "Displayname : "+ profileContent.profile.displayName;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(Displayname);
 
-			})
-		};
-		getProfile("/author/<str:author_id>/");
+				var ProfileId = document.createElement("p");
+				ProfileId.innerHTML = "Profile ID : "+ profileContent.profile.author_id;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(ProfileId);
+
+				var Bio = document.createElement("p");
+				Bio.innerHTML = "Bio : "+ profileContent.profile.bio;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(Bio);
+
+				var Host = document.createElement("p");
+				Host.innerHTML = "Host : "+ profileContent.profile.bio;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(Host);
+
+				var GitHub = document.createElement("p");
+				GitHub.innerHTML = "GitHub : "+ profileContent.profile.bio;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(GitHub);
+
+				var Url = document.createElement("p");
+				Url.innerHTML = "Url : "+ profileContent.profile.bio;
+				var profile1 = document.getElementById("profile1");
+				profile1.appendChild(Url);
+		    }
+		   });
+		 }
+		// function getProfile(url){
+		// 	//let url = "/author"+author_id;
+		// 	fetch(url,{
+		// 		method:"GET",
+    //   	credentials:"same-origin",
+    //   	body:JSON.stringify(data),
+    // 		headers:{
+    //   		"Content-Type":"application/json",
+    //     	'X-CSRFToken': Cookies.get('csrftoken')
+    //   	},
+		//
+		// 	})
+		// };
+
+		//getProfile("/author/<str:author_id>/");
 		//if ("{{userprofile.author_id}}"==post.author.id){}
+		getAuthorData("/author/{{UserProfile.author_id}}/")
 		</script>
 <!--
 	<p class="login-title" style="font-size: 2.7em">Profile</p>
