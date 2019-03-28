@@ -101,7 +101,7 @@ def friend_list(request):
     for author_id in friendlist:
         f = UserProfile.objects.filter(author_id = author_id).first()
         friends.append(UserSerializers(f).data)
-    context = {'flist': friends}
+    context = {'flist': friends, 'userprofile':user}
     return render(request,'friends.html', context)
 
 class SignUp(generic.CreateView):
@@ -270,10 +270,21 @@ class Comments(APIView):
     create new comment on {post_id}
 
     """
-    # def get(self, request, post_id):
-        # comments = Comment.objects.filter(post_id = post_id)
-        # serializer = CommentSerializer(comments, many=True)
-        # return Response(serializer.data)
+    def get(self, request, post_id):
+        comments = Comment.objects.filter(post_id = post_id).order_by("published").all()
+        pageSize = request.GET.get('size')
+        commentSize = len(comments)
+        if not pageSize:
+            pageSize = 50
+        paginator = Paginator(comments,pageSize)
+        comments = paginator.get_page(request.GET.get('page'))
+        commentSerializer = GETCommentSerializer(comments, many=True)
+        response = {"query":"comments", "count":commentSize, "comments":commentSerializer.data,"size":pageSize}
+        if comments.has_next():
+            response["next"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
+        if comments.has_previous():
+            response["previous"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
+        return Response(response)
     '''
     def post(self, request, post_id):
         form = CreateComment(data=request.POST)
@@ -360,6 +371,7 @@ class AuthorPosts(APIView):
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
         postList.sort(key=lambda post: post.published, reverse=True)
+        postSize = len(postList)
         #
         pageSize = request.GET.get('size')
         if not pageSize:
@@ -368,9 +380,8 @@ class AuthorPosts(APIView):
         postList = paginator.get_page(request.GET.get('page'))
         # make the return JSON in the consistent format (also include all the post information including: comments,authors)
         serializer_post = GETPostSerializer(postList, many=True)
-        response = {"query":"posts", "count":len(postList), "posts":serializer_post.data, "size":pageSize}
+        response = {"query":"posts", "count":postSize, "posts":serializer_post.data, "size":pageSize}
         if postList.has_next():
-            print(request.get_host())
             response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number())
         if postList.has_previous():
             response["previous"] = str(request.get_host())+"/author/posts?page="+str(postList.previous_page_number())
