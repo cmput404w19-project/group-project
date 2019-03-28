@@ -30,11 +30,21 @@ from core import settings
 from django.views.static import serve
 from django.conf.urls.static import static
 
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
 router=DefaultRouter()
 router.register('users', views.UserViewSet)
 
-schema_view = get_swagger_view(title='API Docs')
+schema_view = get_schema_view(
+   openapi.Info(
+      title="404-project API Docs",
+      default_version='v1',
+      description="The API docs for our 404 project",
+      license=openapi.License(name="Apache 2.0"),
+   ),
+   public=True,
+)
 
 urlpatterns = [
     # the basic homepage
@@ -45,44 +55,63 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='signup')), # when url request for accounts/ , it will go to accounts.urls
     path('accounts/', include('django.contrib.auth.urls')),
 
-    # Api docs
-    re_path(r'docs/?$', schema_view),
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # API Endpoints
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # We have both / and no slash to be a little more flexible
 
-    # Friend Requests
-    re_path(r'friendrequest/?$', views.FriendRequest().as_view()),
+    # Api docs
+    path(r'docs/', schema_view.with_ui('swagger')),
+
+    path(r'posts/', views.Posts().as_view()),
+
+    path(r'posts/<str:post_id>/', views.PostById().as_view()),
+
+    path(r'author/posts/', views.AuthorPosts().as_view()),
+
+    path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+
+    path(r'author/<str:author_id>/posts/', views.AuthorPostsById().as_view()),
+
+    path(r'author/<str:author_id>/friends/', views.FriendListByAuthorId().as_view()),
+
+    path(r'author/<str:author1_id>/friends/<str:author2_id>/', views.CheckFriendStatus().as_view()),
+
+    path(r'posts/<str:post_id>/comments/', views.CommentsByPostId().as_view()),
+
+    path(r'friendrequest/', views.FriendRequest().as_view()),
 
     #unfollow
-    re_path(r'unfollowrequest/(?P<pk>[0-9]+)?$', views.UnFollow().as_view(), name="unfollowrequest"),
+    # re_path(r'unfollowrequest/(?P<pk>[0-9]+)?$', views.UnFollow().as_view(), name="unfollowrequest"),
 
     # all public
     # TODO: it will change the path of makeing post.
     #re_path(r'posts/?$', views.PublicPosts().as_view()),
-    path(r'posts/', views.PublicPosts().as_view()),
-    path(r'posts', views.PublicPosts().as_view()),
+    # path(r'posts/', views.PublicPosts().as_view()),
+    # path(r'posts', views.PublicPosts().as_view()),
 
-    # handle get/post for author posting
-    #path(r'author/posts', views.AuthorPosts().as_view()),
-    path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
-    path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
+    # # handle get/post for author posting
+    # #path(r'author/posts', views.AuthorPosts().as_view()),
+    # path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
+    # path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
 
-    # the render of making new post
-    path(r'author/makepost/', views.MakePost().as_view(), name='render_post'),
-    path(r'author/makepost', views.MakePost().as_view(), name='render_post'),
+    # # the render of making new post
+    # path(r'author/makepost/', views.MakePost().as_view(), name='render_post'),
+    # path(r'author/makepost', views.MakePost().as_view(), name='render_post'),
 
-    # author endpoints
-    path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
+    # # author endpoints
+    # path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
     
-    # post endpoints
-    path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
-    path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
-    # comment endpoints
-    path('posts/<str:post_id>/comment', views.Comments().as_view()),
-    path('posts/<str:post_id>/comment/', views.Comments().as_view()),
-    path(r'posts/<str:post_id>', views.PostById().as_view()),
+    # # post endpoints
+    # path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
+    # path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
+    # # comment endpoints
+    # path('posts/<str:post_id>/comment', views.Comments().as_view()),
+    # path('posts/<str:post_id>/comment/', views.Comments().as_view()),
+    # path(r'posts/<str:post_id>', views.PostById().as_view()),
 
-
-    path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
-    path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
+    # path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
+    # path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
 
 
 

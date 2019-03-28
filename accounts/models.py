@@ -32,9 +32,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return str(self.user_id)
 
-
-
-
 class Post(models.Model):
     """
     USER POST

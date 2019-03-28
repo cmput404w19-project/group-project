@@ -36,6 +36,129 @@ DEBUG = False
 # Reference: Django class-based view
 # https://docs.djangoproject.com/en/2.1/topics/class-based-views/
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# External API Views
+#
+# These are the views that are used for the REST API
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class Posts(APIView):
+    """
+    get:
+    get all public posts from server
+    """
+    def get(self, request):
+        posts = Post.objects.filter(visibility = "PUBLIC").all()
+        serializer = PostSerializer(posts, many=True)
+        # TODO figure out what size should be
+        return Response(
+                {
+                    "query": "posts",
+                    "count": len(posts),
+                    "size": 5,
+                    "post" : serializer.data,
+                    }
+                )
+
+class PostById(APIView):
+    """
+    get:
+    get a post by it's {post_id}
+    """
+    def get(self, request, post_id):
+        posts = Post.objects.filter(post_id=post_id).first()
+        serializer = PostSerializer(posts)
+        return Response(
+                {
+                    "query": "getPost",
+                    "post" : serializer.data,
+                    }
+                )
+
+class AuthorPosts(APIView):
+    """
+    get:
+    get all posts visible to current authenticated user
+
+    post:
+    Create a post for the currently authenticated user
+    """
+    def get(self, request):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class AuthorPostsById(APIView):
+    """
+    get:
+    get all posts from a specific {author_id}
+    """
+    def get(self, request, author_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class CommentsByPostId(APIView):
+    """
+    get:
+    get comments given a {post_id}
+
+    post:
+    create new comment on {post_id}
+    """
+    def get(self, request, post_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+    def post(self, request, post_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class FriendListByAuthorId(APIView):
+    """
+    get:
+    get friend list of {author_id}
+
+    post:
+    Ask if anyone in provided list is a friend of {author_id} 
+    """
+    def get(self, request, author_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+    def post(self, request, author_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class CheckFriendStatus(APIView):
+    """
+    get:
+    check if {author1_id} and {author2_id} are friends
+    """
+    def get(self, request, author1_id, author2_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class FriendRequest(APIView):
+    """
+    post:
+    Make a friend request
+    """
+    def post(self, request):
+        # follow = Follow.objects.create()
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+class AuthorProfile(APIView):
+    """
+    get:
+    get an author's profile
+    """
+    def get(self, request, author_id):
+        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Internal API Views
+#
+# These are the views that are used for the frontend
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 def home(request):
     # so right now we decide to use javacript to get all the posts and comments data
     # and render stuff in the client side
@@ -112,7 +235,7 @@ class SignUp(generic.CreateView):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
-    serializer_class = UserSerializers
+    serializer_class = GETProfileSerializer
 
 class UnFollow(APIView):
     def post(self, request, pk):
@@ -150,7 +273,7 @@ class FriendRequest(APIView):
         if failed:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
-        #return render(request,'friend_requests.html', context)
+    #return render(request,'friend_requests.html', context)
 
 class AuthorProfile(APIView):
 
@@ -199,19 +322,19 @@ def GetAuthorProfile(request):
     return HttpResponseNotFound("you are not logged in!")
 
 
-class PostById(APIView):
-    """
-    get:
-    Get post for given {post_id}
-    """
-    def get(self, request, post_id):
-        post = Post.objects.filter(post_id = post_id).all().first()
-        commentList=[]
-        comments = Comment.objects.filter(post_id = post_id).all()
-        for comment in comments:
-            commentList.append({"comment":comment})
-        context = {'post': post, 'commentList': commentList}
-        return render(request, 'showPost.html', context)
+# class PostById(APIView):
+    # """
+    # get:
+    # Get post for given {post_id}
+    # """
+    # def get(self, request, post_id):
+        # post = Post.objects.filter(post_id = post_id).all().first()
+        # commentList=[]
+        # comments = Comment.objects.filter(post_id = post_id).all()
+        # for comment in comments:
+            # commentList.append({"comment":comment})
+        # context = {'post': post, 'commentList': commentList}
+        # return render(request, 'showPost.html', context)
 
 
 class postDelete(APIView):
@@ -241,17 +364,6 @@ class EditPost(APIView):
             return Response({'serializer': serializer})
         serializer.save()
         return redirect('/')
-
-class PublicPosts(APIView):
-    """
-    get:
-    Get all public posts on server
-    """
-    def get(self, request):
-        posts = Post.objects.filter(visibility = "PUBLIC")
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-
 
 class Comments(APIView):
     """
