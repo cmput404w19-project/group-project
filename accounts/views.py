@@ -110,6 +110,14 @@ class SignUp(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
+    def form_valid(self, form):
+        form_object = form.save(commit=False)
+        form_object.is_active = False
+        form_object.save()
+        uu = User.objects.filter(id=form_object.id).first()
+        UserProfile.objects.create(user_id=uu, displayName=uu.username, host=str(self.request.get_host()))
+        return super(SignUp, self).form_valid(form)
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializers

@@ -193,11 +193,11 @@ class ExternalServer(models.Model):
 # using signal to tigger to create
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
 # author: Vitor Freitas
-def create_profile(sender, **kwargs):
-    if kwargs['created']:
-        user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
-        if not kwargs['instance'].is_staff:
-            kwargs['instance'].is_active = False
-            kwargs['instance'].save()
+# def create_profile(sender, **kwargs):
+#     if kwargs['created']:
+#         user_profile = UserProfile.objects.create(user_id=kwargs['instance'], displayName=kwargs['instance'].username)
+#         if not kwargs['instance'].is_staff:
+#             kwargs['instance'].is_active = False
+#             kwargs['instance'].save()
 
-post_save.connect(create_profile, sender=User)
+# post_save.connect(create_profile, sender=User)
