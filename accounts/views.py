@@ -50,17 +50,48 @@ class Posts(APIView):
     get all public posts from server
     """
     def get(self, request):
-        posts = Post.objects.filter(visibility = "PUBLIC").all()
+        resp = {}
+
+        posts = Post.objects.filter(visibility = "PUBLIC").all().order_by('-published')
+
+        count = len(posts)
+        resp['count'] = count
+
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+
+        pageSize = int(pageSize)
+
+        resp['size'] = pageSize
+
+        paginator = Paginator(posts,pageSize)
+        posts = paginator.get_page(request.GET.get('page'))
+
+
+        next = None;
+        previous = None;
+
+        if posts.has_next():
+            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+        if posts.has_previous():
+            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+
         serializer = PostSerializer(posts, many=True)
-        # TODO figure out what size should be
-        return Response(
-                {
-                    "query": "posts",
-                    "count": len(posts),
-                    "size": 5,
-                    "post" : serializer.data,
-                    }
-                )
+        
+        # paginate comments
+        for post in serializer.data:
+            post['size'] = pageSize
+            comments = Comment.objects.filter(post_id=post['id']).all()
+            commentPaginator = Paginator(comments, pageSize)
+            comments = commentPaginator.get_page(0)
+            post['comments'] = GETCommentSerializer(comments, many=True).data
+
+        resp['posts'] = serializer.data
+
+        resp['query'] = 'posts'
+
+        return Response(resp)
 
 class PostById(APIView):
     """
@@ -71,11 +102,11 @@ class PostById(APIView):
         posts = Post.objects.filter(post_id=post_id).first()
         serializer = PostSerializer(posts)
         return Response(
-                {
-                    "query": "getPost",
-                    "post" : serializer.data,
-                    }
-                )
+            {
+                "query": "getPost",
+                "post" : serializer.data,
+                }
+            )
 
 class AuthorPosts(APIView):
     """
@@ -86,19 +117,115 @@ class AuthorPosts(APIView):
     Create a post for the currently authenticated user
     """
     def get(self, request):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
+
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        posts = Post.objects.filter(visibility = "PUBLIC").all()
+        posts = posts | Post.objects.filter(user_id=user).exclude(visibility="PUBLIC").all()
+
+        # TODO add friend stuff to this, will just do non-friend for now
+
+        # TODO add post_visible_to stuff
+
+        count = len(posts)
+        resp['count'] = count
+
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+
+        pageSize = int(pageSize)
+
+        resp['size'] = pageSize
+
+        paginator = Paginator(posts,pageSize)
+        posts = paginator.get_page(request.GET.get('page'))
+
+
+        next = None;
+        previous = None;
+
+        if posts.has_next():
+            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+        if posts.has_previous():
+            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+
+        serializer = PostSerializer(posts, many=True)
+        
+        # paginate comments
+        for post in serializer.data:
+            post['size'] = pageSize
+            comments = Comment.objects.filter(post_id=post['id']).all()
+            commentPaginator = Paginator(comments, pageSize)
+            comments = commentPaginator.get_page(0)
+            post['comments'] = GETCommentSerializer(comments, many=True).data
+
+        resp['posts'] = serializer.data
+
+        resp['query'] = 'posts'
+
+        return Response(resp)
 
     def post(self, request):
+        # TODO implement post creation by API Call
         return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 class AuthorPostsById(APIView):
     """
     get:
-    get all posts from a specific {author_id}
+    get all posts made by {author_id} and visible to current user
     """
     def get(self, request, author_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
 
+        request_user = UserProfile.objects.filter(user_id=request.user).first()
+        author = UserProfile.objects.filter(author_id=author_id).first()
+        print(UserProfile.objects.first().author_id)
+        posts = Post.objects.filter(user_id = author).filter(visibility="PUBLIC").all()
+
+        # TODO add friend stuff to this
+
+        # TODO implement visible_to
+
+        count = len(posts)
+        resp['count'] = count
+
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+
+        pageSize = int(pageSize)
+
+        resp['size'] = pageSize
+
+        paginator = Paginator(posts,pageSize)
+        posts = paginator.get_page(request.GET.get('page'))
+
+
+        next = None;
+        previous = None;
+
+        if posts.has_next():
+            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+        if posts.has_previous():
+            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+
+        serializer = PostSerializer(posts, many=True)
+        
+        # paginate comments
+        for post in serializer.data:
+            post['size'] = pageSize
+            comments = Comment.objects.filter(post_id=post['id']).all()
+            commentPaginator = Paginator(comments, pageSize)
+            comments = commentPaginator.get_page(0)
+            post['comments'] = GETCommentSerializer(comments, many=True).data
+
+        resp['posts'] = serializer.data
+
+        resp['query'] = 'posts'
+
+        return Response(resp)
+        
 class CommentsByPostId(APIView):
     """
     get:
@@ -108,7 +235,40 @@ class CommentsByPostId(APIView):
     create new comment on {post_id}
     """
     def get(self, request, post_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
+        
+        comments = Comment.objects.filter(post_id=post_id).all()
+
+        count = len(comments)
+        resp['count'] = count
+
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+
+        pageSize = int(pageSize)
+
+        resp['size'] = pageSize
+
+        paginator = Paginator(comments,pageSize)
+        comments = paginator.get_page(request.GET.get('page'))
+
+
+        next = None;
+        previous = None;
+
+        if comments.has_next():
+            resp['next'] = str(request.get_host())+"/posts?page="+str(comments.next_page_number())
+        if comments.has_previous():
+            resp['previous'] = str(request.get_host())+"/posts?page="+str(comments.previous_page_number())
+
+        serializer = GETCommentSerializer(comments, many=True)
+        
+        resp['comments'] = serializer.data
+
+        resp['query'] = 'comments'
+
+        return Response(resp)
 
     def post(self, request, post_id):
         return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
@@ -186,7 +346,6 @@ def home(request):
         # not login
         return render(request, 'landingPage.html')
 
-
 def find_friends(user):
     """
     This function will take in the userprofile object and find all the friends of the current user
@@ -224,14 +383,22 @@ def friend_list(request):
     # populate the list of friends with the json of the authors
     for author_id in friendlist:
         f = UserProfile.objects.filter(author_id = author_id).first()
-        friends.append(UserSerializers(f).data)
-    context = {'flist': friends}
+        friends.append(GETProfileSerializer(f).data)
+    context = {'flist': friends, 'userprofile':user}
     return render(request,'friends.html', context)
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
+
+    def form_valid(self, form):
+        form_object = form.save(commit=False)
+        form_object.is_active = False
+        form_object.save()
+        uu = User.objects.filter(id=form_object.id).first()
+        UserProfile.objects.create(user_id=uu, displayName=uu.username, host=str(self.request.get_host()))
+        return super(SignUp, self).form_valid(form)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -273,14 +440,14 @@ class FriendRequest(APIView):
         if failed:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
-    #return render(request,'friend_requests.html', context)
+        #return render(request,'friend_requests.html', context)
 
 class AuthorProfile(APIView):
 
     def get(self, request, author_id):
         profileContent = dict()
         #print(UserProfile.objects.filter(author_id = author_id).first())
-        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first()
+        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first().displayName
         profileContent['author_id'] = UserProfile.objects.filter(author_id = author_id).first().author_id
         profileContent['bio'] = UserProfile.objects.filter(author_id = author_id).first().bio
         profileContent['host'] = UserProfile.objects.filter(author_id = author_id).first().host
@@ -313,28 +480,29 @@ class AuthorProfile(APIView):
         return render(request, 'profile.html', args)
 '''
 
-def GetAuthorProfile(request):
-    if request.user.is_authenticated:
-        user = UserProfile.objects.filter(user_id=request.user).first()
-        content = dict()
-        content["UserProfile"] = user
-        return render(request, 'profile.html', content)
-    return HttpResponseNotFound("you are not logged in!")
+def GetAuthorProfile(request, author_id):
+    user = UserProfile.objects.filter(author_id=author_id).first()
+    requestuser = UserProfile.objects.filter(user_id=request.user).first()
+    content = dict()
+    content["UserProfile"] = user # this is the requested user profile
+    # please do not change it.. I know it is kinda confusing
+    content["userprofile"] = requestuser # this is the request user profile
+    return render(request, 'profile.html', content)
 
 
-# class PostById(APIView):
-    # """
-    # get:
-    # Get post for given {post_id}
-    # """
-    # def get(self, request, post_id):
-        # post = Post.objects.filter(post_id = post_id).all().first()
-        # commentList=[]
-        # comments = Comment.objects.filter(post_id = post_id).all()
-        # for comment in comments:
-            # commentList.append({"comment":comment})
-        # context = {'post': post, 'commentList': commentList}
-        # return render(request, 'showPost.html', context)
+class PostById(APIView):
+    """
+    get:
+    Get post for given {post_id}
+    """
+    def get(self, request, post_id):
+        post = Post.objects.filter(post_id = post_id).all().first()
+        commentList=[]
+        comments = Comment.objects.filter(post_id = post_id).all()
+        for comment in comments:
+            commentList.append({"comment":comment})
+        context = {'post': post, 'commentList': commentList}
+        return render(request, 'showPost.html', context)
 
 
 class postDelete(APIView):
@@ -365,19 +533,39 @@ class EditPost(APIView):
         serializer.save()
         return redirect('/')
 
+class PublicPosts(APIView):
+    """
+    get:
+    Get all public posts on server
+    """
+    def get(self, request):
+        posts = Post.objects.filter(visibility = "PUBLIC")
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
 class Comments(APIView):
     """
     get:
     return all comments for a given {post_id}
-
     post:
     create new comment on {post_id}
-
     """
-    # def get(self, request, post_id):
-        # comments = Comment.objects.filter(post_id = post_id)
-        # serializer = CommentSerializer(comments, many=True)
-        # return Response(serializer.data)
+    def get(self, request, post_id):
+        comments = Comment.objects.filter(post_id = post_id).order_by("published").all()
+        pageSize = request.GET.get('size')
+        commentSize = len(comments)
+        if not pageSize:
+            pageSize = 50
+        paginator = Paginator(comments,pageSize)
+        comments = paginator.get_page(request.GET.get('page'))
+        commentSerializer = GETCommentSerializer(comments, many=True)
+        response = {"query":"comments", "count":commentSize, "comments":commentSerializer.data,"size":pageSize}
+        if comments.has_next():
+            response["next"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
+        if comments.has_previous():
+            response["previous"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
+        return Response(response)
     '''
     def post(self, request, post_id):
         form = CreateComment(data=request.POST)
@@ -417,11 +605,10 @@ class Comments(APIView):
 
 
 
-class AuthorPosts(APIView):
+class AuthorPostsOld(APIView):
     """
     get:
     Get all posts visible to current user
-
     post:
     Create a new post as current user
     """
@@ -464,6 +651,7 @@ class AuthorPosts(APIView):
         # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
         # author: Triptych https://stackoverflow.com/users/43089/triptych
         postList.sort(key=lambda post: post.published, reverse=True)
+        postSize = len(postList)
         #
         pageSize = request.GET.get('size')
         if not pageSize:
@@ -472,9 +660,8 @@ class AuthorPosts(APIView):
         postList = paginator.get_page(request.GET.get('page'))
         # make the return JSON in the consistent format (also include all the post information including: comments,authors)
         serializer_post = GETPostSerializer(postList, many=True)
-        response = {"query":"posts", "count":len(postList), "posts":serializer_post.data, "size":pageSize}
+        response = {"query":"posts", "count":postSize, "posts":serializer_post.data, "size":pageSize}
         if postList.has_next():
-            print(request.get_host())
             response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number())
         if postList.has_previous():
             response["previous"] = str(request.get_host())+"/author/posts?page="+str(postList.previous_page_number())
@@ -536,7 +723,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             # text = form.cleaned_data['displayName']
-            return redirect('/accounts/profile')
+            return redirect('/accounts/profile/'+str(userprofile.author_id)+'/')
     else:
         # GET
         userprofile = UserProfile.objects.filter(user_id = request.user).first()
