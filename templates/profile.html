@@ -44,11 +44,13 @@
 				profile1.appendChild(Url);
 
 				if ("{{UserProfile.author_id}}"==profileContent.profile.author_id){
+					//alert("yes!!");
 					var EditButtonDiv = document.createElement("div");
 					var EditButton = document.createElement("button");
 					EditButton.innerHTML = "Edit Profile";
+					var profile1 = document.getElementById("profile1");
 					EditButtonDiv.appendChild(EditButton);
-
+          profile1.appendChild(EditButtonDiv);
 				}
 		    }
 		   });

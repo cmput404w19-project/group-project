@@ -181,8 +181,30 @@
           postID.innerHTML = "postID: " + post.id;
           postID.style = "color:#c0c4c3";
 
-          var testcomment = document.createElement("p");
-          testcomment.innerHTML = post.title;
+          var commentListDiv = document.createElement("div");
+          commentLength = post.comments.length;
+          if (commentLength > 0){
+            for (i=0; i<commentLength;i++) {
+              //var comment = document.createElement("p");
+
+              var commentUsername = document.createElement("a");
+              commentUsername.href = "/author/"+post.comments[i].author.id;
+              commentUsername.innerHTML = post.comments[i].author.displayName;
+              commentUsername.id = "user_profile";
+
+              var comment = document.createElement("span");
+              comment.innerHTML = ": "+ post.comments[i].comment;
+              //comment.appendChild(comment);
+              commentListDiv.appendChild(commentUsername);
+              commentListDiv.appendChild(comment);
+              commentListDiv.appendChild(document.createElement("br"));
+              
+              //commentListDiv.appendChild(br);
+            }
+          }
+          commentListDiv.class = "container";
+          commentListDiv.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
+
 
           ///this shows comment button and input
 
@@ -193,7 +215,8 @@
           PostCommentButton.onclick=function(){
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
-              document.location.reload(0);
+              window.location.href = '/#'+String(post.id);
+              window.location.reload();
           } ;
           //alert("{{userprofile.author_id}}")
 
@@ -230,7 +253,7 @@
           Post2ndOutterDiv.appendChild(description);
           Post2ndOutterDiv.appendChild(postID);
 
-          // Post2ndOutterDiv.appendChild(testcomment)
+          Post2ndOutterDiv.appendChild(commentListDiv);
 
           Post2ndOutterDiv.appendChild(PostCommentButton);
           Post2ndOutterDiv.appendChild(PostCommentInput);
