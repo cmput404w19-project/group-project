@@ -57,7 +57,6 @@ def home(request):
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
-
         return render(request, 'home.html', context)
     else:
         # not login
@@ -165,7 +164,7 @@ class AuthorProfile(APIView):
     def get(self, request, author_id):
         profileContent = dict()
         #print(UserProfile.objects.filter(author_id = author_id).first())
-        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first()
+        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first().displayName
         profileContent['author_id'] = UserProfile.objects.filter(author_id = author_id).first().author_id
         profileContent['bio'] = UserProfile.objects.filter(author_id = author_id).first().bio
         profileContent['host'] = UserProfile.objects.filter(author_id = author_id).first().host
@@ -199,12 +198,13 @@ class AuthorProfile(APIView):
 '''
 
 def GetAuthorProfile(request, author_id):
-    if request.user.is_authenticated:
-        user = UserProfile.objects.filter(author_id=author_id).first()
-        content = dict()
-        content["UserProfile"] = user
-        return render(request, 'profile.html', content)
-    return HttpResponseNotFound("you are not logged in!")
+    user = UserProfile.objects.filter(author_id=author_id).first()
+    requestuser = UserProfile.objects.filter(user_id=request.user).first()
+    content = dict()
+    content["UserProfile"] = user # this is the requested user profile
+    # please do not change it.. I know it is kinda confusing
+    content["userprofile"] = requestuser # this is the request user profile
+    return render(request, 'profile.html', content)
 
 
 class PostById(APIView):
@@ -432,7 +432,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             # text = form.cleaned_data['displayName']
-            return redirect('/accounts/profile')
+            return redirect('/accounts/profile/'+str(userprofile.author_id)+'/')
     else:
         # GET
         userprofile = UserProfile.objects.filter(user_id = request.user).first()

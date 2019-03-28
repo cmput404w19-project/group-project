@@ -43,11 +43,13 @@
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Url);
 
-				if ("{{UserProfile.author_id}}"==profileContent.profile.author_id){
+				if ("{{UserProfile.author_id}}"==="{{userprofile.author_id}}"){
 					//alert("yes!!");
 					var EditButtonDiv = document.createElement("div");
-					var EditButton = document.createElement("button");
+					var EditButton = document.createElement("a");
 					EditButton.innerHTML = "Edit Profile";
+					EditButton.href = "/accounts/profile/edit/";
+					EditButton.style = "color:red;";
 					var profile1 = document.getElementById("profile1");
 					EditButtonDiv.appendChild(EditButton);
           profile1.appendChild(EditButtonDiv);
@@ -95,7 +97,7 @@
       <input id="DeleteButton" type="submit" class="btn btn-default" value="UnFollow">
     </form>
 -->
-	{%else%}
+	<!-- {%else%} -->
 		<input id="FollowButton" type="button" class="btn btn-default" value="Follow">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script type="text/javascript"}>
@@ -140,5 +142,5 @@
 
 </div>
 
-{%endif%}
+<!-- {%endif%} -->
 {% endblock %}
