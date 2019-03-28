@@ -102,7 +102,8 @@
           var Post3rdDiv_spanPublishTime = document.createElement("span");
           Post3rdDiv_spanPublishTime.classList.add("span-a");
           Post3rdDiv_spanPublishTime.classList.add("post3rddiv_spanPublishTime");
-          Post3rdDiv_spanPublishTime.innerHTML = Date(post.published);
+          // convert time to time zone specific in client area standard
+          Post3rdDiv_spanPublishTime.innerHTML = new Date(post.published);
 
           var new_hr = document.createElement("hr");
           new_hr.classList.add("w3-clear");
@@ -191,6 +192,7 @@
           PostCommentButton.onclick=function(){
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
+              document.location.reload(0);
           } ;
           //alert("{{userprofile.author_id}}")
 

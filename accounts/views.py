@@ -153,10 +153,26 @@ class FriendRequest(APIView):
         #return render(request,'friend_requests.html', context)
 
 class AuthorProfile(APIView):
+    #renderer_classes = [TemplateHTMLRenderer]
+    #template_name = '../templates/profile.html'
+    def get(self, request, author_id):
+        profileContent = dict()
+        #print(UserProfile.objects.filter(author_id = author_id).first())
+        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first()
+        profileContent['author_id'] = UserProfile.objects.filter(author_id = author_id).first().author_id
+        profileContent['bio'] = UserProfile.objects.filter(author_id = author_id).first().bio
+        profileContent['host'] = UserProfile.objects.filter(author_id = author_id).first().host
+        profileContent['github'] = UserProfile.objects.filter(author_id = author_id).first().github
+        profileContent['url'] = UserProfile.objects.filter(author_id = author_id).first().url
+        serializer_profile = GETProfileSerializer(profileContent)
+        response = {"query":"profile", "profile":serializer_profile.data}
+        return Response(response)
+
     """
     get:
     Get the profile for a given {author_id}
     """
+'''
     def get(self, request, author_id):
         #here author_id is a displayname, we may change it later!!!
         # now the author_id is uuid
@@ -173,7 +189,15 @@ class AuthorProfile(APIView):
             print(is_following)
         args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
         return render(request, 'profile.html', args)
-
+'''
+'''
+class GetAuthorProfile(APIView):
+    def get(self, request, author_id):
+        data = dict()
+        data['thisUser'] = request.user
+        data['postUser'] = request.data['author']['id'].split('/')[-1]
+        return Response()
+'''
 
 class PostById(APIView):
     """
@@ -389,7 +413,7 @@ def profile(request):
     # user has login
     userprofile = UserProfile.objects.filter(user_id = request.user.id).first()
     args = {'userprofile':userprofile} # pass in the whole user object
-    return render(request, 'profile.html', args)
+    return render(request, 'profile.html',args)
 
 def edit_profile(request):
     # user has login
