@@ -62,6 +62,31 @@ class GETProfileSerializer(serializers.ModelSerializer):
         fields = ('displayName','author_id','bio','host','github','url')
 
 
+
+class GETCommentSerializer(serializers.ModelSerializer):
+    comment = serializers.SerializerMethodField() # content
+    id = serializers.SerializerMethodField('get_comment_id') #comment_id
+    author = serializers.SerializerMethodField() #user_id
+
+    class Meta:
+        model = Comment
+        fields = ('author','comment','contentType','published','id')
+    
+    def get_comment(self, obj):
+        return obj.content
+
+    def get_comment_id(self, obj):
+        return obj.comment_id
+
+    def get_author(self, obj):
+        # just use this tmp not to change later
+        user = User.objects.filter(username=obj.user_id).first()
+        comment_author = UserProfile.objects.filter(user_id=user).first()
+        return AuthorSerializers(comment_author).data
+
+
+
+
 class GETPostSerializer(serializers.ModelSerializer):
     #user_id = serializers.HiddenField(default=self.get_serializer_context())
     image64 = Base64ImageField(required=False)
@@ -72,7 +97,6 @@ class GETPostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()  # include the comments data into the post
     author = serializers.SerializerMethodField()  # include the author data into the post
     id = serializers.SerializerMethodField('get_post_id') # change the name in json
-    published = serializers.SerializerMethodField('get_publishTime')
 
     class Meta:
         model = Post
@@ -82,7 +106,7 @@ class GETPostSerializer(serializers.ModelSerializer):
 
     def get_comments(self, obj):
         post_comments = Comment.objects.filter(post_id=obj.post_id).order_by("published").all()
-        return CommentSerializer(post_comments, many=True).data
+        return GETCommentSerializer(post_comments, many=True).data
     def get_author(self, obj):
         # just use this tmp not to change later
         user = User.objects.filter(username=obj.user_id).first()

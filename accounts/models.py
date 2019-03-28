@@ -181,6 +181,14 @@ class Images(models.Model):
     # path to image
     pass
 
+class ExternalServer(models.Model):
+    """
+    External Servers that we are connected to
+    """
+    server_url  = models.URLField(primary_key = True)
+    user = models.CharField(max_length = 50)
+    password = models.CharField(max_length = 50)
+
 
 # using signal to tigger to create
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
