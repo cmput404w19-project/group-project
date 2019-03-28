@@ -29,19 +29,27 @@
 				profile1.appendChild(Bio);
 
 				var Host = document.createElement("p");
-				Host.innerHTML = "Host : "+ profileContent.profile.bio;
+				Host.innerHTML = "Host : "+ profileContent.profile.host;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Host);
 
 				var GitHub = document.createElement("p");
-				GitHub.innerHTML = "GitHub : "+ profileContent.profile.bio;
+				GitHub.innerHTML = "GitHub : "+ profileContent.profile.github;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(GitHub);
 
 				var Url = document.createElement("p");
-				Url.innerHTML = "Url : "+ profileContent.profile.bio;
+				Url.innerHTML = "Url : "+ profileContent.profile.url;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Url);
+
+				if ("{{UserProfile.author_id}}"==profileContent.profile.author_id){
+					var EditButtonDiv = document.createElement("div");
+					var EditButton = document.createElement("button");
+					EditButton.innerHTML = "Edit Profile";
+					EditButtonDiv.appendChild(EditButton);
+
+				}
 		    }
 		   });
 		 }
@@ -60,7 +68,7 @@
 		// };
 
 		//getProfile("/author/<str:author_id>/");
-		//if ("{{userprofile.author_id}}"==post.author.id){}
+
 		getAuthorData("/author/{{UserProfile.author_id}}/")
 		</script>
 <!--
