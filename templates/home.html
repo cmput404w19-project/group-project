@@ -193,6 +193,7 @@
           PostCommentButton.onclick=function(){
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
+              document.location.reload(0);
           } ;
           //alert("{{userprofile.author_id}}")
 
