@@ -273,6 +273,19 @@ class CommentsByPostId(APIView):
     def post(self, request, post_id):
         return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
+# given author_url finds all friends
+def find_friends(author_url):
+    following = Follow.objects.filter(following_url=author_url).all()
+    following_list = FollowSerializer(following, many=True)
+    following_url_list = list(following_list.data[i]['follower_url'] for i in range(len(following_list.data)))
+
+    followers = Follow.objects.filter(follower_url=author_url).all()
+    follower_list = FollowSerializer(followers, many=True)
+    follower_url_list = list(follower_list.data[i]['following_url'] for i in range(len(follower_list.data)))
+
+    return list(set(following_url_list) & set(follower_url_list))
+
+
 class FriendListByAuthorId(APIView):
     """
     get:
@@ -282,7 +295,15 @@ class FriendListByAuthorId(APIView):
     Ask if anyone in provided list is a friend of {author_id} 
     """
     def get(self, request, author_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
+        
+        # TODO get the URL from the request, combine with author_id
+
+        resp['authors'] = find_friends('http://localhost:8000/authors/a090224a-05a4-42fb-8ea9-5256c806d14a')
+
+        resp['query'] = 'friends'
+
+        return Response(resp)
 
     def post(self, request, author_id):
         return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
@@ -292,8 +313,26 @@ class CheckFriendStatus(APIView):
     get:
     check if {author1_id} and {author2_id} are friends
     """
+
     def get(self, request, author1_id, author2_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
+        
+        # TODO get the URL from the request and turn it into the author
+
+        author1url = 'http://localhost:8000/authors/a090224a-05a4-42fb-8ea9-5256c806d14a'
+        author2url = 'http://localhost:8000/authors/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
+        
+        author1friends = find_friends(author1url)
+        if author2url in author1friends:
+            resp['friends'] = True
+        else:
+            resp['friends'] = False
+
+        resp['query'] = 'friends'
+
+        resp['authors'] = [author1url, author2url]
+
+        return Response(resp)
 
 class FriendRequest(APIView):
     """
@@ -301,8 +340,18 @@ class FriendRequest(APIView):
     Make a friend request
     """
     def post(self, request):
-        # follow = Follow.objects.create()
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        data = {}
+        data['follower_url'] = request.data['author']['id']
+        data['following_url'] = request.data['friend']['id']
+
+        follow_serializer = FollowSerializer(data=data)
+
+        if follow_serializer.is_valid():
+            follow_serializer.save()
+        else:
+            return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
 class AuthorProfile(APIView):
     """
@@ -310,7 +359,14 @@ class AuthorProfile(APIView):
     get an author's profile
     """
     def get(self, request, author_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        profile = UserProfile.objects.filter(author_id=author_id).first()
+        resp = GETProfileSerializer(profile).data
+
+        print(resp['id'])
+        print(find_friends('http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'))
+        resp['friends'] = find_friends(resp['id'])
+
+        return Response(resp)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -345,29 +401,6 @@ def home(request):
     else:
         # not login
         return render(request, 'landingPage.html')
-
-def find_friends(user):
-    """
-    This function will take in the userprofile object and find all the friends of the current user
-    Input: request
-    Return: a list of all friends userprofile object
-    """
-
-    # all the people the current user is following
-    following_list = Follow.objects.filter(follower_id = user.author_id).all()
-    following_list_serial = FollowSerializer(following_list, many=True)
-    following_id_list = list(following_list_serial.data[i]['following_id'] for i in range(len(following_list_serial.data)))
-
-    # all the people who follow the current user
-    follower_list = Follow.objects.filter(following_id = user.author_id).all()
-    follower_list_serial = FollowSerializer(follower_list, many=True)
-    follower_id_list = list(follower_list_serial.data[i]['follower_id'] for i in range(len(follower_list_serial.data)))
-
-    # this is a list of the author_ids of all friends of the currently authenticated user
-    friend_list = list(set(following_id_list) & set(follower_id_list))
-
-    return friend_list
-
 
 @api_view()
 def friend_list(request):
@@ -412,14 +445,13 @@ class UnFollow(APIView):
         obj.delete()
         return redirect('/author/' + str(name))
 
-class FriendRequest(APIView):
+class FriendRequestOld(APIView):
     """
     post:
     Make a friend request
     """
     def post(self, request):
         # follow = Follow.objects.create()
-        print(request)
         data = dict()
         data['requestedBy_id'] = request.data['author']['id'].split('/')[-1]
         data['requestedTo_id'] = request.data['friend']['id'].split('/')[-1]
@@ -442,7 +474,7 @@ class FriendRequest(APIView):
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
         #return render(request,'friend_requests.html', context)
 
-class AuthorProfile(APIView):
+class AuthorProfileold(APIView):
 
     def get(self, request, author_id):
         profileContent = dict()

@@ -83,6 +83,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         # just use this tmp not to change later
+        # TODO handle user not on server
         user = User.objects.filter(username=obj.user_id).first()
         comment_author = UserProfile.objects.filter(user_id=user).first()
         return GETProfileSerializer(comment_author).data
@@ -96,4 +97,4 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ('follower_id', 'following_id')
+        fields = ('follower_url', 'following_url')
