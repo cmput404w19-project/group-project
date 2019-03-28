@@ -198,9 +198,9 @@ class AuthorProfile(APIView):
         return render(request, 'profile.html', args)
 '''
 
-def GetAuthorProfile(request):
+def GetAuthorProfile(request, author_id):
     if request.user.is_authenticated:
-        user = UserProfile.objects.filter(user_id=request.user).first()
+        user = UserProfile.objects.filter(author_id=author_id).first()
         content = dict()
         content["UserProfile"] = user
         return render(request, 'profile.html', content)
