@@ -56,6 +56,11 @@ class CommentSerializer(serializers.ModelSerializer):
         comment_author = UserProfile.objects.filter(user_id=user).first()
         return AuthorSerializers(comment_author).data
     '''
+class GETProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('displayName','author_id','bio','host','github','url')
+
 
 
 class GETCommentSerializer(serializers.ModelSerializer):

@@ -70,7 +70,7 @@ urlpatterns = [
     path(r'author/makepost', views.MakePost().as_view(), name='render_post'),
 
     # author endpoints
-    path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+    path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
 
     # post endpoints
     path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
@@ -83,6 +83,7 @@ urlpatterns = [
 
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
     path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
+
 
 
     # get user uploaded image

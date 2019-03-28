@@ -44,7 +44,7 @@
 <!-- Following will be the JavaScript that create the views for Posts -->
 <script type="text/javascript">
 
-  
+
   function showInMarkdown(){
       //type = document.getElementById("contentType").innerHTML;
       //alert(type)
@@ -162,7 +162,7 @@
             meta1.id = "media_url";
             meta1.name = "media_url";
             meta1.content = post.image64;
-            
+
             var imageshow = document.createElement("img");
             imageshow.id = "image";
             imageshow.style = "display:inline";
@@ -179,7 +179,7 @@
           var postID = document.createElement("p");
           postID.innerHTML = "postID: " + post.id;
           postID.style = "color:#c0c4c3";
-          
+
           var testcomment = document.createElement("p");
           testcomment.innerHTML = post.title;
 
@@ -190,8 +190,10 @@
           var PostCommentButton = document.createElement("button");
           PostCommentButton.innerHTML = "Comment";
           PostCommentButton.onclick=function(){
-              addComment(post.id,post.author.id,post.author.displayName)
+              addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
+              "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
           } ;
+          //alert("{{userprofile.author_id}}")
 
 
 
@@ -220,7 +222,7 @@
           if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
             Post2ndOutterDiv.appendChild(meta1);
             Post2ndOutterDiv.appendChild(imageshow);
-            
+
           }
 
           Post2ndOutterDiv.appendChild(description);
@@ -231,7 +233,7 @@
           Post2ndOutterDiv.appendChild(PostCommentButton);
           Post2ndOutterDiv.appendChild(PostCommentInput);
 
-          
+
 
           Post1stOutterDiv.appendChild(Post2ndOutterDiv);
           document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
@@ -258,77 +260,104 @@
     return document.createElement("br");
   }
 
-    // Reference:
-    // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-    function addComment(post_id, user_id, displayName){
-        let content = document.getElementById("input"+post_id).value;
-        if (content == ""){
-            alert("Comment is Empty!")
-        }
-        else{
-            //alert(content);
-            //alert(post_id);
-            let data = {
-                "query": "addcomment",
-                "author":{
-                    "id": user_id,
-                    "host": "",
-                    "displayName": displayName,
-                    "url": ""
-                },
-                "comment":
-                {
-                    "content": content,
-                    "contentType":"text/plain"
-                }
-            };
+
+      // Reference:
+      // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+      function addComment(post, user_id, user_host, user_displayName, user_url, user_github){
+          let content = document.getElementById("input"+post.id).value;
+          // user who add comment
+          // Reference:
+          // Eric Herlitz
+          // https://stackoverflow.com/questions/6042007/how-to-get-the-host-url-using-javascript-from-the-current-page
+          // get current host
+          //let protocol = location.protocol;
+          //let slashes = protocol.concat("//");
+          //let host = slashes.concat(window.location.hostname);
+          //alert(host)
+          //alert(user_host)
+          //let post_host = post.author.host;
+
+          //alert(user_id);
+          //alert(user_host);
+          //alert(user_displayName);
+          //alert(user_url);
+          //alert(user_github);
+          //alert(content);
+          if (content == ""){
+              alert("Comment is Empty!")
+          }
+          else{
+              //alert(content);
+              //alert(post_id);
+              let data = {
+                  "query": "addComment",
+                  "post": post.origin,
+                  "comment":
+                  {
+                      "author":{
+                          // ID of the author
+                          "id": user_id,
+                          "host": user_host + '/',
+                          "displayName": user_displayName,
+                          // url to the authors information
+                          "url": user_url,
+                          // HATEOS url for Github API
+                          "github": user_github
+                      },
+                      "comment": content,
+                      "contentType":"text/plain",
+                      //"published":"2015-03-09T13:07:04+00:00",
+                      //"id":"de305d54-75b4-431b-adb2-eb6b9e546013"
+                  },
+
+              };
 
 
-            let url = "/posts/"+post_id+"/comment/";
-            //alert(url);
-            //alert(Cookies.get('csrftoken'));
-            //alert(getToken());
+              let url = "/posts/"+post.id+"/comment/";
+              //alert(url);
+              //alert(Cookies.get('csrftoken'));
+              //alert(getToken());
 
-            fetch(url,
-            {
-                method: "POST",
-                body: JSON.stringify(data),
+              fetch(url,
+              {
+                  method: "POST",
+                  body: JSON.stringify(data),
 
-                headers: {
-                    "Content-Type": 'application/json',
-                    "X-CSRFToken": getToken()
+                  headers: {
+                      "Content-Type": 'application/json',
+                      "X-CSRFToken": getToken()
 
-                },
-                credentials: 'same-origin'
-            }).then(res => res.json())
-            .then(response => {
-                console.log('Success:', JSON.stringify(response));
-                document.getElementById("input"+post_id).value = "";
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    }
+                  },
+                  credentials: 'same-origin'
+              }).then(res => res.json())
+              .then(response => {
+                  console.log('Success:', JSON.stringify(response));
+                  document.getElementById("input"+post.id).value = "";
+              })
+              .catch(error => console.error('Error:', error));
+          }
+      }
 
 
-    // Reference:
-    // https://docs.djangoproject.com/en/2.1/ref/csrf/
-    // Cookies.get('csrftoken') cannot be used
-    function getToken() {
-        var cookieValue = null;
-        var name = "csrftoken"
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+      // Reference:
+      // https://docs.djangoproject.com/en/2.1/ref/csrf/
+      // Cookies.get('csrftoken') cannot be used
+      function getToken() {
+          var cookieValue = null;
+          var name = "csrftoken"
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
 
 
   // function getAuthorData(url, userObject){
