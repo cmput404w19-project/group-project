@@ -457,7 +457,7 @@ class AuthorProfile(APIView):
         profile = UserProfile.objects.filter(author_id=author_id).first()
         resp = GETProfileSerializer(profile).data
 
-        resp['friends'] = find_friends(resp['id'])
+        # resp['friends'] = find_friends(resp['id'])
 
         return Response(resp)
 
@@ -498,10 +498,13 @@ def home(request):
         # get userprofile information
         
         user = UserProfile.objects.filter(user_id=request.user).first()
-        domain = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
-        user.url = domain
-        user.save()
-        context["userprofile"] = UserProfile.objects.filter(user_id=request.user).first()
+        if user.url == "":
+            user.url = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
+            user.save()
+        if user.host == "":
+            user.host = "http://"+str(request.get_host())
+            user.save()
+        context["userprofile"] = user
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
