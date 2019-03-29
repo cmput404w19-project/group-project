@@ -111,33 +111,21 @@ class GETCommentSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         # just use this tmp not to change later
         # TODO handle user not on server
-        user = User.objects.filter(username=obj.user_id).first()
+        # Reference:
+        # https://www.kancloud.cn/thinkphp/python-guide/39426
+        #user = User.objects.filter(username=obj.user_id).first()
         with request.urlopen(obj.user_id) as f:
             data = f.read().decode('utf-8')
             print(obj.user_id)
-            print('************')
             print('Status:', f.status, f.reason)
             print('Data:', data)
-            print('************')
             data = json.loads(data)
             #print(data)
-            '''
-            user = dict()
-            user['author']['id'] = 
-            user['author']['host'] = 
-            user['author']['displayName'] = 
-            user['author']['url'] = 
-            user['author']['github'] = 
-            
-            print(type(user.data))
-            print(user['displayName'])
-            print(user['id'])
-            print(user['bio'])
-            print(user['url'])
-            print(user['github'])
-            print(user['host'])
-            print('============')
-            '''
+            #print(data['id'])
+            #print(data['host'])
+            #print(data['displayName'])
+            #print(data['url'])
+            #print(data['github'])
             #comment_author = UserProfile.objects.filter(user_id=user).first()
             return data
 
