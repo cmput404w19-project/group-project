@@ -95,6 +95,11 @@ urlpatterns = [
     # path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
     # path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Internal API Endpoints
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+
+
     # # the render of making new post
     path(r'author/render_post/', views.MakePost().as_view(), name='render_post'),
     path(r'author/render_post', views.MakePost().as_view(), name='render_post'),

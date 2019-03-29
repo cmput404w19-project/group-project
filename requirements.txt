@@ -9,3 +9,4 @@ pytz
 coreapi
 django-extra-fields
 Pillow
+drf_yasg

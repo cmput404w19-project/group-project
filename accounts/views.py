@@ -80,8 +80,10 @@ class Posts(APIView):
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
 
-        next = None;
-        previous = None;
+        # No need to return next if last page
+        # No need to return previous if page is 0
+        # next = None;
+        # previous = None;
 
         if posts.has_next():
             resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
@@ -176,9 +178,10 @@ class AuthorPosts(APIView):
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
 
-
-        next = None;
-        previous = None;
+        # No need to return next if last page
+        # No need to return previous if page is 0
+        # next = None;
+        # previous = None;
 
         if posts.has_next():
             resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
@@ -239,9 +242,10 @@ class AuthorPostsById(APIView):
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
 
-
-        next = None;
-        previous = None;
+        # No need to return next if last page
+        # No need to return previous if page is 0
+        # next = None;
+        # previous = None;
 
         if posts.has_next():
             resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
@@ -295,9 +299,10 @@ class CommentsByPostId(APIView):
         paginator = Paginator(comments,pageSize)
         comments = paginator.get_page(request.GET.get('page'))
 
-
-        next = None;
-        previous = None;
+        # No need to return next if last page
+        # No need to return previous if page is 0
+        # next = None;
+        # previous = None;
 
         if comments.has_next():
             resp['next'] = str(request.get_host())+"/posts?page="+str(comments.next_page_number())

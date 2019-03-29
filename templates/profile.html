@@ -14,32 +14,32 @@
 		    success: function(profileContent){
 					console.log(profileContent);
         var Displayname = document.createElement("p");
-				Displayname.innerHTML = "Displayname : "+ profileContent.profile.displayName;
+				Displayname.innerHTML = "Displayname : "+ profileContent.displayName;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Displayname);
 
 				var ProfileId = document.createElement("p");
-				ProfileId.innerHTML = "Profile ID : "+ profileContent.profile.author_id;
+				ProfileId.innerHTML = "Profile ID : "+ profileContent.author_id;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(ProfileId);
 
 				var Bio = document.createElement("p");
-				Bio.innerHTML = "Bio : "+ profileContent.profile.bio;
+				Bio.innerHTML = "Bio : "+ profileContent.bio;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Bio);
 
 				var Host = document.createElement("p");
-				Host.innerHTML = "Host : "+ profileContent.profile.host;
+				Host.innerHTML = "Host : "+ profileContent.host;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Host);
 
 				var GitHub = document.createElement("p");
-				GitHub.innerHTML = "GitHub : "+ profileContent.profile.github;
+				GitHub.innerHTML = "GitHub : "+ profileContent.github;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(GitHub);
 
 				var Url = document.createElement("p");
-				Url.innerHTML = "Url : "+ profileContent.profile.url;
+				Url.innerHTML = "Url : "+ profileContent.url;
 				var profile1 = document.getElementById("profile1");
 				profile1.appendChild(Url);
 
