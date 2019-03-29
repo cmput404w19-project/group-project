@@ -196,7 +196,7 @@
 
               var commentUsername = document.createElement("a");
               commentUsername.style = "font-family: 'Muli'; font-size: 1.1em";
-              commentUsername.href = "/accounts/profile"+post.comments[i].author.id+"/";
+              commentUsername.href = "/accounts/profile/"+post.comments[i].author.id.split('/')[4]+"/";
               commentUsername.innerHTML = post.comments[i].author.displayName;
               commentUsername.id = "user_profile";
               commentUsername.classList.add("a-dec2");
