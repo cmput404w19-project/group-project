@@ -111,6 +111,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         # just use this tmp not to change later
         # TODO handle user not on server
+
         # Reference:
         # https://www.kancloud.cn/thinkphp/python-guide/39426
         #user = User.objects.filter(username=obj.user_id).first()
@@ -128,6 +129,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
             #print(data['github'])
             #comment_author = UserProfile.objects.filter(user_id=user).first()
             return data
+
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):
