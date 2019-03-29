@@ -27,9 +27,11 @@ class UserProfile(models.Model):
     # github
     github = models.URLField(default="")
     # url
+
     url = models.URLField(default="")
 
     # indexes
+
     def __str__(self):
         return str(self.user_id)
 

@@ -192,7 +192,6 @@
                     document.getElementById("image64").src = e.target.result;
                     document.getElementById("image").src = e.target.result;
                     document.getElementById("imageText").value = e.target.result;
-                    //alert(e.target.result)
                 });
                 FR.readAsDataURL( this.files[0] );
             }
@@ -202,10 +201,8 @@
             if (this.files && this.files[0]) {
                 var FR= new FileReader();
                 FR.addEventListener("load", function(e) {
-                    //alert(e.target.result)
                     document.getElementById("file").src = e.target.result;
                     document.getElementById("fileText").value = e.target.result;
-                    alert(e.target.result)
                 });
                 FR.readAsDataURL( this.files[0] );
             }

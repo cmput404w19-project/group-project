@@ -65,25 +65,35 @@ urlpatterns = [
     path(r'docs/', schema_view.with_ui('swagger')),
 
     path(r'posts/', views.Posts().as_view()),
+    path(r'posts', views.Posts().as_view()),
 
     path(r'posts/<str:post_id>/', views.PostById().as_view()),
+    path(r'posts/<str:post_id>', views.PostById().as_view()),
 
     path(r'author/posts/', views.AuthorPosts().as_view()),
+    path(r'author/posts', views.AuthorPosts().as_view()),
 
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+    path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
 
     path(r'author/<str:author_id>/posts/', views.AuthorPostsById().as_view()),
+    path(r'author/<str:author_id>/posts', views.AuthorPostsById().as_view()),
 
     path(r'author/<str:author_id>/friends/', views.FriendListByAuthorId().as_view()),
+    path(r'author/<str:author_id>/friends', views.FriendListByAuthorId().as_view()),
 
     path(r'author/<str:author1_id>/friends/<str:author2_id>/', views.CheckFriendStatus().as_view()),
+    path(r'author/<str:author1_id>/friends/<str:author2_id>', views.CheckFriendStatus().as_view()),
 
     path(r'posts/<str:post_id>/comments/', views.CommentsByPostId().as_view()),
+    path(r'posts/<str:post_id>/comments', views.CommentsByPostId().as_view()),
 
     path(r'friendrequest/', views.FriendRequest().as_view()),
+    path(r'friendrequest', views.FriendRequest().as_view()),
 
     #unfollow
     path(r'unfollowrequest/', views.UnFollow().as_view()),
+    path(r'unfollowrequest', views.UnFollow().as_view()),
 
     # all public
     # TODO: it will change the path of makeing post.

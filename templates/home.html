@@ -47,14 +47,11 @@
 
   function showInMarkdown(){
       //type = document.getElementById("contentType").innerHTML;
-      //alert(type)
       var list = document.getElementsByClassName("toMarkdown");
       var converter = new showdown.Converter();
       for (key of list){
-          //alert(key.innerHTML)
           key.innerHTML = converter.makeHtml(key.innerHTML);
       }
-      //alert(text)
       //var html = converter.makeHtml(text);
       //document.getElementById("toMarkdown").innerHTML = html;
   }
@@ -91,8 +88,7 @@
           userprofile_name_a.classList.add("post-author-text");
           userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
           //userprofile_name_a.href = "/author/"+post.author.id;
-          //alert(post.author.id)
-          userprofile_name_a.href = "/accounts/profile"+post.author.id+"/";
+          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
           userprofile_name_a.innerHTML = post.author.displayName;
           userprofile_name_a.id = "user_profile";
 
@@ -248,7 +244,6 @@
           commentListDiv.appendChild(PostCommentInput);
           commentListDiv.appendChild(PostCommentButton);
           
-          //alert("{{userprofile.author_id}}")
 
 
 
@@ -304,7 +299,6 @@
 
   function loadImage(){
       media_url = document.getElementById("media_url").getAttribute("content");
-      //alert(media_url)
       image = document.getElementById("image")
       image.src = media_url;
       image.style.display = "inline";
@@ -327,24 +321,12 @@
           //let protocol = location.protocol;
           //let slashes = protocol.concat("//");
           //let host = slashes.concat(window.location.hostname);
-          //alert(host)
-          //alert(user_host)
           //let post_host = post.author.host;
 
-          //alert(user_id);
-          //alert(user_host);
-          //alert(user_displayName);
-          //alert(user_url);
-          //alert(user_github);
-          //alert(content);
           if (content == ""){
               alert("Comment is Empty!")
           }
           else{
-              //alert(content);
-              //alert(post_id);
-              //var time_now = new Date();
-              //alert(typeof(time_now))
               let data = {
                   "query": "addComment",
                   "post": post.origin,
