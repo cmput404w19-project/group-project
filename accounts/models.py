@@ -156,9 +156,9 @@ class FriendRequest(models.Model):
         ("Pending","Pending")
     )
     # requested by id  Foreign key to user
-    requestedBy_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requestedBY')
+    requestedBy_id = models.URLField(default="")
     # request to id  Foreign key to user
-    requestedTo_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requestedTO')
+    requestedTo_id = models.URLField(default="")
     # request status
     request_status = models.CharField(max_length=20, choices=statusChoice, default="Pending")
     # Request Time
