@@ -100,7 +100,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('author','comment','contentType','published','id')
+        fields = ('author','comment','contentType','published','id', 'post_id')
     
     def get_comment(self, obj):
         return obj.content

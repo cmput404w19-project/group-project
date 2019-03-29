@@ -191,15 +191,21 @@ class AuthorPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         
         # paginate comments and add friend list
+        counter = 0
         for post in serializer.data:
+            counter += 1
             post['size'] = pageSize
             comments = Comment.objects.filter(post_id=post['id']).all()
+            print(counter)
+            print(comments)
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             print('--------------')
             comments = GETCommentSerializer(comments, many=True).data
             for comment in comments:
+                print('*********')
                 print(comment)
+                print('*********')
                 comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
             post['author']['friends'] = find_friends(post['author']['id'])
@@ -225,7 +231,6 @@ class AuthorPosts(APIView):
         #new_data.__setitem__("source", source)
         host = request.scheme + "://" + request.get_host() +  "/"
         new_data["host"] = host
-        #print(new_data)
         serializer = PostSerializer(data=new_data)
         #print(serializer)
 
@@ -353,6 +358,9 @@ class CommentsByPostId(APIView):
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
         comment_data['content'] = request.data['comment']['comment']
+        print('$$$$$$$$$$$$$$$$$$$$$$$$')
+        print(post_id)
+        print('$$$$$$$$$$$$$$$$$$$$$$$$')
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
         #comment_data['published'] = request.data['comment']['published']
