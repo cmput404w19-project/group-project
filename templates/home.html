@@ -87,9 +87,8 @@
           userprofile_name_a.classList.add("a-dec2");
           userprofile_name_a.classList.add("post-author-text");
           userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
-          //userprofile_name_a.href = "/author/"+post.author.id;
-          //userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
-          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[2]+"/";
+          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
+
           userprofile_name_a.innerHTML = post.author.displayName;
           userprofile_name_a.id = "user_profile";
 
@@ -233,13 +232,15 @@
           PostCommentInput.style = "margin-left: 1.5%; margin-bottom: 1.5%"
           var PostCommentButton = document.createElement("button");
           PostCommentButton.classList.add("btn-default");
+          PostCommentButton.classList.add("btn");
           PostCommentButton.classList.add("btn-primary");
           PostCommentButton.innerHTML = "Comment";
           PostCommentButton.onclick=function(){
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
               window.location.href = '/#'+String(post.id);
-              window.location.reload();
+              //window..reload();
+
           } ;
 
           commentListDiv.appendChild(PostCommentInput);
@@ -314,15 +315,6 @@
       // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
       function addComment(post, user_id, user_host, user_displayName, user_url, user_github){
           let content = document.getElementById("input"+post.id).value;
-          // user who add comment
-          // Reference:
-          // Eric Herlitz
-          // https://stackoverflow.com/questions/6042007/how-to-get-the-host-url-using-javascript-from-the-current-page
-          // get current host
-          //let protocol = location.protocol;
-          //let slashes = protocol.concat("//");
-          //let host = slashes.concat(window.location.hostname);
-          //let post_host = post.author.host;
 
           if (content == ""){
               alert("Comment is Empty!")
@@ -334,8 +326,7 @@
                   "comment":
                   {
                       "author":{
-                          // ID of the author
-                          "id": user_id,
+                          "id": user_url,
                           "host": user_host,
                           "displayName": user_displayName,
                           // url to the authors information
@@ -344,36 +335,30 @@
                           "github": user_github
                       },
                       "comment": content,
-                      "contentType":"text/plain",
-                      //"published":"2015-03-09T13:07:04+00:00",
-                      //"id":"de305d54-75b4-431b-adb2-eb6b9e546013"
-                  },
+                      "contentType":"text/plain"
+                  }
+
 
               };
-              alert(data)
 
-              current_host = location.protocol + "//" + location.host
-              //alert(current_host);
               let url = post.origin+"/comments";
-              //alert(url);
-              alert(Cookies.get('csrftoken'));
-              alert(getToken());
+              return fetch(url, {
 
-              fetch(url,
-              {
                   method: "POST",
                   body: JSON.stringify(data),
 
                   headers: {
-                      "Content-Type": 'application/json',
-                      "X-CSRFToken": 'RvgrYMzcwX5YnHePJm9kQ9BwRNgJvyZTZW4sgcJqUGo8gqm4kU6fchW6yu2e3JlR',
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": getToken()
+
 
                   },
-                  credentials: 'same-origin'
+
               }).then(res => res.json())
               .then(response => {
                   console.log('Success:', JSON.stringify(response));
                   document.getElementById("input"+post.id).value = "";
+                  window.location.reload(0);
               })
               .catch(error => console.error('Error:', error));
           }
