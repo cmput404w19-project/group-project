@@ -205,7 +205,7 @@ class AuthorPosts(APIView):
         resp['posts'] = serializer.data
 
         resp['query'] = 'posts'
-
+        #print(resp)
         return Response(resp)
 
     def post(self, request):
@@ -220,6 +220,9 @@ class AuthorPosts(APIView):
         user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
         print(user_id)
         new_data.__setitem__("user_id", user_id)
+        #new_data.__setitem__("source", source)
+        origin = request.scheme + "://" + request.get_host() +  "/"
+        new_data["origin"] = origin
         print(new_data)
         serializer = PostSerializer(data=new_data)
         print(serializer)
