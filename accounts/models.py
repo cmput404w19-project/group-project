@@ -28,12 +28,10 @@ class UserProfile(models.Model):
     github = models.URLField(default="")
     # url
     url = models.URLField(default="")
+
     # indexes
     def __str__(self):
         return str(self.user_id)
-
-
-
 
 class Post(models.Model):
     """
@@ -137,17 +135,15 @@ class Comment(models.Model):
 
 class Follow(models.Model):
     """
-    Follow Relationship Between Users
-    Friendship exist if A follows B and B follows A
+    Friendship relationship between users,
+    if friends boolean is true then friends
     """
-    # follower  Foreign key to user
-    follower_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="follower")
-    # following Foreign key to user
-    following_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="following")
-    # Time follow starts
-    follow_publish_time = models.DateTimeField(default=timezone.now)
+    # the user on this server that is affected
+    follower_url = models.URLField(default="")
+    following_url = models.URLField(default="")
+
     class Meta:
-        unique_together = ("follower_id", "following_id")
+        unique_together = ('follower_url', 'following_url')
 
 
 class FriendRequest(models.Model):

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
 
+    'drf_yasg',
+
     'rest_framework',
     'rest_framework_swagger'
 ]

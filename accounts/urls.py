@@ -13,7 +13,7 @@ urlpatterns = [
     path('profile/edit/', login_required(views.edit_profile,  login_url="/accounts/login/"), name='edit_profile'),
     path('profile/<str:author_id>/', login_required(views.GetAuthorProfile, login_url="/accounts/login/"), name='profile'),
     #path('profile/post/', login_required(views.post_page, login_url="/accounts/login/"), name='post'),
-    path('friends/', login_required(views.friend_list, login_url="/accounts/login/"), name='friends'),
+    # path('friends/', login_required(views.friend_list, login_url="/accounts/login/"), name='friends'),
     path('friends/author/<str:author_id>/', views.AuthorProfile().as_view()),
     path('login/', anonymous_required(LoginView.as_view(template_name='registration/login.html'), redirect_to="/"), name="login"),
     
