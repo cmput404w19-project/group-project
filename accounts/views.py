@@ -468,6 +468,9 @@ class SignUp(generic.CreateView):
         form_object.save()
         uu = User.objects.filter(id=form_object.id).first()
         UserProfile.objects.create(user_id=uu, displayName=uu.username, host=str(self.request.get_host()))
+        user_profile = UserProfile.objects.filter(user_id=uu).first()
+        user_profile.url = user_profile.host + '/author/' + str(user_profile.author_id)
+        user_profile.save()
         return super(SignUp, self).form_valid(form)
 
 class UserViewSet(viewsets.ModelViewSet):
