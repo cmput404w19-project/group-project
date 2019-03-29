@@ -470,7 +470,7 @@ class SignUp(generic.CreateView):
         form_object.is_active = False
         form_object.save()
         uu = User.objects.filter(id=form_object.id).first()
-        UserProfile.objects.create(user_id=uu, displayName=uu.username, host=str(self.request.get_host()))
+        UserProfile.objects.create(user_id=uu, displayName=uu.username, host='http://' + str(self.request.get_host()))
         user_profile = UserProfile.objects.filter(user_id=uu).first()
         user_profile.url = user_profile.host + '/author/' + str(user_profile.author_id)
         user_profile.save()
@@ -481,11 +481,21 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = GETProfileSerializer
 
 class UnFollow(APIView):
-    def post(self, request, pk):
-        obj = Follow.objects.get(pk=pk)
-        name = obj.following_id.author_id
+    """
+    post:
+    make an unfollow request
+    of the form
+    {
+        follower_url: url
+        following_url: url
+    }
+    """
+    def post(self, request):
+        follower_url = request.data['author']['id']
+        following_url = request.data['friend']['id']
+        obj = Follow.objects.get(follower_url=follower_url, following_url=following_url)
         obj.delete()
-        return redirect('/author/' + str(name))
+        return Response(status=status.HTTP_200_OK)
 
 class FriendRequestOld(APIView):
     """
@@ -561,6 +571,13 @@ def GetAuthorProfile(request, author_id):
     content["UserProfile"] = user # this is the requested user profile
     # please do not change it.. I know it is kinda confusing
     content["userprofile"] = requestuser # this is the request user profile
+
+    follow = Follow.objects.filter(follower_url=requestuser.url, following_url=user.url)
+    if not follow:
+        content["followExists"] = 'false'
+    else:
+        content["followExists"] = 'true'
+
     return render(request, 'profile.html', content)
 
 

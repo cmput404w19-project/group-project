@@ -4,141 +4,191 @@
 
 {% block content %}
 <div id = "profile1" class="container" style="margin-left:10%; margin-top:3%">
-	<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-	<script type="text/javascript">
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script type="text/javascript">
 
-		function getAuthorData(url, userObject){
-		  $.ajax({
-		    type: 'GET',
-		    url: url,
-		    success: function(profileContent){
-					console.log(profileContent);
-        var Displayname = document.createElement("p");
-				Displayname.innerHTML = "Displayname : "+ profileContent.displayName;
-				var profile1 = document.getElementById("profile1");
-				profile1.appendChild(Displayname);
+    function getAuthorData(url, userObject){
+      $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(profileContent){
+          console.log(profileContent);
+          var Displayname = document.createElement("p");
+          Displayname.innerHTML = "Displayname : "+ profileContent.displayName;
+          var profile1 = document.getElementById("profile1");
+          profile1.appendChild(Displayname);
 
-        // var ProfileId = document.createElement("p");
-        // ProfileId.innerHTML = "Profile ID : "+ profileContent.id;
-        // var profile1 = document.getElementById("profile1");
-        // profile1.appendChild(ProfileId);
+          // var ProfileId = document.createElement("p");
+          // ProfileId.innerHTML = "Profile ID : "+ profileContent.id;
+          // var profile1 = document.getElementById("profile1");
+          // profile1.appendChild(ProfileId);
 
-				var Bio = document.createElement("p");
-				Bio.innerHTML = "Bio : "+ profileContent.bio;
-				var profile1 = document.getElementById("profile1");
-				profile1.appendChild(Bio);
+          var Bio = document.createElement("p");
+          Bio.innerHTML = "Bio : "+ profileContent.bio;
+          var profile1 = document.getElementById("profile1");
+          profile1.appendChild(Bio);
 
-				var Host = document.createElement("p");
-				Host.innerHTML = "Host : "+ profileContent.host;
-				var profile1 = document.getElementById("profile1");
-				profile1.appendChild(Host);
+          var Host = document.createElement("p");
+          Host.innerHTML = "Host : "+ profileContent.host;
+          var profile1 = document.getElementById("profile1");
+          profile1.appendChild(Host);
 
-				var GitHub = document.createElement("p");
-				GitHub.innerHTML = "GitHub : "+ profileContent.github;
-				var profile1 = document.getElementById("profile1");
-				profile1.appendChild(GitHub);
+          var GitHub = document.createElement("p");
+          GitHub.innerHTML = "GitHub : "+ profileContent.github;
+          var profile1 = document.getElementById("profile1");
+          profile1.appendChild(GitHub);
 
-				var Url = document.createElement("p");
-				Url.innerHTML = "Url : "+ profileContent.url;
-				var profile1 = document.getElementById("profile1");
-				profile1.appendChild(Url);
+          var Url = document.createElement("p");
+          Url.innerHTML = "Url : "+ profileContent.url;
+          var profile1 = document.getElementById("profile1");
+          profile1.appendChild(Url);
 
-				if ("{{UserProfile.author_id}}"==="{{userprofile.author_id}}"){
-					//alert("yes!!");
-					var EditButtonDiv = document.createElement("div");
-					var EditButton = document.createElement("a");
-					EditButton.innerHTML = "Edit Profile";
-					EditButton.href = "/accounts/profile/edit/";
-					EditButton.style = "color:red;";
-					var profile1 = document.getElementById("profile1");
-					EditButtonDiv.appendChild(EditButton);
-          profile1.appendChild(EditButtonDiv);
-				}
-		    }
-		   });
-		 }
-		// function getProfile(url){
-		// 	//let url = "/author"+author_id;
-		// 	fetch(url,{
-		// 		method:"GET",
-    //   	credentials:"same-origin",
-    //   	body:JSON.stringify(data),
-    // 		headers:{
-    //   		"Content-Type":"application/json",
-    //     	'X-CSRFToken': Cookies.get('csrftoken')
-    //   	},
-		//
-		// 	})
-		// };
+          if ("{{UserProfile.author_id}}"==="{{userprofile.author_id}}"){
+            var EditButtonDiv = document.createElement("div");
+            var EditButton = document.createElement("a");
+            EditButton.innerHTML = "Edit Profile";
+            EditButton.classList.add("btn");
+            EditButton.classList.add("btn-default");
+            EditButton.href = "/accounts/profile/edit/";
+            var profile1 = document.getElementById("profile1");
+            EditButtonDiv.appendChild(EditButton);
+            profile1.appendChild(EditButtonDiv);
+          }
+          else {
+            var FollowButtonDiv = document.createElement("div");
+            var FollowButton = document.createElement("button");
+            FollowButton.classList.add("btn");
+            FollowButton.classList.add("btn-default");
+            var profile1 = document.getElementById("profile1");
 
-		//getProfile("/author/<str:author_id>/");
+            data = {
+              "query": "friendrequest",
+              "author": {
+                "id": "{{ userprofile.url }}",
+                "host": "{{ userprofile.host }}",
+                "displayName": "{{ userprofile.displayName }}",
+                "url": "{{userprofile.url}}"
+              },
+              "friend": {
+                "id": profileContent.url,
+                "host": profileContent.host,
+                "displayName": profileContent.displayName,
+                "url": profileContent.url
+              }
+            }
 
-		getAuthorData("/author/{{UserProfile.author_id}}/")
-		</script>
-<!--
-	<p class="login-title" style="font-size: 2.7em">Profile</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Displayname : {{ userprofile.displayName }} </p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Profile ID :  {{ userprofile.author_id}}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Bio :  {{ userprofile.bio }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Host :  {{ userprofile.host }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> GitHub :  {{ userprofile.github }}</p>
-	<p class="profile" style="font-size: 1.3em; font-family:Muli"> Url :  {{ userprofile.url }}</p>
-	<br>
+            if ("{{ followExists }}" === "true") {
+              FollowButton.innerHTML = "UnFollow";
+              FollowButton.onclick = unfollowrequest 
+            }
+            else {
+              FollowButton.innerHTML = "Follow";
+              FollowButton.onclick = friendrequest
+            }
+            
+            function unfollowrequest() {
+              fetch('/unfollowrequest',
+                {
+                  method: "post",
+                  headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': Cookies.get('csrftoken')
+                  },
+                  body: JSON.stringify(data)
+                });
+              FollowButton.innerHTML = "Follow"
+              FollowButton.onclick = friendrequest
+            }
 
-	{%if thisUser.author_id == userprofile.author_id%}
-		<a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+            function friendrequest() {
+              fetch('/friendrequest',
+                {
+                  method: "post",
+                  headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': Cookies.get('csrftoken')
+                  },
+                  body: JSON.stringify(data)
+                });
+              FollowButton.innerHTML = "UnFollow"
+              FollowButton.onclick = unfollowrequest 
+            }
 
-	{%elif not thisUser.author_id%}
+            FollowButtonDiv.appendChild(FollowButton);
+            profile1.appendChild(FollowButtonDiv);
+          }
+        }
+      });
+    }
+
+
+
+getAuthorData("/author/{{UserProfile.author_id}}/")
+  </script>
+  <!--
+    <p class="login-title" style="font-size: 2.7em">Profile</p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> Displayname : {{ userprofile.displayName }} </p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> Profile ID :  {{ userprofile.author_id}}</p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> Bio :  {{ userprofile.bio }}</p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> Host :  {{ userprofile.host }}</p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> GitHub :  {{ userprofile.github }}</p>
+    <p class="profile" style="font-size: 1.3em; font-family:Muli"> Url :  {{ userprofile.url }}</p>
+    <br>
+
+    {%if thisUser.author_id == userprofile.author_id%}
     <a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
 
-  {%elif is_following%}
+    {%elif not thisUser.author_id%}
+    <a class="btn btn-default" href="/accounts/profile/edit">Edit Profile</a>
+
+    {%elif is_following%}
     <form action="{% url 'unfollowrequest' pk=is_following.pk %}" data-method="DELETE" method="POST">
-      {%  csrf_token %}
-      <input id="DeleteButton" type="submit" class="btn btn-default" value="UnFollow">
+    {%  csrf_token %}
+    <input id="DeleteButton" type="submit" class="btn btn-default" value="UnFollow">
     </form>
--->
-	<!-- {%else%} -->
-		<input id="FollowButton" type="button" class="btn btn-default" value="Follow">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <script type="text/javascript"}>
-      document.getElementById("FollowButton").onclick = updateRelation;
+  -->
+  <!-- {%else%} -->
+  <input id="FollowButton" type="button" class="btn btn-default" value="Follow">
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script type="text/javascript"}>
+    document.getElementById("FollowButton").onclick = updateRelation;
 
-      data = {
-                "query": "friendrequest",
-                "author": {
-                  "id": "{{ thisUser.author_id }}",
-                  "host": "",
-                  "displayName": "{{ thisUser.displayName }}",
-                  "url": ""
-                },
-                "friend": {
-                  "id": "{{ userprofile.author_id }}",
-                  "host": "",
-                  "displayName": "{{ userprofile.displayName }}",
-                  "url": ""
-                }
-              }
+data = {
+  "query": "friendrequest",
+  "author": {
+    "id": "{{ thisUser.author_id }}",
+    "host": "",
+    "displayName": "{{ thisUser.displayName }}",
+    "url": ""
+  },
+  "friend": {
+    "id": "{{ userprofile.author_id }}",
+    "host": "",
+    "displayName": "{{ userprofile.displayName }}",
+    "url": ""
+  }
+}
 
-      function updateRelation(){
-        fetch('/friendrequest',
-          {
-            method: "post",
-            headers: {
-              "Content-Type": "application/json",
-              'X-CSRFToken': Cookies.get('csrftoken')
-            },
-            body: JSON.stringify(data)
-          });
+function updateRelation(){
+  fetch('/friendrequest',
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        'X-CSRFToken': Cookies.get('csrftoken')
+      },
+      body: JSON.stringify(data)
+    });
 
-        if (document.getElementById("FollowButton").value == "Follow"){
-          document.getElementById("FollowButton").value="Following";
-          document.getElementById("FollowButton").disable=true;
-        }
-        else if(document.getElementById("FollowButton").value == "Following"){
-          document.getElementById("FollowButton").disable=true;
-        }
-      }
-		</script>
+  if (document.getElementById("FollowButton").value == "Follow"){
+    document.getElementById("FollowButton").value="Following";
+    document.getElementById("FollowButton").disable=true;
+  }
+  else if(document.getElementById("FollowButton").value == "Following"){
+    document.getElementById("FollowButton").disable=true;
+  }
+}
+  </script>
 
 </div>
 
