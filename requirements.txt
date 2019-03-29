@@ -10,3 +10,4 @@ coreapi
 django-extra-fields
 Pillow
 drf_yasg
+django-cors-headers

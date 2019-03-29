@@ -59,13 +59,17 @@
 
   // send a GET request to server API for Post data (in JSON format)
   function getPostData(url){
-    $.ajax({
-      type: 'GET',
-      url: url,
-      success: function(author_post_response){
-        console.log(author_post_response);
+    fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization":"Basic "+ btoa("team14:team14"),
+          "Content-Type": "application/json",
+          "X-CSRFToken": getToken(),
+          "X-Request-User-ID" : "{{userprofile.url}}",
+        },
+    }).then(function(response) {
+      response.json().then(function(author_post_response) {
         $.each(author_post_response.posts, function(i, post){
-          // console.log(post);
           // following would be creating elements and render them
 
           var Post1stOutterDiv = document.createElement("div");
@@ -288,9 +292,9 @@
           document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
           showInMarkdown();
           // loadImage();
-        });
-      }
-    });
+        })
+      })
+    })
   }
   //reference answered by kodmasin from https://stackoverflow.com/questions/1795701/django-reverse-for-javascript
   function generete_some_url(id){
@@ -339,6 +343,7 @@
                   method: "POST",
                   body: JSON.stringify(data),
                   headers: {
+                      "Authorization":"Basic "+ btoa("team14:team14"),
                       "Content-Type": "application/json",
                       "X-CSRFToken": getToken()
 
@@ -386,6 +391,19 @@
   // }
 
   // call the function the send GET request for Post data
+
+  fetch('/externalendpoints',
+        {
+          method: "GET",
+          headers: {
+            "X-CSRFToken": getToken(),
+          },
+        }).then(res => res.json())
+        .then(resp => {
+          for (server in resp) {
+            getPostData(resp[server]["server_url"] + 'posts/?size=10')
+          }
+        });
 
   getPostData("{{ author_post_api_url }}?size=10");
 

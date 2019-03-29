@@ -64,6 +64,15 @@ class Posts(APIView):
     def get(self, request):
         resp = {}
 
+        if 'HTTP_AUTHORIZATION' not in request.META:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        creds = request.META['HTTP_AUTHORIZATION']
+
+        uname, pwd = creds.split()[-1].split(':')
+
+        print(uname, pwd)
+
         posts = Post.objects.filter(visibility = "PUBLIC").all().order_by('-published')
 
         count = len(posts)
@@ -466,6 +475,8 @@ class ExternalEndpoints(APIView):
     """
     def get(self, request):
         endpoints = ExternalServer.objects.all()
+        serializer = ExternalServerSerializer(endpoints, many=True)
+        return Response(serializer.data)
 
 
 def home(request):
