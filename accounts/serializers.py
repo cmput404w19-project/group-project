@@ -48,7 +48,7 @@ class PostSerializer(serializers.ModelSerializer):
         return None # TODO figure out what size should be determined by
 
     def get_next(self, obj):
-        return obj.source + '/comments'
+        return str(obj.host) + 'posts/'+ str(obj.post_id) +'/comments'
 
     def get_comments(self, obj):
         return []
@@ -120,7 +120,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = ('requestedBy_id', 'requestedTo_id', 'request_status')
+        fields = ('requestedBy_name','requestedBy_url', 'requestedTo_url', 'request_status')
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:

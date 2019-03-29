@@ -10,11 +10,11 @@
     <!-- Middle Column -->
     <div class="w3-col" style="position:relative">
       <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friend Requests</p>
-      {%for friend in flist%}
+      {%for friend in follower%}
       <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%"><br>
 
         <div class = "friend">
-          <a class="a-dec2" href="author/{{friend.displayName}}">{{friend.displayName}}
+          <a class="a-dec2" href="author/{{friend.displayName}}">{{friend.requestedBy_name}}
 
           </a>
         </div>
@@ -23,6 +23,7 @@
           <a href="#" class="btn btn-default">Accept</a>
           <a href="#" class="btn btn-default">Decline</a>
         </div>
+
       </div>
       {%endfor%}
       <!-- End Middle Column -->
