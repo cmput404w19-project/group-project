@@ -42,7 +42,7 @@
 <div class="post_container" style="margin-left:10%; margin-top:2%; margin-right:20%">
     <p class="login-title" style="font-size: 2.7em; margin-left: 2em">New Post</p>
 
-    <form action="{% url 'make_post' %}" method="POST">
+    <form action="/author/posts/" method="POST">
         {% csrf_token %}
         <div class="part" style="font-size: 1.2em; font-family:Muli">
             <div>
@@ -105,7 +105,7 @@
                     <img id="image64" height="300" >
                 </div>
             </div>
-            <div class="upload"
+            <div class="upload">
                 <div id="uploadFile" style="display:none">
                     <label class="upload_label" for="file">Please choose your file: </label>
                     <input id="file" type="file"  >

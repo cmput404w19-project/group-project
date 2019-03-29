@@ -96,8 +96,8 @@ urlpatterns = [
     # path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
 
     # # the render of making new post
-    # path(r'author/makepost/', views.MakePost().as_view(), name='render_post'),
-    # path(r'author/makepost', views.MakePost().as_view(), name='render_post'),
+    path(r'author/render_post/', views.MakePost().as_view(), name='render_post'),
+    path(r'author/render_post', views.MakePost().as_view(), name='render_post'),
 
     # # author endpoints
     # path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
@@ -110,8 +110,8 @@ urlpatterns = [
     # path('posts/<str:post_id>/comment/', views.Comments().as_view()),
     # path(r'posts/<str:post_id>', views.PostById().as_view()),
 
-    # path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
-    # path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
+    path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
+    path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
 
 
 
