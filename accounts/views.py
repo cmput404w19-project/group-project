@@ -64,9 +64,6 @@ class Posts(APIView):
     def get(self, request):
         resp = {}
 
-        if 'HTTP_AUTHORIZATION' not in request.META:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
         posts = Post.objects.filter(visibility = "PUBLIC").all().order_by('-published')
 
         count = len(posts)
@@ -159,9 +156,6 @@ class AuthorPosts(APIView):
         # TODO add friend stuff to this, will just do non-friend for now
 
         # TODO add post_visible_to stuff
-
-        if 'HTTP_AUTHORIZATION' not in request.META:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         count = len(posts)
         resp['count'] = count
