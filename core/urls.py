@@ -82,12 +82,12 @@ urlpatterns = [
     path(r'friendrequest/', views.FriendRequest().as_view()),
 
     #unfollow
-    # re_path(r'unfollowrequest/(?P<pk>[0-9]+)?$', views.UnFollow().as_view(), name="unfollowrequest"),
+    path(r'unfollowrequest/', views.UnFollow().as_view()),
 
     # all public
     # TODO: it will change the path of makeing post.
     #re_path(r'posts/?$', views.PublicPosts().as_view()),
-    # path(r'posts/', views.PublicPosts().as_view()),
+    # path(r'posts/', views.PublicPosts().as_view(),
     # path(r'posts', views.PublicPosts().as_view()),
 
     # # handle get/post for author posting

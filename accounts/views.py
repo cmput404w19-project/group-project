@@ -44,6 +44,18 @@ DEBUG = False
 # These are the views that are used for the REST API
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# given author_url finds all friends
+def find_friends(author_url):
+    following = Follow.objects.filter(following_url=author_url).all()
+    following_list = FollowSerializer(following, many=True)
+    following_url_list = list(following_list.data[i]['follower_url'] for i in range(len(following_list.data)))
+
+    followers = Follow.objects.filter(follower_url=author_url).all()
+    follower_list = FollowSerializer(followers, many=True)
+    follower_url_list = list(follower_list.data[i]['following_url'] for i in range(len(follower_list.data)))
+
+    return list(set(following_url_list) & set(follower_url_list))
+
 class Posts(APIView):
     """
     get:
@@ -68,7 +80,6 @@ class Posts(APIView):
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
 
-
         next = None;
         previous = None;
 
@@ -85,7 +96,12 @@ class Posts(APIView):
             comments = Comment.objects.filter(post_id=post['id']).all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
-            post['comments'] = GETCommentSerializer(comments, many=True).data
+            comments = GETCommentSerializer(comments, many=True).data
+            for comment in comments:
+                comment['author']['friends'] = find_friends(comment['author']['id'])
+
+            post['comments'] = comments
+            post['author']['friends'] = find_friends(post['author']['id'])
 
         resp['posts'] = serializer.data
 
@@ -99,14 +115,33 @@ class PostById(APIView):
     get a post by it's {post_id}
     """
     def get(self, request, post_id):
+        resp = {'query': 'getPost'}
         posts = Post.objects.filter(post_id=post_id).first()
         serializer = PostSerializer(posts)
-        return Response(
-            {
-                "query": "getPost",
-                "post" : serializer.data,
-                }
-            )
+
+        pageSize = request.GET.get('size')
+        if not pageSize:
+            pageSize = 50
+
+        pageSize = int(pageSize)
+
+        post = serializer.data
+
+        post['size'] = pageSize
+        comments = Comment.objects.filter(post_id=post['id']).all()
+        commentPaginator = Paginator(comments, pageSize)
+        comments = commentPaginator.get_page(0)
+        comments = GETCommentSerializer(comments, many=True).data
+
+        for comment in comments:
+            comment['author']['friends'] = find_friends(comment['author']['id'])
+
+        post['comments'] = comments
+        post['author']['friends'] = find_friends(post['author']['id'])
+
+        resp['post'] = post
+
+        return Response(resp)
 
 class AuthorPosts(APIView):
     """
@@ -152,14 +187,18 @@ class AuthorPosts(APIView):
 
         serializer = PostSerializer(posts, many=True)
         
-        # paginate comments
+        # paginate comments and add friend list
         for post in serializer.data:
             post['size'] = pageSize
             comments = Comment.objects.filter(post_id=post['id']).all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
-            post['comments'] = GETCommentSerializer(comments, many=True).data
-
+            comments = GETCommentSerializer(comments, many=True).data
+            for comment in comments:
+                comment['author']['friends'] = find_friends(comment['author']['id'])
+            post['comments'] = comments
+            post['author']['friends'] = find_friends(post['author']['id'])
+       
         resp['posts'] = serializer.data
 
         resp['query'] = 'posts'
@@ -180,7 +219,6 @@ class AuthorPostsById(APIView):
 
         request_user = UserProfile.objects.filter(user_id=request.user).first()
         author = UserProfile.objects.filter(author_id=author_id).first()
-        print(UserProfile.objects.first().author_id)
         posts = Post.objects.filter(user_id = author).filter(visibility="PUBLIC").all()
 
         # TODO add friend stuff to this
@@ -211,14 +249,18 @@ class AuthorPostsById(APIView):
             resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
-        
-        # paginate comments
+
+         # paginate comments and add friend list
         for post in serializer.data:
             post['size'] = pageSize
             comments = Comment.objects.filter(post_id=post['id']).all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
-            post['comments'] = GETCommentSerializer(comments, many=True).data
+            comments = GETCommentSerializer(comments, many=True).data
+            for comment in comments:
+                comment['author']['friends'] = find_friends(comment['author']['id'])
+            post['comments'] = comments
+            post['author']['friends'] = find_friends(post['author']['id'])
 
         resp['posts'] = serializer.data
 
@@ -264,6 +306,9 @@ class CommentsByPostId(APIView):
 
         serializer = GETCommentSerializer(comments, many=True)
         
+        for comment in serializer.data:
+            comment['author']['friends'] = find_friends(comment['author']['id'])
+
         resp['comments'] = serializer.data
 
         resp['query'] = 'comments'
@@ -272,18 +317,6 @@ class CommentsByPostId(APIView):
 
     def post(self, request, post_id):
         return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
-
-# given author_url finds all friends
-def find_friends(author_url):
-    following = Follow.objects.filter(following_url=author_url).all()
-    following_list = FollowSerializer(following, many=True)
-    following_url_list = list(following_list.data[i]['follower_url'] for i in range(len(following_list.data)))
-
-    followers = Follow.objects.filter(follower_url=author_url).all()
-    follower_list = FollowSerializer(followers, many=True)
-    follower_url_list = list(follower_list.data[i]['following_url'] for i in range(len(follower_list.data)))
-
-    return list(set(following_url_list) & set(follower_url_list))
 
 
 class FriendListByAuthorId(APIView):
@@ -299,7 +332,7 @@ class FriendListByAuthorId(APIView):
         
         # TODO get the URL from the request, combine with author_id
 
-        resp['authors'] = find_friends('http://localhost:8000/authors/a090224a-05a4-42fb-8ea9-5256c806d14a')
+        resp['authors'] = find_friends('http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a')
 
         resp['query'] = 'friends'
 
@@ -319,8 +352,8 @@ class CheckFriendStatus(APIView):
         
         # TODO get the URL from the request and turn it into the author
 
-        author1url = 'http://localhost:8000/authors/a090224a-05a4-42fb-8ea9-5256c806d14a'
-        author2url = 'http://localhost:8000/authors/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
+        author1url = 'http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
+        author2url = 'http://localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
         
         author1friends = find_friends(author1url)
         if author2url in author1friends:
@@ -362,8 +395,6 @@ class AuthorProfile(APIView):
         profile = UserProfile.objects.filter(author_id=author_id).first()
         resp = GETProfileSerializer(profile).data
 
-        print(resp['id'])
-        print(find_friends('http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'))
         resp['friends'] = find_friends(resp['id'])
 
         return Response(resp)
@@ -402,24 +433,6 @@ def home(request):
         # not login
         return render(request, 'landingPage.html')
 
-@api_view()
-def friend_list(request):
-
-    # the currently authenticated user
-    user = UserProfile.objects.filter(user_id = request.user).first()
-
-    friendlist = find_friends(user)
-
-    # a list of author objects of the friends
-    friends = list()
-
-    # populate the list of friends with the json of the authors
-    for author_id in friendlist:
-        f = UserProfile.objects.filter(author_id = author_id).first()
-        friends.append(GETProfileSerializer(f).data)
-    context = {'flist': friends, 'userprofile':user}
-    return render(request,'friends.html', context)
-
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
@@ -441,7 +454,6 @@ class UnFollow(APIView):
     def post(self, request, pk):
         obj = Follow.objects.get(pk=pk)
         name = obj.following_id.author_id
-        #print(name)
         obj.delete()
         return redirect('/author/' + str(name))
 
@@ -522,7 +534,7 @@ def GetAuthorProfile(request, author_id):
     return render(request, 'profile.html', content)
 
 
-class PostById(APIView):
+class PostByIdOld(APIView):
     """
     get:
     Get post for given {post_id}
