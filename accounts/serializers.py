@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from drf_extra_fields.fields import Base64ImageField
 from drf_extra_fields.fields import Base64FileField
 import datetime
+from urllib import request
+import json
 
 # Reference: django rest framework documentation
 # https://www.django-rest-framework.org
@@ -109,9 +111,29 @@ class GETCommentSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         # just use this tmp not to change later
         # TODO handle user not on server
+
         user_id = obj.user_id.rstrip("/").split("/")[-1]
         comment_author = UserProfile.objects.filter(author_id=user_id).first()
         return GETProfileSerializer(comment_author).data
+
+        # Reference:
+        # https://www.kancloud.cn/thinkphp/python-guide/39426
+        #user = User.objects.filter(username=obj.user_id).first()
+        # with request.urlopen(obj.user_id) as f:
+        #     data = f.read().decode('utf-8')
+        #     print(obj.user_id)
+        #     print('Status:', f.status, f.reason)
+        #     print('Data:', data)
+        #     data = json.loads(data)
+        #     #print(data)
+        #     #print(data['id'])
+        #     #print(data['host'])
+        #     #print(data['displayName'])
+        #     #print(data['url'])
+        #     #print(data['github'])
+        #     #comment_author = UserProfile.objects.filter(user_id=user).first()
+        #     return data
+
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):
