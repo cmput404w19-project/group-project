@@ -88,8 +88,12 @@ urlpatterns = [
     path(r'posts/<str:post_id>/comments/', views.CommentsByPostId().as_view()),
     path(r'posts/<str:post_id>/comments', views.CommentsByPostId().as_view()),
 
-    path(r'friendrequest/', views.FriendRequest().as_view()),
-    path(r'friendrequest', views.FriendRequest().as_view()),
+    path(r'friendrequest/', views.FriendRequestNew().as_view()),
+    path(r'friendrequest', views.FriendRequestNew().as_view()),
+
+    path(r'getFriendrequest/', views.getFriendRequest),
+    path(r'getFriendrequest', views.getFriendRequest),
+
 
     #unfollow
     path(r'unfollowrequest/', views.UnFollow().as_view()),
