@@ -604,7 +604,7 @@ def getFriendRequest(request):
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
     print(requestuser.url)
     #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
-    follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all().values_list('requestedBy_url', flat=True)
+    follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
     print(follower)
     content["follower"] = follower
 
