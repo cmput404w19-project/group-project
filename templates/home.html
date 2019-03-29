@@ -238,7 +238,7 @@
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
               window.location.href = '/#'+String(post.id);
-              window.location.reload();
+              //window.location.reload();
           } ;
 
           commentListDiv.appendChild(PostCommentInput);
@@ -322,7 +322,11 @@
           //let slashes = protocol.concat("//");
           //let host = slashes.concat(window.location.hostname);
           //let post_host = post.author.host;
-
+          //alert(user_id)
+          //alert(user_host)
+          //alert(user_displayName)
+          //alert(user_url)
+          //alert(user_github)
           if (content == ""){
               alert("Comment is Empty!")
           }
@@ -343,36 +347,35 @@
                           "github": user_github
                       },
                       "comment": content,
-                      "contentType":"text/plain",
+                      "contentType":"text/plain"
                       //"published":"2015-03-09T13:07:04+00:00",
                       //"id":"de305d54-75b4-431b-adb2-eb6b9e546013"
-                  },
+                  }
 
               };
-              alert(data)
+              //alert(data)
 
-              current_host = location.protocol + "//" + location.host
+              //current_host = location.protocol + "//" + location.host
               //alert(current_host);
-              let url = post.origin+"/comments";
+              //let url = post.origin+"/comments";
+              let url = "/posts/"+post.id+"/comments";
               //alert(url);
-              alert(Cookies.get('csrftoken'));
-              alert(getToken());
-
-              fetch(url,
-              {
+              //alert(getToken())
+              return fetch("/posts/be26b2ee-2f24-48bd-8dce-f30a7b94346e/comments", {
                   method: "POST",
                   body: JSON.stringify(data),
 
                   headers: {
-                      "Content-Type": 'application/json',
-                      "X-CSRFToken": 'RvgrYMzcwX5YnHePJm9kQ9BwRNgJvyZTZW4sgcJqUGo8gqm4kU6fchW6yu2e3JlR',
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": getToken()
 
                   },
-                  credentials: 'same-origin'
+                  //credentials: "include"
               }).then(res => res.json())
               .then(response => {
                   console.log('Success:', JSON.stringify(response));
                   document.getElementById("input"+post.id).value = "";
+                  window.location.reload(0);
               })
               .catch(error => console.error('Error:', error));
           }
