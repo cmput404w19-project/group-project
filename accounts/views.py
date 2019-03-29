@@ -201,21 +201,15 @@ class AuthorPosts(APIView):
             comments = Comment.objects.filter(post_id=post['id']).order_by("published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
-            print('--------------')
             comments = GETCommentSerializer(comments, many=True).data
-
-            # for comment in comments:
-            #     print('*********')
-            #     print(comment)
-            #     comment['author']['friends'] = find_friends(comment['author']['id'])
-
+            for comment in comments:
+                comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
             # post['author']['friends'] = find_friends(post['author']['id'])
        
         resp['posts'] = serializer.data
 
         resp['query'] = 'posts'
-        #print(resp)
         return Response(resp)
 
     def post(self, request):
@@ -225,16 +219,13 @@ class AuthorPosts(APIView):
         # http://www.chenxm.cc/article/244.html
         # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
         #profile = get_object_or_404(Profile, pk=pk)
-        #print(request.data.user_id)
         new_data = request.data.copy()
         user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
-        #print(user_id)
         new_data.__setitem__("user_id", user_id)
         #new_data.__setitem__("source", source)
         host = request.scheme + "://" + request.get_host() +  "/"
         new_data["host"] = host
         serializer = PostSerializer(data=new_data)
-        #print(serializer)
 
         if not serializer.is_valid():
             return Response({'serializer': serializer})
@@ -353,10 +344,12 @@ class CommentsByPostId(APIView):
         return Response(resp)
     def post(self, request, post_id):
         #data = request.data
-        #print(data)
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         #post = Post.objects.filter(post_id=post_id)
+    
+        print(request.data)
+
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
         comment_data['content'] = request.data['comment']['comment']
@@ -365,10 +358,9 @@ class CommentsByPostId(APIView):
         print('$$$$$$$$$$$$$$$$$$$$$$$$')
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
-        #comment_data['published'] = request.data['comment']['published']
-        #print('**********************')
-        #print(comment_data)
         failed = False
+
+        print(comment_data)
 
         comment_serializer = CommentSerializer(data=comment_data)
 
@@ -376,6 +368,7 @@ class CommentsByPostId(APIView):
             comment_serializer.save()
         else:
             failed = True
+
         if not failed:
             return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
         else:
@@ -437,19 +430,14 @@ class FriendRequest(APIView):
     Make a friend request
     """
     def post(self, request):
-        print("hehehehehhehhehehheheheheheheheheheh")
         data = {}
-        print(request.data)
         data['follower_url'] = request.data['author']['url']
-        print(data['follower_url'])
         data['following_url'] = request.data['friend']['url']
-        print(data['following_url'])
         follow_serializer = FollowSerializer(data=data)
 
         if follow_serializer.is_valid():
             follow_serializer.save()
         else:
-            print("is not valid")
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
@@ -491,17 +479,12 @@ def home(request):
         if len(User.objects.filter(id=request.user.id)) != 1:
             return HttpResponseNotFound("The user information is not found")
         # get userprofile information
-        #print(request.user.user_id)
         
         user = UserProfile.objects.filter(user_id=request.user).first()
         domain = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
-        if user.url == "":
-            user.url = domain
-            user.save()
-        if user.host == "":
-            user.host = "http://"+str(request.get_host())
-            user.save()
-        context["userprofile"] = user
+        user.url = domain
+        user.save()
+        context["userprofile"] = UserProfile.objects.filter(user_id=request.user).first()
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
@@ -581,52 +564,12 @@ class FriendRequestOld(APIView):
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
         #return render(request,'friend_requests.html', context)
 
-class AuthorProfileold(APIView):
-
-    def get(self, request, author_id):
-        profileContent = dict()
-        #print(UserProfile.objects.filter(author_id = author_id).first())
-        profileContent['displayName'] = UserProfile.objects.filter(author_id = author_id).first().displayName
-        profileContent['author_id'] = UserProfile.objects.filter(author_id = author_id).first().author_id
-        profileContent['bio'] = UserProfile.objects.filter(author_id = author_id).first().bio
-        profileContent['host'] = UserProfile.objects.filter(author_id = author_id).first().host
-        profileContent['github'] = UserProfile.objects.filter(author_id = author_id).first().github
-        profileContent['url'] = UserProfile.objects.filter(author_id = author_id).first().url
-        serializer_profile = GETProfileSerializer(profileContent)
-        response = {"query":"profile", "profile":serializer_profile.data}
-        return Response(response)
-
-    """
-    get:
-    Get the profile for a given {author_id}
-    """
-'''
-    def get(self, request, author_id):
-        #here author_id is a displayname, we may change it later!!!
-        # now the author_id is uuid
-        thisUser = UserProfile.objects.filter(user_id = request.user).first()
-        postUser = UserProfile.objects.filter(author_id = author_id).first()
-        author_id1 = thisUser.author_id
-        author_id2 = postUser.author_id
-        if DEBUG:
-            print(thisUser)
-            print(postUser)
-            print(author_id)
-        is_following = Follow.objects.filter(follower_id = author_id1, following_id = author_id2).first()
-        if DEBUG:
-            print(is_following)
-        args = {'userprofile':postUser,'thisUser': thisUser, 'is_following': is_following} # pass in the whole user object
-        return render(request, 'profile.html', args)
-'''
-
 def GetAuthorProfile(request, author_id):
     user = UserProfile.objects.filter(author_id=author_id).first()
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
     content = dict()
     content["UserProfile"] = user # this is the requested user profile
-    print(user.url)
     # please do not change it.. I know it is kinda confusing
-    print(requestuser.url)
     content["userprofile"] = requestuser # this is the request user profile
 
     follow = Follow.objects.filter(follower_url=requestuser.url, following_url=user.url)
@@ -636,21 +579,6 @@ def GetAuthorProfile(request, author_id):
         content["followExists"] = 'true'
 
     return render(request, 'profile.html', content)
-
-
-class PostByIdOld(APIView):
-    """
-    get:
-    Get post for given {post_id}
-    """
-    def get(self, request, post_id):
-        post = Post.objects.filter(post_id = post_id).all().first()
-        commentList=[]
-        comments = Comment.objects.filter(post_id = post_id).all()
-        for comment in comments:
-            commentList.append({"comment":comment})
-        context = {'post': post, 'commentList': commentList}
-        return render(request, 'showPost.html', context)
 
 
 class postDelete(APIView):
@@ -691,154 +619,6 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
-
-class Comments(APIView):
-    """
-    get:
-    return all comments for a given {post_id}
-    post:
-    create new comment on {post_id}
-    """
-    def get(self, request, post_id):
-        comments = Comment.objects.filter(post_id = post_id).order_by("published").all()
-        pageSize = request.GET.get('size')
-        commentSize = len(comments)
-        if not pageSize:
-            pageSize = 50
-        paginator = Paginator(comments,pageSize)
-        comments = paginator.get_page(request.GET.get('page'))
-        commentSerializer = GETCommentSerializer(comments, many=True)
-        response = {"query":"comments", "count":commentSize, "comments":commentSerializer.data,"size":pageSize}
-        if comments.has_next():
-            response["next"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
-        if comments.has_previous():
-            response["previous"] = str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
-        return Response(response)
-    '''
-    def post(self, request, post_id):
-        form = CreateComment(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/#'+str(post_id))
-        return redirect('/')
-    '''
-
-
-    def post(self, request, post_id):
-        #data = request.data
-        #print(data)
-
-        comment_data = dict()
-        #comment_data['query'] == 'addcomment'
-        post = Post.objects.filter(post_id=post_id)
-        comment_data['user_id'] = request.data['comment']['author']['id']
-        comment_data['content'] = request.data['comment']['comment']
-        comment_data['post_id'] = post_id #request.data['post'].split(...)
-        comment_data['contentType'] = request.data['comment']['contentType']
-        #comment_data['published'] = request.data['comment']['published']
-
-        print(comment_data)
-        failed = False
-
-        comment_serializer = CommentSerializer(data=comment_data)
-
-        if comment_serializer.is_valid():
-            comment_serializer.save()
-        else:
-            failed = True
-        if not failed:
-            return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"success": True, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-class AuthorPostsOld(APIView):
-    """
-    get:
-    Get all posts visible to current user
-    post:
-    Create a new post as current user
-    """
-    def get(self, request):
-        """
-        here we need to return all the posts that are visible for the current user
-        This will work even if the request user is unknown or does not exist in our server
-        """
-        postList = []
-        # request user
-        user = UserProfile.objects.filter(user_id=request.user).first()
-        # PUBLIC post
-        #(This will return for the remote server request)
-        public_post = Post.objects.filter(visibility="PUBLIC").all()
-        postList += list(public_post)
-        # users own post
-        #(This will not return since we don't have inforamtion about remote user's post information)
-        own_post = Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all()
-        postList += list(own_post)
-        # see friends post  (private to friends)
-        #(This will return for the remote server request since there could be remote server user friends with our server user)
-        friends_userprofile = find_friends(user) # get a list of friends userprofile object
-        for friend in friends_userprofile:
-            # get all the friends private post
-            friendPrivatePosts = Post.objects.filter(visibility="FRIENDS", user_id=friend).all()
-            postList += list(friendPrivatePosts)
-        # see friends post's that is visible to me (private to certain users, and I am one of them who can see it)
-        #(This will return for the remote server request)
-        all_visible_post_object = PostVisibleTo.objects.filter(user_id=user.author_id).all()
-        for i in all_visible_post_object:
-            post = Post.objects.filter(post_id=i.post_id.post_id).first()
-            postList += list(post)
-
-        # TODO
-        # ask remotely to other servers for visible posts (must avoid duplicate posts)
-        # firend of friends (must avoid duplicate posts)
-
-
-        # sort all the post according to the publish time
-        # https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
-        # author: Triptych https://stackoverflow.com/users/43089/triptych
-        postList.sort(key=lambda post: post.published, reverse=True)
-        postSize = len(postList)
-        #
-        pageSize = request.GET.get('size')
-        if not pageSize:
-            pageSize = 50
-        paginator = Paginator(postList,pageSize)
-        postList = paginator.get_page(request.GET.get('page'))
-        # make the return JSON in the consistent format (also include all the post information including: comments,authors)
-        serializer_post = GETPostSerializer(postList, many=True)
-        response = {"query":"posts", "count":postSize, "posts":serializer_post.data, "size":pageSize}
-        if postList.has_next():
-            response["next"] = str(request.get_host())+"/author/posts?page="+str(postList.next_page_number())
-        if postList.has_previous():
-            response["previous"] = str(request.get_host())+"/author/posts?page="+str(postList.previous_page_number())
-
-        return Response(response)
-
-
-    def post(self, request):
-        # Reference
-        # https://www.django-rest-framework.org/tutorial/3-class-based-views/
-        # http://www.chenxm.cc/article/244.html
-        # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
-        #profile = get_object_or_404(Profile, pk=pk)
-        #print(request.data.user_id)
-        new_data = request.data.copy()
-        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
-        print(user_id)
-        new_data.__setitem__("user_id", user_id)
-        print(new_data)
-        serializer = PostSerializer(data=new_data)
-        print(serializer)
-
-        if not serializer.is_valid():
-            return Response({'serializer': serializer})
-        serializer.save()
-        return redirect('/')
-
-
 class MakePost(APIView):
     """
     get:
@@ -851,7 +631,6 @@ class MakePost(APIView):
     #login_url="/accounts/login/"
 
     def get(self, request):
-        #print(request.body)
         posts = Post.objects.all()
         serializer = PostSerializer()
         return Response({'serializer':serializer})

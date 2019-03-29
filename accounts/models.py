@@ -124,7 +124,8 @@ class Comment(models.Model):
     # comment id
     comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # author   Foreign key to user
-    user_id = models.URLField(default="")
+    # user_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    user_id = models.URLField()
     # comment
     content = models.CharField(max_length=100, default="")
     # contentType
