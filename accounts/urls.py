@@ -12,6 +12,7 @@ urlpatterns = [
     path('signup/', anonymous_required(view_function=views.SignUp.as_view(), redirect_to="/"), name='signup'),
     path('profile/edit/', login_required(views.edit_profile,  login_url="/accounts/login/"), name='edit_profile'),
     path('profile/<str:author_id>/', login_required(views.GetAuthorProfile, login_url="/accounts/login/"), name='profile'),
+    path('profile/author/<str:author_id>/', login_required(views.GetAuthorProfile, login_url="/accounts/login/"), name='postprofile'),
     #path('profile/post/', login_required(views.post_page, login_url="/accounts/login/"), name='post'),
     # path('friends/', login_required(views.friend_list, login_url="/accounts/login/"), name='friends'),
     path('friends/author/<str:author_id>/', views.AuthorProfile().as_view()),
