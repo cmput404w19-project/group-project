@@ -47,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
         return None # TODO figure out what size should be determined by
 
     def get_next(self, obj):
-        return obj.source + '/comments'
+        return str(obj.host) + 'posts/'+ str(obj.post_id) +'/comments'
 
     def get_comments(self, obj):
         return []
