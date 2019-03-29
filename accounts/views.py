@@ -210,7 +210,27 @@ class AuthorPosts(APIView):
 
     def post(self, request):
         # TODO implement post creation by API Call
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        # Reference
+        # https://www.django-rest-framework.org/tutorial/3-class-based-views/
+        # http://www.chenxm.cc/article/244.html
+        # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
+        #profile = get_object_or_404(Profile, pk=pk)
+        #print(request.data.user_id)
+        new_data = request.data.copy()
+        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
+        print(user_id)
+        new_data.__setitem__("user_id", user_id)
+        print(new_data)
+        serializer = PostSerializer(data=new_data)
+        print(serializer)
+
+        if not serializer.is_valid():
+            return Response({'serializer': serializer})
+        serializer.save()
+        # TODO Response cannot allow a redirect so just use redirect('/') now
+        return redirect('/')
+        #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
 
 class AuthorPostsById(APIView):
     """

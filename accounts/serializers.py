@@ -25,7 +25,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'title', 'source', 'origin', 'description', 'contentType',
         'author', 'content', 'visibility', 'categories', 'visibleTo', 'unlisted', 
-        'count', 'size', 'next', 'comments', 'published')
+        'count', 'size', 'next', 'comments', 'published', 'user_id')
         #read_only_fields = ('user_id',)
 
     def get_id(self, obj):
