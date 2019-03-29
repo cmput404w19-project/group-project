@@ -488,7 +488,7 @@ def home(request):
         
         user = UserProfile.objects.filter(user_id=request.user).first()
         if user.url == "":
-            user.url = domain
+            user.url = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
             user.save()
         if user.host == "":
             user.host = "http://"+str(request.get_host())
