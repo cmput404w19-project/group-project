@@ -88,7 +88,8 @@
           userprofile_name_a.classList.add("post-author-text");
           userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
           //userprofile_name_a.href = "/author/"+post.author.id;
-          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
+          //userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
+          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[2]+"/";
           userprofile_name_a.innerHTML = post.author.displayName;
           userprofile_name_a.id = "user_profile";
 
@@ -177,9 +178,9 @@
           var postID = document.createElement("p");
           postID.innerHTML = "postID: " + post.id;
           postID.style = "color:#c0c4c3";
-          
 
-           
+
+
           var commentListDiv = document.createElement("div");
           commentListDiv.class = "container";
           commentListDiv.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
@@ -222,7 +223,7 @@
           postComment.appendChild(thisName);
           commentListDiv.appendChild(postComment);
 
-          
+
 
 
           ///this shows comment button and input
@@ -243,7 +244,7 @@
 
           commentListDiv.appendChild(PostCommentInput);
           commentListDiv.appendChild(PostCommentButton);
-          
+
 
 
 
@@ -280,7 +281,7 @@
 
           Post2ndOutterDiv.appendChild(commentListDiv);
 
-          
+
 
 
 
