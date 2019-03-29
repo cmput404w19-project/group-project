@@ -343,6 +343,8 @@
           else{
               //alert(content);
               //alert(post_id);
+              //var time_now = new Date();
+              //alert(typeof(time_now))
               let data = {
                   "query": "addComment",
                   "post": post.origin,
@@ -351,7 +353,7 @@
                       "author":{
                           // ID of the author
                           "id": user_id,
-                          "host": user_host + '/',
+                          "host": user_host,
                           "displayName": user_displayName,
                           // url to the authors information
                           "url": user_url,
@@ -365,12 +367,14 @@
                   },
 
               };
+              alert(data)
 
-
-              let url = "/posts/"+post.id+"/comments/";
+              current_host = location.protocol + "//" + location.host
+              //alert(current_host);
+              let url = post.origin+"/comments";
               //alert(url);
-              //alert(Cookies.get('csrftoken'));
-              //alert(getToken());
+              alert(Cookies.get('csrftoken'));
+              alert(getToken());
 
               fetch(url,
               {
@@ -379,7 +383,7 @@
 
                   headers: {
                       "Content-Type": 'application/json',
-                      "X-CSRFToken": getToken()
+                      "X-CSRFToken": 'RvgrYMzcwX5YnHePJm9kQ9BwRNgJvyZTZW4sgcJqUGo8gqm4kU6fchW6yu2e3JlR',
 
                   },
                   credentials: 'same-origin'

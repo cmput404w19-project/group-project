@@ -88,6 +88,7 @@ class Post(models.Model):
     file64 = models.FileField(upload_to='usr_file/', default="")
     # refPost: a text post can ref to a image post
     refPost = models.CharField(max_length=200, default="")
+    host = models.URLField(default="")
 
 
     def __str__(self):
@@ -121,7 +122,7 @@ class Comment(models.Model):
     # comment id
     comment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # author   Foreign key to user
-    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user_id = models.URLField(default="")
     # comment
     content = models.CharField(max_length=100, default="")
     # contentType

@@ -196,8 +196,10 @@ class AuthorPosts(APIView):
             comments = Comment.objects.filter(post_id=post['id']).all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
+            print('--------------')
             comments = GETCommentSerializer(comments, many=True).data
             for comment in comments:
+                print(comment)
                 comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
             post['author']['friends'] = find_friends(post['author']['id'])
@@ -221,8 +223,8 @@ class AuthorPosts(APIView):
         print(user_id)
         new_data.__setitem__("user_id", user_id)
         #new_data.__setitem__("source", source)
-        origin = request.scheme + "://" + request.get_host() +  "/"
-        new_data["origin"] = origin
+        host = request.scheme + "://" + request.get_host() +  "/"
+        new_data["host"] = host
         print(new_data)
         serializer = PostSerializer(data=new_data)
         print(serializer)
@@ -342,9 +344,33 @@ class CommentsByPostId(APIView):
         resp['query'] = 'comments'
 
         return Response(resp)
-
     def post(self, request, post_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        #data = request.data
+        #print(data)
+        comment_data = dict()
+        #comment_data['query'] == 'addcomment'
+        post = Post.objects.filter(post_id=post_id)
+        user_url = request.data['comment']['author']['url']
+        comment_data['user_id'] = user_url
+        comment_data['content'] = request.data['comment']['comment']
+        comment_data['post_id'] = post_id #request.data['post'].split(...)
+        comment_data['contentType'] = request.data['comment']['contentType']
+        #comment_data['published'] = request.data['comment']['published']
+
+        print(comment_data)
+        failed = False
+
+        comment_serializer = CommentSerializer(data=comment_data)
+
+        if comment_serializer.is_valid():
+            comment_serializer.save()
+        else:
+            failed = True
+        if not failed:
+            return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"success": True, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
+        #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 
 class FriendListByAuthorId(APIView):
@@ -654,10 +680,11 @@ class Comments(APIView):
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         post = Post.objects.filter(post_id=post_id)
-        comment_data['user_id'] = request.data['comment']['author']['id'].split('/')[-1]
+        comment_data['user_id'] = request.data['comment']['author']['id']
         comment_data['content'] = request.data['comment']['comment']
-        comment_data['post_id'] = post_id #request.data['psot'].split(...)
+        comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
+        #comment_data['published'] = request.data['comment']['published']
 
         print(comment_data)
         failed = False
