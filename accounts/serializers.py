@@ -20,12 +20,13 @@ class PostSerializer(serializers.ModelSerializer):
     size = serializers.SerializerMethodField()
     next = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    origin = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('id', 'title', 'source', 'origin', 'description', 'contentType',
         'author', 'content', 'visibility', 'categories', 'visibleTo', 'unlisted', 
-        'count', 'size', 'next', 'comments', 'published')
+        'count', 'size', 'next', 'comments', 'published', 'user_id', 'host')
         #read_only_fields = ('user_id',)
 
     def get_id(self, obj):
@@ -52,6 +53,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_visibleTo(self, obj):
         return []
 
+    def get_origin(self, obj):
+        return str(obj.host) + 'posts/' + str(obj.post_id)
+
 
 class GETProfileSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField('get_author_id')
@@ -65,6 +69,27 @@ class GETProfileSerializer(serializers.ModelSerializer):
         return str(obj.host) + '/author/' + str(obj.author_id)
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    #comment = serializers.SerializerMethodField() # content
+    #id = serializers.SerializerMethodField('get_comment_id') #comment_id
+    #author = serializers.SerializerMethodField() #user_id url
+    class Meta:
+        model = Comment
+        fields = ('user_id','content','contentType', 'post_id')
+    '''
+    def get_comment(self, obj):
+        return obj.content
+    '''
+
+    def get_comment_id(self, obj):
+        return obj.comment_id
+    '''
+    def get_author(self, obj):
+        # just use this tmp not to change later
+        user = User.objects.filter(username=obj.user_id).first()
+        comment_author = UserProfile.objects.filter(user_id=user).first()
+        return AuthorSerializers(comment_author).data
+    '''
 
 class GETCommentSerializer(serializers.ModelSerializer):
     comment = serializers.SerializerMethodField() # content
@@ -85,6 +110,8 @@ class GETCommentSerializer(serializers.ModelSerializer):
         # just use this tmp not to change later
         # TODO handle user not on server
         user = User.objects.filter(username=obj.user_id).first()
+        print('----------------')
+        print(user)
         comment_author = UserProfile.objects.filter(user_id=user).first()
         return GETProfileSerializer(comment_author).data
 

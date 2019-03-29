@@ -13,9 +13,7 @@ class EditProfileForm(forms.ModelForm):
         fields = [
                  'displayName',
                  'bio',
-                 'host',
                  'github',
-                 'url'
                 ]
 
 class NewPostForm(forms.ModelForm):

@@ -47,14 +47,11 @@
 
   function showInMarkdown(){
       //type = document.getElementById("contentType").innerHTML;
-      //alert(type)
       var list = document.getElementsByClassName("toMarkdown");
       var converter = new showdown.Converter();
       for (key of list){
-          //alert(key.innerHTML)
           key.innerHTML = converter.makeHtml(key.innerHTML);
       }
-      //alert(text)
       //var html = converter.makeHtml(text);
       //document.getElementById("toMarkdown").innerHTML = html;
   }
@@ -91,7 +88,7 @@
           userprofile_name_a.classList.add("post-author-text");
           userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
           //userprofile_name_a.href = "/author/"+post.author.id;
-          userprofile_name_a.href = "/accounts/profile/"+post.author.id+"/";
+          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
           userprofile_name_a.innerHTML = post.author.displayName;
           userprofile_name_a.id = "user_profile";
 
@@ -199,7 +196,7 @@
 
               var commentUsername = document.createElement("a");
               commentUsername.style = "font-family: 'Muli'; font-size: 1.1em";
-              commentUsername.href = "/accounts/profile/"+post.comments[i].author.id+"/";
+              commentUsername.href = "/accounts/profile"+post.comments[i].author.id+"/";
               commentUsername.innerHTML = post.comments[i].author.displayName;
               commentUsername.id = "user_profile";
               commentUsername.classList.add("a-dec2");
@@ -241,13 +238,12 @@
               addComment(post, "{{userprofile.author_id}}", "{{userprofile.host}}",
               "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
               window.location.href = '/#'+String(post.id);
-              window.location.reload();
+              //window.location.reload();
           } ;
 
           commentListDiv.appendChild(PostCommentInput);
           commentListDiv.appendChild(PostCommentButton);
           
-          //alert("{{userprofile.author_id}}")
 
 
 
@@ -303,7 +299,6 @@
 
   function loadImage(){
       media_url = document.getElementById("media_url").getAttribute("content");
-      //alert(media_url)
       image = document.getElementById("image")
       image.src = media_url;
       image.style.display = "inline";
@@ -326,22 +321,16 @@
           //let protocol = location.protocol;
           //let slashes = protocol.concat("//");
           //let host = slashes.concat(window.location.hostname);
-          //alert(host)
-          //alert(user_host)
           //let post_host = post.author.host;
-
-          //alert(user_id);
-          //alert(user_host);
-          //alert(user_displayName);
-          //alert(user_url);
-          //alert(user_github);
-          //alert(content);
+          //alert(user_id)
+          //alert(user_host)
+          //alert(user_displayName)
+          //alert(user_url)
+          //alert(user_github)
           if (content == ""){
               alert("Comment is Empty!")
           }
           else{
-              //alert(content);
-              //alert(post_id);
               let data = {
                   "query": "addComment",
                   "post": post.origin,
@@ -350,7 +339,7 @@
                       "author":{
                           // ID of the author
                           "id": user_id,
-                          "host": user_host + '/',
+                          "host": user_host,
                           "displayName": user_displayName,
                           // url to the authors information
                           "url": user_url,
@@ -358,34 +347,35 @@
                           "github": user_github
                       },
                       "comment": content,
-                      "contentType":"text/plain",
+                      "contentType":"text/plain"
                       //"published":"2015-03-09T13:07:04+00:00",
                       //"id":"de305d54-75b4-431b-adb2-eb6b9e546013"
-                  },
+                  }
 
               };
+              //alert(data)
 
-
-              let url = "/posts/"+post.id+"/comments/";
+              //current_host = location.protocol + "//" + location.host
+              //alert(current_host);
+              //let url = post.origin+"/comments";
+              let url = "/posts/"+post.id+"/comments";
               //alert(url);
-              //alert(Cookies.get('csrftoken'));
-              //alert(getToken());
-
-              fetch(url,
-              {
+              //alert(getToken())
+              return fetch("/posts/be26b2ee-2f24-48bd-8dce-f30a7b94346e/comments", {
                   method: "POST",
                   body: JSON.stringify(data),
 
                   headers: {
-                      "Content-Type": 'application/json',
+                      "Content-Type": "application/json",
                       "X-CSRFToken": getToken()
 
                   },
-                  credentials: 'same-origin'
+                  //credentials: "include"
               }).then(res => res.json())
               .then(response => {
                   console.log('Success:', JSON.stringify(response));
                   document.getElementById("input"+post.id).value = "";
+                  window.location.reload(0);
               })
               .catch(error => console.error('Error:', error));
           }

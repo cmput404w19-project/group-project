@@ -65,25 +65,35 @@ urlpatterns = [
     path(r'docs/', schema_view.with_ui('swagger')),
 
     path(r'posts/', views.Posts().as_view()),
+    path(r'posts', views.Posts().as_view()),
 
     path(r'posts/<str:post_id>/', views.PostById().as_view()),
+    path(r'posts/<str:post_id>', views.PostById().as_view()),
 
     path(r'author/posts/', views.AuthorPosts().as_view()),
+    path(r'author/posts', views.AuthorPosts().as_view()),
 
     path(r'author/<str:author_id>/', views.AuthorProfile().as_view()),
+    path(r'author/<str:author_id>', views.AuthorProfile().as_view()),
 
     path(r'author/<str:author_id>/posts/', views.AuthorPostsById().as_view()),
+    path(r'author/<str:author_id>/posts', views.AuthorPostsById().as_view()),
 
     path(r'author/<str:author_id>/friends/', views.FriendListByAuthorId().as_view()),
+    path(r'author/<str:author_id>/friends', views.FriendListByAuthorId().as_view()),
 
     path(r'author/<str:author1_id>/friends/<str:author2_id>/', views.CheckFriendStatus().as_view()),
+    path(r'author/<str:author1_id>/friends/<str:author2_id>', views.CheckFriendStatus().as_view()),
 
     path(r'posts/<str:post_id>/comments/', views.CommentsByPostId().as_view()),
+    path(r'posts/<str:post_id>/comments', views.CommentsByPostId().as_view()),
 
     path(r'friendrequest/', views.FriendRequest().as_view()),
+    path(r'friendrequest', views.FriendRequest().as_view()),
 
     #unfollow
     path(r'unfollowrequest/', views.UnFollow().as_view()),
+    path(r'unfollowrequest', views.UnFollow().as_view()),
 
     # all public
     # TODO: it will change the path of makeing post.
@@ -102,8 +112,8 @@ urlpatterns = [
 
 
     # # the render of making new post
-    path(r'author/render_post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
-    path(r'author/render_post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
+    path(r'author/render/post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
+    path(r'author/render/post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
 
     # # author endpoints
     # path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
@@ -112,8 +122,8 @@ urlpatterns = [
     # path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
     # path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
     # # comment endpoints
-    # path('posts/<str:post_id>/comment', views.Comments().as_view()),
-    # path('posts/<str:post_id>/comment/', views.Comments().as_view()),
+    #path('posts/<str:post_id>/comment', views.Comments().as_view()),
+    #path('posts/<str:post_id>/comment/', views.Comments().as_view()),
     # path(r'posts/<str:post_id>', views.PostById().as_view()),
 
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),

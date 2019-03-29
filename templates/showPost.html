@@ -47,7 +47,6 @@
     <script>
         function getImage() {
             var imageURL = document.getElementById('imageURL').innerHTML;
-            alert(imageURL)
             var image = document.createElement("image");
             image.src = imageURL;
             image.height = 200;
@@ -60,12 +59,9 @@
         // https://github.com/showdownjs/showdown/wiki/Tutorial:-Markdown-editor-using-Showdown
         function showInMarkdown(){
             var text = document.getElementById("toMarkdown").innerHTML;
-            //alert(text);
             //text = '# hello, markdown!';
-            //alert(text)
             converter = new showdown.Converter();
             html = converter.makeHtml(text);
-            //alert(html);
             document.getElementById("toMarkdown").innerHTML = html;
         }
 

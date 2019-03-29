@@ -196,8 +196,10 @@ class AuthorPosts(APIView):
             comments = Comment.objects.filter(post_id=post['id']).all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
+            print('--------------')
             comments = GETCommentSerializer(comments, many=True).data
             for comment in comments:
+                print(comment)
                 comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
             post['author']['friends'] = find_friends(post['author']['id'])
@@ -205,12 +207,35 @@ class AuthorPosts(APIView):
         resp['posts'] = serializer.data
 
         resp['query'] = 'posts'
-
+        #print(resp)
         return Response(resp)
 
     def post(self, request):
         # TODO implement post creation by API Call
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        # Reference
+        # https://www.django-rest-framework.org/tutorial/3-class-based-views/
+        # http://www.chenxm.cc/article/244.html
+        # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
+        #profile = get_object_or_404(Profile, pk=pk)
+        #print(request.data.user_id)
+        new_data = request.data.copy()
+        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
+        #print(user_id)
+        new_data.__setitem__("user_id", user_id)
+        #new_data.__setitem__("source", source)
+        host = request.scheme + "://" + request.get_host() +  "/"
+        new_data["host"] = host
+        #print(new_data)
+        serializer = PostSerializer(data=new_data)
+        #print(serializer)
+
+        if not serializer.is_valid():
+            return Response({'serializer': serializer})
+        serializer.save()
+        # TODO Response cannot allow a redirect so just use redirect('/') now
+        return redirect('/')
+        #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+
 
 class AuthorPostsById(APIView):
     """
@@ -319,9 +344,33 @@ class CommentsByPostId(APIView):
         resp['query'] = 'comments'
 
         return Response(resp)
-
     def post(self, request, post_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        #data = request.data
+        #print(data)
+        comment_data = dict()
+        #comment_data['query'] == 'addcomment'
+        #post = Post.objects.filter(post_id=post_id)
+        user_url = request.data['comment']['author']['url']
+        comment_data['user_id'] = user_url
+        comment_data['content'] = request.data['comment']['comment']
+        comment_data['post_id'] = post_id #request.data['post'].split(...)
+        comment_data['contentType'] = request.data['comment']['contentType']
+        #comment_data['published'] = request.data['comment']['published']
+        #print('**********************')
+        #print(comment_data)
+        failed = False
+
+        comment_serializer = CommentSerializer(data=comment_data)
+
+        if comment_serializer.is_valid():
+            comment_serializer.save()
+        else:
+            failed = True
+        if not failed:
+            return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"success": True, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
+        #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 
 class FriendListByAuthorId(APIView):
@@ -378,15 +427,19 @@ class FriendRequest(APIView):
     Make a friend request
     """
     def post(self, request):
+        print("hehehehehhehhehehheheheheheheheheheh")
         data = {}
-        data['follower_url'] = request.data['author']['id']
-        data['following_url'] = request.data['friend']['id']
-
+        print(request.data)
+        data['follower_url'] = request.data['author']['url']
+        print(data['follower_url'])
+        data['following_url'] = request.data['friend']['url']
+        print(data['following_url'])
         follow_serializer = FollowSerializer(data=data)
 
         if follow_serializer.is_valid():
             follow_serializer.save()
         else:
+            print("is not valid")
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
@@ -428,6 +481,17 @@ def home(request):
         if len(User.objects.filter(id=request.user.id)) != 1:
             return HttpResponseNotFound("The user information is not found")
         # get userprofile information
+        #print(request.user.user_id)
+        
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        domain = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
+        print("gethost--------------------------------")
+        print(domain)
+        print(user.author_id)
+        print(user.displayName)
+        user.url = domain
+        user.save()
+        print(user.url)
         context["userprofile"] = UserProfile.objects.filter(user_id=request.user).first()
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
@@ -452,7 +516,10 @@ class SignUp(generic.CreateView):
         form_object.is_active = False
         form_object.save()
         uu = User.objects.filter(id=form_object.id).first()
-        UserProfile.objects.create(user_id=uu, displayName=uu.username, host=str(self.request.get_host()))
+        UserProfile.objects.create(user_id=uu, displayName=uu.username, host='http://' + str(self.request.get_host()))
+        user_profile = UserProfile.objects.filter(user_id=uu).first()
+        user_profile.url = user_profile.host + '/author/' + str(user_profile.author_id)
+        user_profile.save()
         return super(SignUp, self).form_valid(form)
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -460,11 +527,21 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = GETProfileSerializer
 
 class UnFollow(APIView):
-    def post(self, request, pk):
-        obj = Follow.objects.get(pk=pk)
-        name = obj.following_id.author_id
+    """
+    post:
+    make an unfollow request
+    of the form
+    {
+        follower_url: url
+        following_url: url
+    }
+    """
+    def post(self, request):
+        follower_url = request.data['author']['id']
+        following_url = request.data['friend']['id']
+        obj = Follow.objects.get(follower_url=follower_url, following_url=following_url)
         obj.delete()
-        return redirect('/author/' + str(name))
+        return Response(status=status.HTTP_200_OK)
 
 class FriendRequestOld(APIView):
     """
@@ -538,8 +615,17 @@ def GetAuthorProfile(request, author_id):
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
     content = dict()
     content["UserProfile"] = user # this is the requested user profile
+    print(user.url)
     # please do not change it.. I know it is kinda confusing
+    print(requestuser.url)
     content["userprofile"] = requestuser # this is the request user profile
+
+    follow = Follow.objects.filter(follower_url=requestuser.url, following_url=user.url)
+    if not follow:
+        content["followExists"] = 'false'
+    else:
+        content["followExists"] = 'true'
+
     return render(request, 'profile.html', content)
 
 
@@ -636,10 +722,11 @@ class Comments(APIView):
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         post = Post.objects.filter(post_id=post_id)
-        comment_data['user_id'] = request.data['comment']['author']['id'].split('/')[-1]
+        comment_data['user_id'] = request.data['comment']['author']['id']
         comment_data['content'] = request.data['comment']['comment']
-        comment_data['post_id'] = post_id #request.data['psot'].split(...)
+        comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
+        #comment_data['published'] = request.data['comment']['published']
 
         print(comment_data)
         failed = False
