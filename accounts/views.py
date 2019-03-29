@@ -99,9 +99,6 @@ class Posts(APIView):
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             comments = GETCommentSerializer(comments, many=True).data
-            for comment in comments:
-                comment['author']['friends'] = find_friends(comment['author']['id'])
-
             post['comments'] = comments
             post['author']['friends'] = find_friends(post['author']['id'])
 
@@ -134,10 +131,6 @@ class PostById(APIView):
         commentPaginator = Paginator(comments, pageSize)
         comments = commentPaginator.get_page(0)
         comments = GETCommentSerializer(comments, many=True).data
-
-        for comment in comments:
-            comment['author']['friends'] = find_friends(comment['author']['id'])
-
         post['comments'] = comments
         post['author']['friends'] = find_friends(post['author']['id'])
 
@@ -202,10 +195,8 @@ class AuthorPosts(APIView):
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             comments = GETCommentSerializer(comments, many=True).data
-            for comment in comments:
-                comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
-            # post['author']['friends'] = find_friends(post['author']['id'])
+            post['author']['friends'] = find_friends(post['author']['id'])
        
         resp['posts'] = serializer.data
 
@@ -222,7 +213,6 @@ class AuthorPosts(APIView):
         new_data = request.data.copy()
         user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
         new_data.__setitem__("user_id", user_id)
-        #new_data.__setitem__("source", source)
         host = request.scheme + "://" + request.get_host() +  "/"
         new_data["host"] = host
         serializer = PostSerializer(data=new_data)
@@ -232,7 +222,6 @@ class AuthorPosts(APIView):
         serializer.save()
         # TODO Response cannot allow a redirect so just use redirect('/') now
         return redirect('/')
-        #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 
 class AuthorPostsById(APIView):
@@ -284,8 +273,6 @@ class AuthorPostsById(APIView):
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             comments = GETCommentSerializer(comments, many=True).data
-            for comment in comments:
-                comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
             post['author']['friends'] = find_friends(post['author']['id'])
 
@@ -334,9 +321,6 @@ class CommentsByPostId(APIView):
 
         serializer = GETCommentSerializer(comments, many=True)
         
-        for comment in serializer.data:
-            comment['author']['friends'] = find_friends(comment['author']['id'])
-
         resp['comments'] = serializer.data
 
         resp['query'] = 'comments'
@@ -353,9 +337,6 @@ class CommentsByPostId(APIView):
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
         comment_data['content'] = request.data['comment']['comment']
-        print('$$$$$$$$$$$$$$$$$$$$$$$$')
-        print(post_id)
-        print('$$$$$$$$$$$$$$$$$$$$$$$$')
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
         failed = False
@@ -461,6 +442,15 @@ class AuthorProfile(APIView):
 #
 # These are the views that are used for the frontend
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class ExternalEndpoints(APIView):
+    """
+    get:
+    get all external endpoints
+    """
+    def get(self, request):
+        endpoints = ExternalServer.objects.all()
+
 
 def home(request):
     # so right now we decide to use javacript to get all the posts and comments data

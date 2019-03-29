@@ -23,6 +23,7 @@ class PostSerializer(serializers.ModelSerializer):
     next = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     origin = serializers.SerializerMethodField()
+    source = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -58,6 +59,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_origin(self, obj):
         return str(obj.host) + 'posts/' + str(obj.post_id)
 
+    def get_source(self, obj):
+        return str(obj.host) + 'posts/' + str(obj.post_id)
+
 
 class GETProfileSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField('get_author_id')
@@ -78,10 +82,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('user_id','content','contentType', 'post_id')
-    '''
-    def get_comment(self, obj):
-        return obj.content
-    '''
 
     def get_comment_id(self, obj):
         return obj.comment_id
@@ -114,9 +114,6 @@ class GETCommentSerializer(serializers.ModelSerializer):
         #user = User.objects.filter(username=obj.user_id).first()
         with request.urlopen(obj.user_id) as f:
             data = f.read().decode('utf-8')
-            print(obj.user_id)
-            print('Status:', f.status, f.reason)
-            print('Data:', data)
             data = json.loads(data)
             return data
 
@@ -129,3 +126,9 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ('follower_url', 'following_url')
+
+class ExternalServerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalServer
+        fields = ('server_url', 'user', 'password')
+

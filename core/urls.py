@@ -95,44 +95,20 @@ urlpatterns = [
     path(r'unfollowrequest/', views.UnFollow().as_view()),
     path(r'unfollowrequest', views.UnFollow().as_view()),
 
-    # all public
-    # TODO: it will change the path of makeing post.
-    #re_path(r'posts/?$', views.PublicPosts().as_view()),
-    # path(r'posts/', views.PublicPosts().as_view(),
-    # path(r'posts', views.PublicPosts().as_view()),
-
-    # # handle get/post for author posting
-    # #path(r'author/posts', views.AuthorPosts().as_view()),
-    # path(r'author/posts/', views.AuthorPosts().as_view(), name='make_post'),
-    # path(r'author/posts', views.AuthorPosts().as_view(), name='make_post'),
-
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Internal API Endpoints
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
+    path(r'externalendpoints/', views.ExternalEndpoints().as_view()),
+    path(r'externalendpoints', views.ExternalEndpoints().as_view()),
 
     # # the render of making new post
     path(r'author/render/post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
     path(r'author/render/post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
 
-    # # author endpoints
-    # path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
-    
-    # # post endpoints
-    # path('posts/<str:post_id>', views.PostById().as_view(), name='show_post'),
-    # path('posts/<str:post_id>/', views.PostById().as_view(), name='show_post'),
-    # # comment endpoints
-    #path('posts/<str:post_id>/comment', views.Comments().as_view()),
-    #path('posts/<str:post_id>/comment/', views.Comments().as_view()),
-    # path(r'posts/<str:post_id>', views.PostById().as_view()),
-
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
     path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
 
-
-
-    # get user uploaded image
-    #path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Reference
