@@ -112,8 +112,8 @@ urlpatterns = [
 
 
     # # the render of making new post
-    path(r'author/render_post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
-    path(r'author/render_post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
+    path(r'author/render/post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
+    path(r'author/render/post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
 
     # # author endpoints
     # path(r'author/<str:author_id>/', views.AuthorProfile().as_view(), name='render_profile'),
