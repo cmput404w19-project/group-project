@@ -424,7 +424,7 @@ class CheckFriendStatus(APIView):
 
         return Response(resp)
 
-class FriendRequest(APIView):
+class FriendRequestNew(APIView):
     """
     post:
     Make a friend request
@@ -435,12 +435,28 @@ class FriendRequest(APIView):
         data['following_url'] = request.data['friend']['url']
         follow_serializer = FollowSerializer(data=data)
 
+        data2 = {}
+        data2['requestedBy_name'] = request.data['author']['displayName']
+        data2['requestedBy_url'] = request.data['author']['url']
+        data2['requestedTo_url'] = request.data['friend']['url']
+        data2['request_status'] = "Pending"
+        friend_request_serializer = FriendRequestSerializer(data=data2)
+
         if follow_serializer.is_valid():
             follow_serializer.save()
         else:
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        if friend_request_serializer.is_valid():
+            friend_request_serializer.save()
+        else:
+            return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+
+
+
+
 
 class AuthorProfile(APIView):
     """
@@ -561,7 +577,7 @@ class FriendRequestOld(APIView):
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         if failed:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent"}, status=status.HTTP_200_OK)
         #return render(request,'friend_requests.html', context)
 
 def GetAuthorProfile(request, author_id):
@@ -579,6 +595,20 @@ def GetAuthorProfile(request, author_id):
         content["followExists"] = 'true'
 
     return render(request, 'profile.html', content)
+
+def getFriendRequest(request):
+    #user = UserProfile.objects.filter(author_id=request.user).first()
+    content = dict()
+    content["User"] = request.user
+    
+    requestuser = UserProfile.objects.filter(user_id=request.user).first()
+    print(requestuser.url)
+    #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
+    follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all().values_list('requestedBy_url', flat=True)
+    print(follower)
+    content["follower"] = follower
+
+    return render(request, 'friend_requests.html', content)
 
 
 class postDelete(APIView):

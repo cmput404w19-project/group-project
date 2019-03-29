@@ -160,16 +160,16 @@ class FriendRequest(models.Model):
         ("Pending","Pending")
     )
     # requested by id  Foreign key to user
-    requestedBy_id = models.URLField(default="")
+    requestedBy_url = models.URLField(default="")
     # request to id  Foreign key to user
-    requestedTo_id = models.URLField(default="")
+    requestedTo_url = models.URLField(default="")
     # request status
     request_status = models.CharField(max_length=20, choices=statusChoice, default="Pending")
     # Request Time
     request_publish_time = models.DateTimeField(default=timezone.now)
     # Primary key(user 1 , user 2)
     class Meta:
-        unique_together = ("requestedBy_id", "requestedTo_id")
+        unique_together = ("requestedBy_url", "requestedTo_url")
 
 
 

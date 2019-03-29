@@ -123,7 +123,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = ('requestedBy_id', 'requestedTo_id', 'request_status')
+        fields = ('requestedBy_name','requestedBy_url', 'requestedTo_url', 'request_status')
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
