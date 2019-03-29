@@ -20,6 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
     size = serializers.SerializerMethodField()
     next = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    origin = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -51,6 +52,9 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_visibleTo(self, obj):
         return []
+
+    def get_origin(self, obj):
+        return str(obj.origin) + str(obj.post_id)
 
 
 class GETProfileSerializer(serializers.ModelSerializer):
