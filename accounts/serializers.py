@@ -109,10 +109,8 @@ class GETCommentSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         # just use this tmp not to change later
         # TODO handle user not on server
-        user = User.objects.filter(username=obj.user_id).first()
-        print('----------------')
-        print(user)
-        comment_author = UserProfile.objects.filter(user_id=user).first()
+        user_id = obj.user_id.rstrip("/").split("/")[-1]
+        comment_author = UserProfile.objects.filter(author_id=user_id).first()
         return GETProfileSerializer(comment_author).data
 
 

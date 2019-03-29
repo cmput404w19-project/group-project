@@ -174,7 +174,8 @@ class AuthorPosts(APIView):
         pageSize = int(pageSize)
 
         resp['size'] = pageSize
-
+        posts = list(posts)
+        posts.sort(key=lambda post: post.published, reverse=True)
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
 
@@ -193,16 +194,16 @@ class AuthorPosts(APIView):
         # paginate comments and add friend list
         for post in serializer.data:
             post['size'] = pageSize
-            comments = Comment.objects.filter(post_id=post['id']).all()
+            comments = Comment.objects.filter(post_id=post['id']).order_by("published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             print('--------------')
             comments = GETCommentSerializer(comments, many=True).data
-            for comment in comments:
-                print(comment)
-                comment['author']['friends'] = find_friends(comment['author']['id'])
+            # for comment in comments:
+            #     print(comment)
+            #     comment['author']['friends'] = find_friends(comment['author']['id'])
             post['comments'] = comments
-            post['author']['friends'] = find_friends(post['author']['id'])
+            # post['author']['friends'] = find_friends(post['author']['id'])
        
         resp['posts'] = serializer.data
 
@@ -308,7 +309,7 @@ class CommentsByPostId(APIView):
     def get(self, request, post_id):
         resp = {}
         
-        comments = Comment.objects.filter(post_id=post_id).all()
+        comments = Comment.objects.filter(post_id=post_id).order_by("published").all()
 
         count = len(comments)
         resp['count'] = count
@@ -485,14 +486,13 @@ def home(request):
         
         user = UserProfile.objects.filter(user_id=request.user).first()
         domain = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
-        print("gethost--------------------------------")
-        print(domain)
-        print(user.author_id)
-        print(user.displayName)
-        user.url = domain
-        user.save()
-        print(user.url)
-        context["userprofile"] = UserProfile.objects.filter(user_id=request.user).first()
+        if user.url == "":
+            user.url = domain
+            user.save()
+        if user.host == "":
+            user.host = "http://"+str(request.get_host())
+            user.save()
+        context["userprofile"] = user
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
         context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
