@@ -220,14 +220,14 @@ class AuthorPosts(APIView):
         #print(request.data.user_id)
         new_data = request.data.copy()
         user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
-        print(user_id)
+        #print(user_id)
         new_data.__setitem__("user_id", user_id)
         #new_data.__setitem__("source", source)
         host = request.scheme + "://" + request.get_host() +  "/"
         new_data["host"] = host
-        print(new_data)
+        #print(new_data)
         serializer = PostSerializer(data=new_data)
-        print(serializer)
+        #print(serializer)
 
         if not serializer.is_valid():
             return Response({'serializer': serializer})
@@ -349,15 +349,15 @@ class CommentsByPostId(APIView):
         #print(data)
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
-        post = Post.objects.filter(post_id=post_id)
+        #post = Post.objects.filter(post_id=post_id)
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
         comment_data['content'] = request.data['comment']['comment']
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
         #comment_data['published'] = request.data['comment']['published']
-
-        print(comment_data)
+        #print('**********************')
+        #print(comment_data)
         failed = False
 
         comment_serializer = CommentSerializer(data=comment_data)
