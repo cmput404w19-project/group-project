@@ -42,8 +42,11 @@
           Url.innerHTML = "Url : "+ profileContent.url;
           var profile1 = document.getElementById("profile1");
           profile1.appendChild(Url);
-
-          if ("{{UserProfile.author_id}}"==="{{userprofile.author_id}}"){
+          var user_id = profileContent.id.replace(/\/+$/, ""); //remove trailing forward slash
+          user_id = user_id.split("/");
+          user_id = user_id[user_id.length - 1];  
+          if (user_id==="{{userprofile.author_id}}"){
+            // this is his/her own userprofile
             var EditButtonDiv = document.createElement("div");
             var EditButton = document.createElement("a");
             EditButton.innerHTML = "Edit Profile";
@@ -55,6 +58,7 @@
             profile1.appendChild(EditButtonDiv);
           }
           else {
+            // this is  someone else's userprofile
             var FollowButtonDiv = document.createElement("div");
             var FollowButton = document.createElement("button");
             FollowButton.classList.add("btn");
@@ -123,6 +127,6 @@
 
 
 
-getAuthorData("/author/{{UserProfile.author_id}}/")
+getAuthorData("{{ profile_url }}")
   </script>
 {% endblock %}

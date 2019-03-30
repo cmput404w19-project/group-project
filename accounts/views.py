@@ -27,9 +27,11 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
 
 from django.core.paginator import Paginator
+
+from urllib import request
 
 DEBUG = False
 
@@ -575,15 +577,29 @@ class FriendRequestOld(APIView):
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent"}, status=status.HTTP_200_OK)
         #return render(request,'friend_requests.html', context)
 
-def GetAuthorProfile(request, author_id):
-    user = UserProfile.objects.filter(author_id=author_id).first()
+def GetAuthorProfile(request):
+    # user = UserProfile.objects.filter(author_id=author_id).first()
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
     content = dict()
-    content["UserProfile"] = user # this is the requested user profile
-    # please do not change it.. I know it is kinda confusing
-    content["userprofile"] = requestuser # this is the request user profile
-
-    follow = Follow.objects.filter(follower_url=requestuser.url, following_url=user.url)
+    # content["UserProfile"] = user # this is the requested user profile
+    content["userprofile"] = requestuser # this is the request user's profile
+    # get the request parameter
+    profile_url = request.GET.get("profile_url")
+    if not profile_url:
+        HttpResponseBadRequest("bad request! No profile url in the request body")
+    # send a request to api to ask for the userprofile data
+    # try:
+    #     with request.urlopen(profile_url) as f:
+    #         encode = f.headers.get_content_charset()
+    #         if not encode:
+    #             encode = 'utf-8'
+    #         data = f.read().decode(encode)
+    #         data = json.loads(data)
+    #         content["RequestforthisUserProfile"] = data
+    # except:
+    #     return HttpResponseBadRequest("bad request! No profile url in the request body")
+    content["profile_url"] = profile_url
+    follow = Follow.objects.filter(follower_url=requestuser.url, following_url=profile_url)
     if not follow:
         content["followExists"] = 'false'
     else:
@@ -676,7 +692,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             # text = form.cleaned_data['displayName']
-            return redirect('/accounts/profile/'+str(userprofile.author_id)+'/')
+            return redirect('/accounts/profile/?profile_url='+userprofile.url)
     else:
         # GET
         userprofile = UserProfile.objects.filter(user_id = request.user).first()

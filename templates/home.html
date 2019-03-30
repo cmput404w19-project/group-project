@@ -91,7 +91,7 @@
           userprofile_name_a.classList.add("a-dec2");
           userprofile_name_a.classList.add("post-author-text");
           userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
-          userprofile_name_a.href = "/accounts/profile/"+post.author.id.split('/')[4]+"/";
+          userprofile_name_a.href = "/accounts/profile/?profile_url="+post.author.id;
 
           userprofile_name_a.innerHTML = post.author.displayName;
           userprofile_name_a.id = "user_profile";
@@ -200,7 +200,7 @@
 
               var commentUsername = document.createElement("a");
               commentUsername.style = "font-family: 'Muli'; font-size: 1.1em";
-              commentUsername.href = "/accounts/profile/"+post.comments[i].author.id.split('/')[4]+"/";
+              commentUsername.href = "/accounts/profile/?profile_url="+post.comments[i].author.id;
               commentUsername.innerHTML = post.comments[i].author.displayName;
               commentUsername.id = "user_profile";
               commentUsername.classList.add("a-dec2");

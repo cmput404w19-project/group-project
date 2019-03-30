@@ -37,7 +37,7 @@
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
-                <li><a href="/accounts/profile/{{ userprofile.author_id }}/" style="font-size:17pt; color:white;">Profile</a></li>
+                <li><a href="/accounts/profile/?profile_url={{ userprofile.url }}/" style="font-size:17pt; color:white;">Profile</a></li>
                 <li><a href="/accounts/friends/" style=" font-size:17pt; color:white;">Friends</a></li>
                 <li><a href="/getFriendrequest/" style=" font-size:17pt; color:white;">Friend Requests</a></li>
               {% endif %}
