@@ -355,7 +355,7 @@ class CommentsByPostId(APIView):
         if not failed:
             return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
         else:
-            return Response({"success": True, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "message": "Comment Error"}, status=status.HTTP_400_BAD_REQUEST)
         #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 
@@ -429,12 +429,12 @@ class FriendRequestNew(APIView):
             follow_serializer.save()
         else:
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        print("follow serialzer pass")
         if friend_request_serializer.is_valid():
             friend_request_serializer.save()
         else:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        print("friend request serializer pass")
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
 
