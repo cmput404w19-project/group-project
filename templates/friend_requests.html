@@ -11,12 +11,12 @@
     <div class="w3-col" style="position:relative">
       <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friend Requests</p>
       {%for friend in follower%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%"><br>
+      <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%; margin-bottom: 8pt;""><br>
 
         <div class = "friend">
-          <p class="a-dec2" href="author/{{friend.displayName}}">{{friend.requestedBy_name}}
+          <a class="a-dec2" href="/accounts/profile/?profile_url={{friend.requestedBy_url}}">{{friend.requestedBy_name}}
 
-          </p>
+          </a>
         </div>
         <div class="btn-group">
           <!-- need edit view to link to this page-->

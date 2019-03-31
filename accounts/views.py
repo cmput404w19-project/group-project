@@ -507,8 +507,13 @@ def home(request):
         return render(request, 'landingPage.html')
 
 def friendlistpage(request):
-
-    return render(request, 'friends.html')
+    userprofile = UserProfile.objects.filter(user_id=request.user).first()
+    # find all friends of this current users
+    list_of_friend_urls = find_friends(userprofile.url)
+    list_of_friend_urls = " ".join(list_of_friend_urls)
+    context = {"list_of_friend_urls":list_of_friend_urls}
+    context["userprofile"] = userprofile
+    return render(request, 'friends.html', context)
 
 
 class SignUp(generic.CreateView):
@@ -618,6 +623,7 @@ def getFriendRequest(request):
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
     print(follower)
     content["follower"] = follower
+    content["userprofile"] = requestuser
 
     return render(request, 'friend_requests.html', content)
 

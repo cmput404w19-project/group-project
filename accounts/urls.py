@@ -17,5 +17,6 @@ urlpatterns = [
     # path('friends/', login_required(views.friend_list, login_url="/accounts/login/"), name='friends'),
     path('friends/author/<str:author_id>/', views.AuthorProfile().as_view()),
     path('login/', anonymous_required(LoginView.as_view(template_name='registration/login.html'), redirect_to="/"), name="login"),
-    path('friend/', login_required(views.friendlistpage,login_url="/accounts/login/"), name='friendpage')
+    path('friends/', login_required(views.friendlistpage,login_url="/accounts/login/"), name='friendpage'),
+    path(r'getFriendrequest/', login_required(views.getFriendRequest,login_url="/accounts/login/"), name='friendrequestpage'),
 ]

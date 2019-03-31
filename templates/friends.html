@@ -8,24 +8,56 @@
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
 
     <!-- Middle Column -->
-    <div class="w3-col" style="position:relative">
+    <div id="MiddleColumn" class="w3-col" style="position:relative">
       <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friends</p>
-      {%for friend in flist%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%"><br>
-
-        <div class = "friend"> 
-          <a class="a-dec2" href="/accounts/profile/{{friend.author_id}}/">{{friend.displayName}}
-            <!--&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            author_id: {{friend.author_id}}-->
-          </a>
+       <!--  <div id="friends_list" class="w3-container w3-card w3-white w3-round" style="position:relative; max-width: 84%; margin-left: 8%"><br> -->
+          <!-- for friend in flist 
+            <div class = "friend"> 
+              <a class="a-dec2" href="/accounts/profile/friend.author_id/">friend.displayName
+              </a>
+            </div>
+          endfor -->
         </div>
-
-      </div>
-      {%endfor%}
       <!-- End Middle Column -->
     </div>
 
 </div>
+<script type="text/javascript">
+
+  function getAuthorData(url){
+    $.ajax({
+      type: 'GET',
+      url: url,
+      success: function(userprofile_content){
+        var Div1st = document.createElement("div");
+        Div1st.classList.add("w3-container");
+        Div1st.classList.add("w3-card");
+        Div1st.classList.add("w3-white");
+        Div1st.classList.add("w3-round");
+        Div1st.style = "position:relative; max-width: 84%; margin-left: 8%; margin-bottom: 8pt;";
+        var Div2nd = document.createElement("div");
+        Div2nd.classList.add("friend");
+        Div2nd.style = "margin-bottom:5pt";
+        var username_link = document.createElement("a");
+        username_link.innerHTML = userprofile_content.displayName;
+        username_link.href = "/accounts/profile/?profile_url="+userprofile_content.id;
+        username_link.classList.add("a-dec2");
+        Div2nd.appendChild(username_link);
+        Div1st.appendChild(Div2nd);
+        var friendList = document.getElementById("MiddleColumn");
+        friendList.appendChild(Div1st);
+      }
+    });
+  }
+
+  var friend_urls_list = "{{ list_of_friend_urls }}";
+  friend_urls_list = friend_urls_list.split(" ");
+  // send request to all these url to get their user profile inforamtion
+  // and then render them
+  for(let i=0; i<friend_urls_list.length ;i++){
+    getAuthorData(friend_urls_list[i]);
+  }
+
+</script>
 
 {% endblock %}
