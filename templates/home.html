@@ -445,7 +445,7 @@
   setInterval( function(){
   for (server in resp) {
     fetches.push(
-    fetch(resp[server] + 'posts/?size=10', {
+    fetch(resp[server] + '/author/posts/?size=10', {
         method: "GET",
         headers: {
           "Authorization":"Basic "+ btoa("team14:team14"),
