@@ -402,11 +402,11 @@
         resp = resp.split(" ");
       }
   console.log(resp);
-  resp.push({"server_url":"{{ author_post_api_url }}"});
+  resp.push("/author/");
 
   for (server in resp) {
     fetches.push(
-    fetch(resp[server]["server_url"] + 'posts/?size=10', {
+    fetch(resp[server] + 'posts/?size=10', {
         method: "GET",
         headers: {
           "Authorization":"Basic "+ btoa("team14:team14"),
@@ -444,7 +444,7 @@
   setInterval( function(){
   for (server in resp) {
     fetches.push(
-    fetch(resp[server]["server_url"] + 'posts/?size=10', {
+    fetch(resp[server] + 'posts/?size=10', {
         method: "GET",
         headers: {
           "Authorization":"Basic "+ btoa("team14:team14"),
