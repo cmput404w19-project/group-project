@@ -402,8 +402,8 @@
         resp = resp.split(" ");
       }
   console.log(resp);
-  resp.push("/author/");
-
+  resp.push("{{ author_post_api_url }}");
+  console.log(resp);
   for (server in resp) {
     fetches.push(
     fetch(resp[server] + 'posts/?size=10', {

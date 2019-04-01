@@ -505,7 +505,7 @@ def home(request):
         for i in endpoints:
             endpoints_url_list.append(i.server_url)
         context["endpoints_url_string"] = " ".join(endpoints_url_list)
-        context["author_post_api_url"] = "/author/"  # this path url should handle to get all posts that is visible for this user
+        context["author_post_api_url"] = "https://"+str(request.get_host())+"/author/"  # this path url should handle to get all posts that is visible for this user
         return render(request, 'home.html', context)
     else:
         # not login
