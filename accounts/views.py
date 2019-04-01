@@ -500,7 +500,12 @@ def home(request):
         context["userprofile"] = user
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
-        context["author_post_api_url"] = "/author/posts"  # this path url should handle to get all posts that is visible for this user
+        endpoints = ExternalServer.objects.all()
+        endpoints_url_list = []
+        for i in endpoints:
+            endpoints_url_list.append(i.server_url)
+        context["endpoints_url_string"] = " ".join(endpoints_url_list)
+        context["author_post_api_url"] = "/author/"  # this path url should handle to get all posts that is visible for this user
         return render(request, 'home.html', context)
     else:
         # not login
