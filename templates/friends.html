@@ -52,7 +52,14 @@
   }
 
   var friend_urls_list = "{{ list_of_friend_urls }}";
-  friend_urls_list = friend_urls_list.split(" ");
+  if (friend_urls_list === ""){
+    // no friends
+    friend_urls_list = [];
+  }
+  else{
+    friend_urls_list = friend_urls_list.split(" "); 
+  }
+  
   // send request to all these url to get their user profile inforamtion
   // and then render them
   for(let i=0; i<friend_urls_list.length ;i++){
