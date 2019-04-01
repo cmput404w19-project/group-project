@@ -372,7 +372,11 @@ class FriendListByAuthorId(APIView):
         
         # TODO get the URL from the request, combine with author_id
 
-        resp['authors'] = find_friends('http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a')
+        protocol = "https://"
+        if "localhost" in str(request.get_host()):
+            protocol = "http://"
+        api_url = protocol + "localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a"
+        resp['authors'] = find_friends(api_url)
 
         resp['query'] = 'friends'
 
@@ -392,8 +396,11 @@ class CheckFriendStatus(APIView):
         
         # TODO get the URL from the request and turn it into the author
 
-        author1url = 'http://localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
-        author2url = 'http://localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
+        protocol = "https://"
+        if "localhost" in str(request.get_host()):
+            protocol = "http://"
+        author1url = protocol+'localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
+        author2url = protocol+'localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
         
         author1friends = find_friends(author1url)
         if author2url in author1friends:
@@ -489,13 +496,15 @@ def home(request):
         if len(User.objects.filter(id=request.user.id)) != 1:
             return HttpResponseNotFound("The user information is not found")
         # get userprofile information
-        
+        protocol = "https://" 
+        if "localhost" in str(request.get_host()):
+            protocol = "http://"
         user = UserProfile.objects.filter(user_id=request.user).first()
         if user.url == "":
-            user.url = "http://"+str(request.get_host())+"/author/"+str(user.author_id)
+            user.url = protocol+str(request.get_host())+"/author/"+str(user.author_id)
             user.save()
         if user.host == "":
-            user.host = "http://"+str(request.get_host())
+            user.host = protocol+str(request.get_host())
             user.save()
         context["userprofile"] = user
         # since this is our server, no need domain name for the url just the path
@@ -505,7 +514,7 @@ def home(request):
         for i in endpoints:
             endpoints_url_list.append(i.server_url)
         context["endpoints_url_string"] = " ".join(endpoints_url_list)
-        context["author_post_api_url"] = "https://"+str(request.get_host())  # this path url should handle to get all posts that is visible for this user
+        context["author_post_api_url"] = protocol+str(request.get_host())  # this path url should handle to get all posts that is visible for this user
         return render(request, 'home.html', context)
     else:
         # not login
@@ -527,11 +536,14 @@ class SignUp(generic.CreateView):
     template_name = 'signup.html'
 
     def form_valid(self, form):
+        protocol = "https://"
+        if "localhost" in str(request.get_host()):
+            protocol = "http://"
         form_object = form.save(commit=False)
         form_object.is_active = False
         form_object.save()
         uu = User.objects.filter(id=form_object.id).first()
-        UserProfile.objects.create(user_id=uu, displayName=uu.username, host='http://' + str(self.request.get_host()))
+        UserProfile.objects.create(user_id=uu, displayName=uu.username, host=protocol + str(self.request.get_host()))
         user_profile = UserProfile.objects.filter(user_id=uu).first()
         user_profile.url = user_profile.host + '/author/' + str(user_profile.author_id)
         user_profile.save()
