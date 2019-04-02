@@ -112,6 +112,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
         # Reference:
         # https://www.kancloud.cn/thinkphp/python-guide/39426
         #user = User.objects.filter(username=obj.user_id).first()
+        print(obj.user_id)
         with request.urlopen(obj.user_id) as f:
             data = f.read().decode('utf-8')
             data = json.loads(data)

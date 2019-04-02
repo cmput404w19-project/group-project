@@ -198,7 +198,7 @@ class AuthorPosts(APIView):
             comments = commentPaginator.get_page(0)
             comments = GETCommentSerializer(comments, many=True).data
             post['comments'] = comments
-            post['author']['friends'] = find_friends(post['author']['id'])
+            # post['author']['friends'] = find_friends(post['author']['id'])
        
         resp['posts'] = serializer.data
 
@@ -372,9 +372,7 @@ class FriendListByAuthorId(APIView):
         
         # TODO get the URL from the request, combine with author_id
 
-        protocol = "https://"
-        if "localhost" in str(request.get_host()):
-            protocol = "http://"
+        protocol = str(self.request.scheme)+"://"
         api_url = protocol + "localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a"
         resp['authors'] = find_friends(api_url)
 
@@ -396,9 +394,7 @@ class CheckFriendStatus(APIView):
         
         # TODO get the URL from the request and turn it into the author
 
-        protocol = "https://"
-        if "localhost" in str(request.get_host()):
-            protocol = "http://"
+        protocol = str(self.request.scheme)+"://"
         author1url = protocol+'localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
         author2url = protocol+'localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
         
@@ -496,9 +492,7 @@ def home(request):
         if len(User.objects.filter(id=request.user.id)) != 1:
             return HttpResponseNotFound("The user information is not found")
         # get userprofile information
-        protocol = "https://" 
-        if "localhost" in str(request.get_host()):
-            protocol = "http://"
+        protocol = str(request.scheme)+"://"
         user = UserProfile.objects.filter(user_id=request.user).first()
         if user.url == "":
             user.url = protocol+str(request.get_host())+"/author/"+str(user.author_id)
@@ -536,9 +530,7 @@ class SignUp(generic.CreateView):
     template_name = 'signup.html'
 
     def form_valid(self, form):
-        protocol = "https://"
-        if "localhost" in str(request.get_host()):
-            protocol = "http://"
+        protocol = str(self.request.scheme)+"://"
         form_object = form.save(commit=False)
         form_object.is_active = False
         form_object.save()
