@@ -21,7 +21,7 @@
 
         <button id="accept" href="#" class="btn btn-default" onclick="acceptButton()">Accept</button>
         <button id="delete" href="#" class="btn btn-default" onclick="declineButton()">Decline</button>
-        
+
         <script>
             //var acceptbtn = document.getElementById("accept");
             //acceptbtn.onclick = acceptButton
@@ -40,7 +40,7 @@
 
               fetch('/acceptfriendrequest',
                 {
-                  method: "POST", 
+                  method: "POST",
                   headers:{
                     "Content-Type": "application/json",
                     'X-CSRFToken': Cookies.get('csrftoken')
@@ -63,22 +63,42 @@
                 }
               }
               alert("456")
-
+              alert(getToken())
               fetch('/deletefriendrequest',
                 {
-                  method: "POST", 
+                  method: "POST",
                   headers:{
                     "Content-Type": "application/json",
-                    'X-CSRFToken': Cookies.get('csrftoken')
+                    'X-CSRFToken': getToken()
                   },
                   body: JSON.stringify(data)
                 });
 
               alert("789")
-              
+
+            }
+
+            // Reference:
+            // https://docs.djangoproject.com/en/2.1/ref/csrf/
+            // Cookies.get('csrftoken') cannot be used
+            function getToken() {
+                var cookieValue = null;
+                var name = "csrftoken"
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
             }
         </script>
-        
+
 
       </div>
       {%endfor%}
