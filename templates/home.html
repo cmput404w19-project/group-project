@@ -449,61 +449,48 @@
   }).catch((err)=> console.log(err));
 
 
-  setInterval( function(){
-  for (server in resp) {
-    fetches.push(
-    fetch(resp[server] + '/author/posts/?size=10', {
-        method: "GET",
-        headers: {
-          "Authorization":"Basic "+ btoa("team14:team14"),
-          "Content-Type": "application/json",
-          "X-CSRFToken": getToken(),
-          "X-Request-User-ID" : "{{userprofile.url}}",
-        },
-    }).then((response)=>{ console.log(response);  return response.json();})
-    .catch((err)=> console.log(err))
-    );
-  }}, 600000
-  );
+  // setInterval( function(){
+  // for (server in resp) {
+  //   fetches.push(
+  //   fetch(resp[server] + '/author/posts/?size=10', {
+  //       method: "GET",
+  //       headers: {
+  //         "Authorization":"Basic "+ btoa("team14:team14"),
+  //         "Content-Type": "application/json",
+  //         "X-CSRFToken": getToken(),
+  //         "X-Request-User-ID" : "{{userprofile.url}}",
+  //       },
+  //   }).then((response)=>{ console.log(response);  return response.json();})
+  //   .catch((err)=> console.log(err))
+  //   );
+  // }}, 600000
+  // );
 
-  // getPostData("{{ author_post_api_url }}?size=10");
-  // function getAllDataFromAllServer(){
-  //   $.when(
-  //      getPostData("{{ author_post_api_url }}?size=10"),
-
-  //   ).then( function(){
-  //     let newPosts = [];
-  //     $.each(author_post_response.posts, function(i,post){
-  //       if ( !(post.id in all_posts_dic) ){
-  //         newPosts.append()
-  //       }
-  //     });
-  //   });
-  // }
-  setInterval(
-    function(){
-  Promise.all(fetches).then( function(results){
-    // results are list of post jsons from each server
-    // p1 = results[0]; // this is json 
-    // console.log(p1);
-    var all_posts = [];
-    console.log(results);
-    for (i in results){
-      for (j in results[i].posts){
-        all_posts.push(results[i].posts[j]);
+  
+  // setInterval(
+  //   function(){
+  // Promise.all(fetches).then( function(results){
+  //   // results are list of post jsons from each server
+  //   // p1 = results[0]; // this is json 
+  //   // console.log(p1);
+  //   var all_posts = [];
+  //   console.log(results);
+  //   for (i in results){
+  //     for (j in results[i].posts){
+  //       all_posts.push(results[i].posts[j]);
         
-      }
-    }
-    console.log(all_posts);
-    all_posts.sort(function(a,b){
-      return new Date(a.published) - new Date(b.published);
-    });
-    console.log(all_posts);
-    $("#MiddleColumn").empty();
-    renderPosts(all_posts);
-    fetches = [];
-  }).catch((err)=> console.log(err));}, 600000
-  );
+  //     }
+  //   }
+  //   console.log(all_posts);
+  //   all_posts.sort(function(a,b){
+  //     return new Date(a.published) - new Date(b.published);
+  //   });
+  //   console.log(all_posts);
+  //   $("#MiddleColumn").empty();
+  //   renderPosts(all_posts);
+  //   fetches = [];
+  // }).catch((err)=> console.log(err));}, 600000
+  // );
 </script>
 
 
