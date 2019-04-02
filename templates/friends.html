@@ -29,7 +29,6 @@
       type: 'GET',
       url: url,
       success: function(userprofile_content){
-        alert(userprofile_content.displayName);
         var Div1st = document.createElement("div");
         Div1st.classList.add("w3-container");
         Div1st.classList.add("w3-card");
@@ -63,7 +62,6 @@
   // send request to all these url to get their user profile inforamtion
   // and then render them
   for(let i=0; i<friend_urls_list.length ;i++){
-    alert(friend_urls_list[i])
     getAuthorData(friend_urls_list[i]);
   }
 
