@@ -17,19 +17,28 @@
           <a class="a-dec2" href="/accounts/profile/?profile_url={{friend.requestedBy_url}}">{{friend.requestedBy_name}}
 
           </a>
+
+          <button id="accept" href="#" class="btn btn-default" onclick="acceptButton()">Accept</button>
+          <button id="delete" href="#" class="btn btn-default" onclick="declineButton()">Decline</button>
         </div>
 
-        <button id="accept" href="#" class="btn btn-default" onclick="acceptButton()">Accept</button>
-        <button id="delete" href="#" class="btn btn-default" onclick="declineButton()">Decline</button>
-        
+        <style>
+            #accept{
+                position: relative;
+                margin-right: 10px;
+                margin-left: 590pt;   
+            }
+            #delete{
+                position: relative;
+                margin-right: 30px;      
+            }
+        </style>
+
         <script>
-            //var acceptbtn = document.getElementById("accept");
-            //acceptbtn.onclick = acceptButton
-            //var deletebtn = document.getElementById("delete");
-            //deletebtn.onclick = declineButton
+            
             function acceptButton(){
               data = {
-                //"query": "deleteFriendrequest",
+                "query": "deleteFriendrequest",
                 "author":{
                   "url": "{{friend.requestedTo_url}}",
                 },
@@ -40,21 +49,23 @@
 
               fetch('/acceptfriendrequest',
                 {
-                  method: "POST", 
+                  method: "POST",
                   headers:{
                     "Content-Type": "application/json",
-                    'X-CSRFToken': Cookies.get('csrftoken')
+                    'X-CSRFToken': getToken()
                   },
                   body: JSON.stringify(data)
                 });
+                alert("dididadida")
 
-
+                declineButton();
+                window.location.reload(0);
             }
 
             function declineButton(){
               alert("123")
               data = {
-                //"query": "deleteFriendrequest",
+                "query": "deleteFriendrequest",
                 "author":{
                   "id": "{{friend.requestedTo_url}}",
                 },
@@ -62,23 +73,41 @@
                   "id": "{{friend.requestedBy_url}}",
                 }
               }
-              alert("456")
-
               fetch('/deletefriendrequest',
                 {
-                  method: "POST", 
+                  method: "POST",
                   headers:{
                     "Content-Type": "application/json",
-                    'X-CSRFToken': Cookies.get('csrftoken')
+                    'X-CSRFToken': getToken()
                   },
                   body: JSON.stringify(data)
                 });
 
-              alert("789")
-              
+                window.location.reload(0);
+
+            }
+
+            // Reference:
+            // https://docs.djangoproject.com/en/2.1/ref/csrf/
+            // Cookies.get('csrftoken') cannot be used
+            function getToken() {
+                var cookieValue = null;
+                var name = "csrftoken"
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
             }
         </script>
-        
+
 
       </div>
       {%endfor%}
