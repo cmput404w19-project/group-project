@@ -440,6 +440,35 @@ class FriendRequestNew(APIView):
         print("friend request serializer pass")
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
+class acceptFriendRequest(APIView):
+    """
+    post:
+    Make a friend request
+    """
+    def post(self, request):
+        data = {}
+        data['follower_url'] = request.data['author']['url']
+        data['following_url'] = request.data['friend']['url']
+        follow_serializer = FollowSerializer(data=data)
+
+        if follow_serializer.is_valid():
+            follow_serializer.save()
+        else:
+            return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("follow serialzer pass")
+        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+
+
+
+class deleteFriendRequest(APIView):
+     def post(self, request):
+        print("herehrerere")
+        requestedTo_url = request.data['author']['id']
+        requestedBy_url = request.data['friend']['id']
+        obj = FriendRequest.objects.get(requestedBy_url=requestedBy_url, requestedTo_url=requestedTo_url)
+        obj.delete()
+        return Response(status=status.HTTP_200_OK)
+         
 
 
 
@@ -599,6 +628,8 @@ def GetAuthorProfile(request):
     content["userprofile"] = requestuser # this is the request user's profile
     # get the request parameter
     profile_url = request.GET.get("profile_url")
+    print("=================")
+    print(profile_url)
     if not profile_url:
         HttpResponseBadRequest("bad request! No profile url in the request body")
     # send a request to api to ask for the userprofile data
@@ -627,14 +658,17 @@ def getFriendRequest(request):
     content["User"] = request.user
     
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
-    print(requestuser.url)
+    
     #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
+    print("=============+++++++++++++++++++++")
     print(follower)
     content["follower"] = follower
+    print(requestuser)
+    print(requestuser.url)
     content["userprofile"] = requestuser
-
     return render(request, 'friend_requests.html', content)
+
 
 
 class postDelete(APIView):

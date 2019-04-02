@@ -90,7 +90,10 @@ urlpatterns = [
 
     path(r'friendrequest/', views.FriendRequestNew().as_view()),
     path(r'friendrequest', views.FriendRequestNew().as_view()),
-
+    path(r'deletefriendrequest/', views.deleteFriendRequest().as_view()),
+    path(r'deletefriendrequest', views.deleteFriendRequest().as_view()),
+    path(r'acceptfriendrequest/', views.acceptFriendRequest().as_view()),
+    path(r'acceptfriendrequest', views.acceptFriendRequest().as_view()),
 
     #unfollow
     path(r'unfollowrequest/', views.UnFollow().as_view()),

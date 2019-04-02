@@ -11,18 +11,74 @@
     <div class="w3-col" style="position:relative">
       <p style="color: black; font-weight: bold; margin-left: 8%; margin-bottom:1em; font-size: 2.2em">My Friend Requests</p>
       {%for friend in follower%}
-      <div class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%; margin-bottom: 8pt;""><br>
+      <div id="onlyforget" class="w3-container w3-card w3-white w3-round " style="position:relative; max-width: 84%; margin-left: 8%; margin-bottom: 8pt;""><br>
 
         <div class = "friend">
           <a class="a-dec2" href="/accounts/profile/?profile_url={{friend.requestedBy_url}}">{{friend.requestedBy_name}}
 
           </a>
         </div>
-        <div class="btn-group">
-          <!-- need edit view to link to this page-->
-          <a href="#" class="btn btn-default">Accept</a>
-          <a href="#" class="btn btn-default">Decline</a>
-        </div>
+
+        <button id="accept" href="#" class="btn btn-default" onclick="acceptButton()">Accept</button>
+        <button id="delete" href="#" class="btn btn-default" onclick="declineButton()">Decline</button>
+        
+        <script>
+            //var acceptbtn = document.getElementById("accept");
+            //acceptbtn.onclick = acceptButton
+            //var deletebtn = document.getElementById("delete");
+            //deletebtn.onclick = declineButton
+            function acceptButton(){
+              data = {
+                //"query": "deleteFriendrequest",
+                "author":{
+                  "url": "{{friend.requestedTo_url}}",
+                },
+                "friend": {
+                  "url": "{{friend.requestedBy_url}}",
+                }
+              }
+
+              fetch('/acceptfriendrequest',
+                {
+                  method: "POST", 
+                  headers:{
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': Cookies.get('csrftoken')
+                  },
+                  body: JSON.stringify(data)
+                });
+
+
+            }
+
+            function declineButton(){
+              alert("123")
+              data = {
+                //"query": "deleteFriendrequest",
+                "author":{
+                  "id": "{{friend.requestedTo_url}}",
+                },
+                "friend": {
+                  "id": "{{friend.requestedBy_url}}",
+                }
+              }
+              alert("456")
+
+              fetch('/deletefriendrequest',
+                {
+                  method: "POST", 
+                  headers:{
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': Cookies.get('csrftoken')
+                  },
+                  body: JSON.stringify(data)
+                });
+
+              alert("789")
+              
+            }
+        </script>
+        
 
       </div>
       {%endfor%}
@@ -30,5 +86,8 @@
     </div>
 
 </div>
+
+
+
 
 {% endblock %}
