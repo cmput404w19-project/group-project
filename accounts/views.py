@@ -193,7 +193,7 @@ class AuthorPosts(APIView):
             post['size'] = pageSize
             #print(counter)
             #print(comments)
-            comments = Comment.objects.filter(post_id=post['id']).order_by("published").all()
+            comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             comments = GETCommentSerializer(comments, many=True).data
@@ -295,7 +295,7 @@ class CommentsByPostId(APIView):
     def get(self, request, post_id):
         resp = {}
         
-        comments = Comment.objects.filter(post_id=post_id).order_by("published").all()
+        comments = Comment.objects.filter(post_id=post_id).order_by("-published").all()
 
         count = len(comments)
         resp['count'] = count
