@@ -90,18 +90,20 @@
             <div id="textarea" style="display:inline">
                 <label for="textarea">Content: </label>
                 <div >
-                    <textarea id="texta" name="content" class="form-control text-area" type="text" maxLength="512"  rows="8" style="font-size:16pt"></textarea>
+                    <textarea id="texta" name="content" type="text" ></textarea>
                 </div>
-                <div>
+                <div style="display:none">
                     <label for="refPost">Reference Post: </label>
                     <input id="refPost" name="refPost"/>
                 </div>
             </div>
+            <br>
             <div class="upload">
                 <div id="uploadImage" style="display:none">
                     <label class="upload_label" for="image">Please choose your image: </label>
                     <input id="image" type="file" accept="image/png, image/jpeg">
-                    <textarea id="imageText" type="text" name="image64" style="display:none"></textarea>
+                    <!--name="image64"-->
+                    <textarea id="imageText" type="text" style="display:none"></textarea>
                     <img id="image64" height="300" >
                 </div>
             </div>
@@ -136,9 +138,9 @@
                 <!--br>
                 Or select who can see your posts-->
             </div>
-            <div>
+            <div style="display:none">
                 <label for="unlisted">Unlisted: </label>
-                <input type="checkbox" name="unlisted" value="True">
+                <input id="unlisted" type="checkbox" name="unlisted" value="True">
             </div>
             <div class="btn">
                 <input type="submit" value="Save" style="font-size: 1.5em; margin-left:0em" class="btn btn-default">
@@ -161,19 +163,22 @@
             texta = document.getElementById("texta");
             image = document.getElementById("image");
             file = document.getElementById("file");
+            unlisted = document.getElementById("unlisted");
             if ((selection.value == "image/png;base64")||(selection.value == "image/jpeg;base64")) {
-                texta.value = '';
+                //texta.value = '';
                 file.value = '';
                 textarea.style.display = 'none';
                 uploadImage.style.display = 'inline';
                 uploadFile.style.display = 'none';
+                unlisted.checked = true;
             }
             else if (selection.value == "application/base64"){
-                texta.value = '';
+                //texta.value = '';
                 image.value = '';
                 textarea.style.display = 'none';
                 uploadImage.style.display = 'none';
                 uploadFile.style.display = 'inline';
+                unlisted.checked = false;
             }
             else{
                 image.value = '';
@@ -181,6 +186,7 @@
                 textarea.style.display = 'inline';
                 uploadImage.style.display = 'none';
                 uploadFile.style.display = 'none';
+                unlisted.checked = false;
             }
         }
         // Reference
@@ -190,6 +196,12 @@
                 var FR= new FileReader();
                 FR.addEventListener("load", function(e) {
                     document.getElementById("image64").src = e.target.result;
+                    //document.getElementById("texta").class = "";
+                    //document.getElementById("texta").maxLength = "";
+                    //document.getElementById("texta").rows = "";
+                    //document.getElementById("texta").style = "";
+                    document.getElementById("texta").value = e.target.result;
+                    //alert(e.target.result);
                     document.getElementById("image").src = e.target.result;
                     document.getElementById("imageText").value = e.target.result;
                 });

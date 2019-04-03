@@ -157,7 +157,7 @@ function renderPosts(posts){
       var imageshow = document.createElement("img");
       imageshow.id = "image";
       imageshow.style = "display:inline";
-      imageshow.src = post.image64;
+      imageshow.src = post.content;
       imageshow.width = 500;
       imageshow.onerror = "this.style.display='none'";
       //loadImage();
@@ -429,7 +429,7 @@ for (server in resp) {
 
 Promise.all(fetches).then( function(results){
   // results are list of post jsons from each server
-  // p1 = results[0]; // this is json 
+  // p1 = results[0]; // this is json
   // console.log(p1);
   var all_posts = [];
   console.log(results);
@@ -488,7 +488,7 @@ Promise.all(fetches).then( function(results){
 //   function(){
 // Promise.all(fetches).then( function(results){
 //   // results are list of post jsons from each server
-//   // p1 = results[0]; // this is json 
+//   // p1 = results[0]; // this is json
 //   // console.log(p1);
 //   var all_posts = [];
 //   console.log(results);
