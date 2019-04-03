@@ -434,14 +434,15 @@ Promise.all(fetches).then( function(results){
   console.log(results);
   for (i in results){
     if (results[i] !== undefined) {
-      if ("posts" in Object.keys(results[i])) {
+      if (results[i].posts !== undefined) {
         for (j in results[i].posts){
           if (!results[i].posts[j].unlisted){
             // visible in home page only if unlisted is false
             all_posts.push(results[i].posts[j]);
           }
         }
-      }}
+      }
+    }
   }
   console.log(all_posts);
   all_posts.sort(function(a,b){
