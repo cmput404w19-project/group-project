@@ -4,7 +4,7 @@ CMPUT404-Winter-2019-Group-Project-socialdistribution
 
 
 ## The project is running on Heroku
-https://cmput404w19-project.herokuapp.com
+https://cmput404w19-web-project.herokuapp.com
 
 
 
