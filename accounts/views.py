@@ -798,6 +798,49 @@ def ShowMyPosts(request, author_id):
         # not login
         return render(request, 'landingPage.html')
 
+def RenderPostByID(request, post_id):
+    # so right now we decide to use javacript to get all the posts and comments data
+    # and render stuff in the client side
+
+    context = {} # this will be the dictionary format of all data that pass into the html before return to clients
+
+    # Things that need to pass into the html
+    # -userprofile
+    # -post api url
+
+    # check for basic token auth (Django built-in)
+    if request.user.is_authenticated:
+        # check if we actually have this user
+        # if not return 404
+        if len(User.objects.filter(id=request.user.id)) != 1:
+            return HttpResponseNotFound("The user information is not found")
+        # get userprofile information
+        protocol = str(request.scheme)+"://"
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        if user.url == "":
+            user.url = protocol+str(request.get_host())+"/author/"+str(user.author_id)
+            user.save()
+        if user.host == "":
+            user.host = protocol+str(request.get_host())
+            user.save()
+        context["userprofile"] = user
+        # get all the follow list of this user (a list of people that this user are following)
+        followinglist = Follow.objects.filter(follower_url=user.url).all().values_list('following_url', flat=True)
+        context["followlist"] = " ".join(followinglist)
+        # since this is our server, no need domain name for the url just the path
+        # so this will be our post api path
+        endpoints = ExternalServer.objects.all()
+        endpoints_url_list = []
+        for i in endpoints:
+            endpoints_url_list.append(i.server_url)
+        context["endpoints_url_string"] = " ".join(endpoints_url_list)
+        context["author_post_api_url"] = protocol+str(request.get_host())  # this path url should handle to get all posts that is visible for this user
+        context["post_id"] = post_id
+        return render(request, 'RenderPostByID.html', context)
+    else:
+        # not login
+        return render(request, 'landingPage.html')
+
 def profile(request):
     # user has login
     userprofile = UserProfile.objects.filter(user_id = request.user.id).first()

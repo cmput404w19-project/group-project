@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<!-- Page Container -->
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
+  <!-- The Grid -->
+  <div class="w3-row">
+    <!-- Left Column -->
+    <div class="w3-col m3">
+      <!-- Profile -->
+      <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
+        <div class="w3-container">
+          <h4 class="w3-center" style="font-family:Muli; font-size: 1.5em">{{ userprofile.displayName }}</h4>
+          <br>
+          <div class="btn-group btn-group-justified">
+            <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
+            <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
+          </div>
+          <hr>
+          <div class="w3-center">
+            <p><a href="{% url 'render_post' %}" class="btn btn-default">Make Post</a></p>
+          </div>
+        </div>
+      </div>   <!--Profile End-->
+    </div>  <!--Left Column End-->
+
+    <!-- Middle Column -->
+    <div id="MiddleColumn" class="w3-col m9" style="position:relative">
+      <!--Posts-->
+
+
+      <!--Posts Ends-->
+    </div> <!-- End Middle Column -->
+  </div> <!--Grid End-->
+</div> <!--Page Container End-->
+{% endif %}
+
+<!-- Following will be the JavaScript that create the views for Posts -->
+<script type="text/javascript">
+
+
+  function showInMarkdown(){
+    //type = document.getElementById("contentType").innerHTML;
+    var list = document.getElementsByClassName("toMarkdown");
+    var converter = new showdown.Converter();
+    for (key of list){
+      key.innerHTML = converter.makeHtml(key.innerHTML);
+    }
+    //var html = converter.makeHtml(text);
+    //document.getElementById("toMarkdown").innerHTML = html;
+  }
+
+
+function renderPosts(posts){
+  $.each(posts.reverse(), function(i, post){
+
+    // following would be creating elements and render them
+    var Post1stOutterDiv = document.createElement("div");
+    // var br = document.createElement("br");
+    Post1stOutterDiv.classList.add("w3-container");
+    Post1stOutterDiv.classList.add("w3-card");
+    Post1stOutterDiv.classList.add("w3-white");
+    Post1stOutterDiv.classList.add("w3-round");
+    Post1stOutterDiv.classList.add("post1st");
+    // https://www.w3schools.com/jsref/prop_html_id.asp
+    // w3school
+    Post1stOutterDiv.id = post.id;
+    Post1stOutterDiv.append(generate_br());
+
+    var Post2ndOutterDiv = document.createElement("div");
+    Post2ndOutterDiv.classList.add("Post");
+
+    var userprofile_name_a = document.createElement("a");
+    userprofile_name_a.classList.add("a-dec2");
+    userprofile_name_a.classList.add("post-author-text");
+    userprofile_name_a.style.fontSize = "1.5em";  // over write font size..
+    userprofile_name_a.href = "/accounts/profile/?profile_url="+post.author.id;
+
+    userprofile_name_a.innerHTML = post.author.displayName;
+    userprofile_name_a.id = "user_profile";
+
+    var Post3rdDiv = document.createElement("div");
+    var Post3rdDiv_spanTitle = document.createElement("span");
+    Post3rdDiv_spanTitle.classList.add("span-a");
+    Post3rdDiv_spanTitle.style = "font-size: 1.3em;font-weight: bold;";
+    Post3rdDiv_spanTitle.innerHTML = post.title;
+    var Post3rdDiv_spanPublishTime = document.createElement("span");
+    Post3rdDiv_spanPublishTime.classList.add("span-a");
+    Post3rdDiv_spanPublishTime.classList.add("post3rddiv_spanPublishTime");
+    // convert time to time zone specific in client area standard
+    Post3rdDiv_spanPublishTime.innerHTML = new Date(post.published);
+
+    var new_hr = document.createElement("hr");
+    new_hr.classList.add("w3-clear");
+
+
+    ////this shows plaintext description
+    Post3rdDiv.appendChild(generate_br());
+    if (post.contentType === "text/plain"){
+      var Post3rdDiv_spanContent = document.createElement("h4");
+      //Post3rdDiv_spanContent.classList.add("span-a");
+      Post3rdDiv_spanContent.classList.add("Post3rdDiv_spanContent");
+      Post3rdDiv_spanContent.innerHTML = post.content;
+
+    }
+    else if(post.contentType==="text/markdown"){
+      var markdownText = document.createElement("p");
+      markdownText.classList.add("toMarkdown");
+      markdownText.innerHTML = post.content;
+
+    }
+
+
+    else if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+      var meta1 = document.createElement("meta");
+      meta1.id = "media_url";
+      meta1.name = "media_url";
+      meta1.content = post.image64;
+
+      var imageshow = document.createElement("img");
+      imageshow.id = "image";
+      imageshow.style = "display:inline";
+      imageshow.src = post.content;
+      imageshow.width = 500;
+      imageshow.onerror = "this.style.display='none'";
+      //loadImage();
+    }
+
+    var description = document.createElement("p");
+    description.innerHTML = "Description: " + post.description;
+    description.style = "color:#c0c4c3";
+
+    var postID = document.createElement("p");
+    postID.innerHTML = "postURL: " + post.origin;
+    postID.style = "color:#c0c4c3";
+
+
+    Post2ndOutterDiv.appendChild(userprofile_name_a);
+    Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
+    Post3rdDiv.appendChild(generate_br());
+    Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
+    Post3rdDiv.appendChild(generate_br());
+
+    Post2ndOutterDiv.appendChild(Post3rdDiv);
+
+    Post2ndOutterDiv.appendChild(new_hr);
+
+    if (post.contentType === "text/plain"){
+      Post2ndOutterDiv.appendChild(Post3rdDiv_spanContent);
+    }
+
+    if (post.contentType === "text/markdown"){
+      Post2ndOutterDiv.appendChild(markdownText);
+    }
+
+    if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+      Post2ndOutterDiv.appendChild(meta1);
+      Post2ndOutterDiv.appendChild(imageshow);
+
+    }
+
+    Post2ndOutterDiv.appendChild(description);
+    Post2ndOutterDiv.appendChild(postID);
+
+
+
+    Post1stOutterDiv.appendChild(Post2ndOutterDiv);
+    document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
+    showInMarkdown();
+    // loadImage();
+  })
+}
+
+
+
+//reference answered by kodmasin from https://stackoverflow.com/questions/1795701/django-reverse-for-javascript
+function generete_some_url(id){
+  return "{% url 'deletepost' post_id=112233 %}".replace("112233", id);
+}
+
+function loadImage(){
+  media_url = document.getElementById("media_url").getAttribute("content");
+  image = document.getElementById("image")
+  image.src = media_url;
+  image.style.display = "inline";
+}
+
+function generate_br(){
+  return document.createElement("br");
+}
+
+
+// Reference:
+// https://docs.djangoproject.com/en/2.1/ref/csrf/
+// Cookies.get('csrftoken') cannot be used
+function getToken() {
+  var cookieValue = null;
+  var name = "csrftoken"
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function addToPostList(post){
+  all_posts.push(post);
+}
+
+
+// initial fetch to all server to get all posts that is visible to this user
+
+var fetches = [];
+var array = new Array();
+
+var followlist = "{{ followlist }}";
+if (followlist === ""){
+  followlist = {};
+}
+else{
+  let followlist_tmp = followlist.split(" ");
+  followlist = {};
+  for (let i=0;i<followlist_tmp.length;i++){
+    followlist[followlist_tmp[i]] = null;
+  }
+}
+
+var resp = "{{ endpoints_url_string }}";
+// do some string operation to get all end point url into an array
+if (resp === ""){
+  resp = [];
+}else{
+  resp = resp.split(" ");
+}
+console.log(resp);
+resp.push("{{ author_post_api_url }}");
+console.log(resp);
+for (server in resp) {
+  console.log(resp[server]);
+  fetches.push(
+    fetch(resp[server] + '/author/posts/?size=10', {
+      method: "GET",
+      headers: {
+        "Authorization":"Basic "+ btoa("team14:team14"),
+        "Content-Type": "application/json",
+        "X-CSRFToken": getToken(),
+        "X-Request-User-ID" : "{{userprofile.url}}",
+      },
+    }).then((response)=>{ console.log(response);  return response.json();})
+    .catch((err)=> console.log(err))
+  );
+}
+
+Promise.all(fetches).then( function(results){
+  // results are list of post jsons from each server
+  // p1 = results[0]; // this is json
+  // console.log(p1);
+  var all_posts = [];
+  console.log(results);
+  for (i in results){
+    // ensure that undefined data will not proceed the render
+    if (results[i] !== undefined) {
+      if (results[i].posts !== undefined) {
+        for (j in results[i].posts){
+          if (results[i].posts[j].id == "{{post_id}}"){
+            // visible in home page only if unlisted is false
+            if (results[i].posts[j].visibility === "FRIENDS"){
+              if (results[i].posts[j].author.id in followlist || results[i].posts[j].author.id === "{{ userprofile.url }}"){
+                // this will be visible if this user is following the author
+                all_posts.push(results[i].posts[j]);
+              }
+            }
+            else{
+              all_posts.push(results[i].posts[j]);
+            }
+          }
+        }
+      }
+    }
+  }
+  console.log(all_posts);
+  // sorting the post lists
+  all_posts.sort(function(a,b){
+    return new Date(a.published) - new Date(b.published);
+  });
+  console.log(all_posts);
+  $("#MiddleColumn").empty();
+  renderPosts(all_posts);
+  fetches = [];
+}).catch((err)=> console.log(err));
+
+</script>
+
+
+
+{% endblock %}

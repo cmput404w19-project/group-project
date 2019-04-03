@@ -113,8 +113,14 @@ urlpatterns = [
     path(r'author/render/post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
     path(r'author/render/post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
 
+    # the render of showing all posts for specific user
     path(r'author/<str:author_id>/render/posts/', views.ShowMyPosts),
     path(r'author/<str:author_id>/render/posts', views.ShowMyPosts),
+
+    # the render of showing a specific post for specific user
+    path(r'posts/<str:post_id>/render/', views.RenderPostByID),
+    path(r'posts/<str:post_id>/render', views.RenderPostByID),
+
 
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
     path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
