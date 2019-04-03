@@ -433,7 +433,7 @@
     var all_posts = [];
     console.log(results);
     for (i in results){
-      if ("posts" in keys(results[i])) {
+      if ("posts" in Object.keys(results[i])) {
         for (j in results[i].posts){
           all_posts.push(results[i].posts[j]);
         }
