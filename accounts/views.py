@@ -94,7 +94,7 @@ class Posts(APIView):
             resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
-        
+
         # paginate comments
         for post in serializer.data:
             post['size'] = pageSize
@@ -201,7 +201,7 @@ class AuthorPosts(APIView):
             resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
-        
+
         # paginate comments and add friend list
         #counter = 0
         for post in serializer.data:
@@ -215,7 +215,7 @@ class AuthorPosts(APIView):
             comments = GETCommentSerializer(comments, many=True).data
             post['comments'] = comments
             # post['author']['friends'] = find_friends(post['author']['id'])
-       
+
         resp['posts'] = serializer.data
 
         resp['query'] = 'posts'
@@ -299,7 +299,7 @@ class AuthorPostsById(APIView):
         resp['query'] = 'posts'
 
         return Response(resp)
-        
+
 class CommentsByPostId(APIView):
     """
     get:
@@ -310,7 +310,7 @@ class CommentsByPostId(APIView):
     """
     def get(self, request, post_id):
         resp = {}
-        
+
         comments = Comment.objects.filter(post_id=post_id).order_by("-published").all()
 
         count = len(comments)
@@ -338,7 +338,7 @@ class CommentsByPostId(APIView):
             resp['previous'] = str(request.get_host())+"/posts?page="+str(comments.previous_page_number())
 
         serializer = GETCommentSerializer(comments, many=True)
-        
+
         resp['comments'] = serializer.data
 
         resp['query'] = 'comments'
@@ -349,7 +349,7 @@ class CommentsByPostId(APIView):
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         #post = Post.objects.filter(post_id=post_id)
-    
+
         print(request.data)
 
         user_url = request.data['comment']['author']['url']
@@ -381,11 +381,11 @@ class FriendListByAuthorId(APIView):
     get friend list of {author_id}
 
     post:
-    Ask if anyone in provided list is a friend of {author_id} 
+    Ask if anyone in provided list is a friend of {author_id}
     """
     def get(self, request, author_id):
         resp = {}
-        
+
         # TODO get the URL from the request, combine with author_id
 
         protocol = str(self.request.scheme)+"://"
@@ -407,13 +407,13 @@ class CheckFriendStatus(APIView):
 
     def get(self, request, author1_id, author2_id):
         resp = {}
-        
+
         # TODO get the URL from the request and turn it into the author
 
         protocol = str(self.request.scheme)+"://"
         author1url = protocol+'localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
         author2url = protocol+'localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
-        
+
         author1friends = find_friends(author1url)
         if author2url in author1friends:
             resp['friends'] = True
@@ -432,7 +432,7 @@ class FriendRequestNew(APIView):
     Make a friend request
     """
     def post(self, request):
- 
+
         data2 = {}
         data2['requestedBy_name'] = request.data['author']['displayName']
         data2['requestedBy_url'] = request.data['author']['url']
@@ -442,7 +442,7 @@ class FriendRequestNew(APIView):
         try:
             FriendRequest.objects.get(requestedBy_url=data2['requestedBy_url'], requestedTo_url=data2['requestedTo_url'])
             return Response(status=status.HTTP_200_OK)
-        except: 
+        except:
             friend_request_serializer = FriendRequestSerializer(data=data2)
 
         if friend_request_serializer.is_valid():
@@ -462,14 +462,14 @@ class InternalFriendRequest(APIView):
         send_do_domain_name = str(data['following_url'])
         send_do_domain_name = send_do_domain_name.split('author')[0]
         url = send_do_domain_name + 'friendrequest/'
-        
+
         csrf_token = request.META['CSRF_COOKIE']
         if follow_serializer.is_valid():
             follow_serializer.save()
             headers = {'content-type': 'application/json', 'X-CSRFToken':csrf_token}
             data = json.dumps(request.data)
             r = requests.post(url, data= data, headers=headers)
-            
+
         else:
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
@@ -503,7 +503,7 @@ class deleteFriendRequest(APIView):
         obj = FriendRequest.objects.get(requestedBy_url=requestedBy_url, requestedTo_url=requestedTo_url)
         obj.delete()
         return Response(status=status.HTTP_200_OK)
-         
+
 
 
 
@@ -692,7 +692,7 @@ def GetAuthorProfile(request):
 def getFriendRequest(request):
     #user = UserProfile.objects.filter(author_id=request.user).first()
     content = dict()
-    content["User"] = request.user  
+    content["User"] = request.user
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
     #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
@@ -756,6 +756,47 @@ class MakePost(APIView):
         serializer = PostSerializer()
         return Response({'serializer':serializer})
 
+def ShowMyPosts(request, author_id):
+    # so right now we decide to use javacript to get all the posts and comments data
+    # and render stuff in the client side
+
+    context = {} # this will be the dictionary format of all data that pass into the html before return to clients
+
+    # Things that need to pass into the html
+    # -userprofile
+    # -post api url
+
+    # check for basic token auth (Django built-in)
+    if request.user.is_authenticated:
+        # check if we actually have this user
+        # if not return 404
+        if len(User.objects.filter(id=request.user.id)) != 1:
+            return HttpResponseNotFound("The user information is not found")
+        # get userprofile information
+        protocol = str(request.scheme)+"://"
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        if user.url == "":
+            user.url = protocol+str(request.get_host())+"/author/"+str(user.author_id)
+            user.save()
+        if user.host == "":
+            user.host = protocol+str(request.get_host())
+            user.save()
+        context["userprofile"] = user
+        # get all the follow list of this user (a list of people that this user are following)
+        followinglist = Follow.objects.filter(follower_url=user.url).all().values_list('following_url', flat=True)
+        context["followlist"] = " ".join(followinglist)
+        # since this is our server, no need domain name for the url just the path
+        # so this will be our post api path
+        endpoints = ExternalServer.objects.all()
+        endpoints_url_list = []
+        for i in endpoints:
+            endpoints_url_list.append(i.server_url)
+        context["endpoints_url_string"] = " ".join(endpoints_url_list)
+        context["author_post_api_url"] = protocol+str(request.get_host())  # this path url should handle to get all posts that is visible for this user
+        return render(request, 'MyPosts.html', context)
+    else:
+        # not login
+        return render(request, 'landingPage.html')
 
 def profile(request):
     # user has login

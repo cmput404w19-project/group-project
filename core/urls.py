@@ -96,7 +96,7 @@ urlpatterns = [
     path(r'deletefriendrequest', views.deleteFriendRequest().as_view()),
     path(r'acceptfriendrequest/', views.acceptFriendRequest().as_view()),
     path(r'acceptfriendrequest', views.acceptFriendRequest().as_view()),
-    
+
 
     #unfollow
     path(r'unfollowrequest/', views.UnFollow().as_view()),
@@ -104,7 +104,7 @@ urlpatterns = [
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Internal API Endpoints
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     path(r'externalendpoints/', views.ExternalEndpoints().as_view()),
     path(r'externalendpoints', views.ExternalEndpoints().as_view()),
@@ -112,6 +112,9 @@ urlpatterns = [
     # # the render of making new post
     path(r'author/render/post/', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
     path(r'author/render/post', login_required(views.MakePost().as_view(),login_url="/accounts/login/"), name='render_post'),
+
+    path(r'author/<str:author_id>/render/posts/', views.ShowMyPosts),
+    path(r'author/<str:author_id>/render/posts', views.ShowMyPosts),
 
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
     path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
