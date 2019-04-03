@@ -160,7 +160,7 @@ class FriendRequest(models.Model):
         ("Pending","Pending")
     )
     # requested by id  Foreign key to user
-    requestedBy_name = models.CharField(max_length=20, default="")
+    requestedBy_name = models.CharField(max_length=20, default="unknown user")
     requestedBy_url = models.URLField(default="")
     # request to id  Foreign key to user
     requestedTo_url = models.URLField(default="")

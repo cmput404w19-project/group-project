@@ -32,6 +32,7 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.core.paginator import Paginator
 
 from urllib import request
+import requests, urllib
 
 DEBUG = False
 
@@ -431,29 +432,48 @@ class FriendRequestNew(APIView):
     Make a friend request
     """
     def post(self, request):
-        data = {}
-        data['follower_url'] = request.data['author']['url']
-        data['following_url'] = request.data['friend']['url']
-        follow_serializer = FollowSerializer(data=data)
-
+ 
         data2 = {}
         data2['requestedBy_name'] = request.data['author']['displayName']
         data2['requestedBy_url'] = request.data['author']['url']
         data2['requestedTo_url'] = request.data['friend']['url']
         data2['request_status'] = "Pending"
-        friend_request_serializer = FriendRequestSerializer(data=data2)
 
-        if follow_serializer.is_valid():
-            follow_serializer.save()
-        else:
-            return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        print("follow serialzer pass")
+        try:
+            FriendRequest.objects.get(requestedBy_url=data2['requestedBy_url'], requestedTo_url=data2['requestedTo_url'])
+            return Response(status=status.HTTP_200_OK)
+        except: 
+            friend_request_serializer = FriendRequestSerializer(data=data2)
+
         if friend_request_serializer.is_valid():
             friend_request_serializer.save()
         else:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         print("friend request serializer pass")
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+
+class InternalFriendRequest(APIView):
+
+    def post(self, request):
+        data = {}
+        data['follower_url'] = request.data['author']['url']
+        data['following_url'] = request.data['friend']['url']
+        follow_serializer = FollowSerializer(data=data)
+        send_do_domain_name = str(data['following_url'])
+        send_do_domain_name = send_do_domain_name.split('author')[0]
+        url = send_do_domain_name + 'friendrequest/'
+        
+        csrf_token = request.META['CSRF_COOKIE']
+        if follow_serializer.is_valid():
+            follow_serializer.save()
+            headers = {'content-type': 'application/json', 'X-CSRFToken':csrf_token}
+            data = json.dumps(request.data)
+            r = requests.post(url, data= data, headers=headers)
+            
+        else:
+            return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
+
 
 class acceptFriendRequest(APIView):
     """
@@ -477,7 +497,7 @@ class acceptFriendRequest(APIView):
 
 class deleteFriendRequest(APIView):
      def post(self, request):
-        print("herehrerere")
+
         requestedTo_url = request.data['author']['id']
         requestedBy_url = request.data['friend']['id']
         obj = FriendRequest.objects.get(requestedBy_url=requestedBy_url, requestedTo_url=requestedTo_url)
@@ -603,6 +623,7 @@ class UnFollow(APIView):
     }
     """
     def post(self, request):
+
         follower_url = request.data['author']['id']
         following_url = request.data['friend']['id']
         obj = Follow.objects.get(follower_url=follower_url, following_url=following_url)
@@ -679,7 +700,6 @@ def getFriendRequest(request):
     
     #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
-    print("=============+++++++++++++++++++++")
     print(follower)
     content["follower"] = follower
     print(requestuser)
