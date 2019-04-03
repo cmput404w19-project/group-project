@@ -436,7 +436,10 @@ Promise.all(fetches).then( function(results){
     if (results[i] !== undefined) {
       if ("posts" in Object.keys(results[i])) {
         for (j in results[i].posts){
-          all_posts.push(results[i].posts[j]);
+          if (!results[i].posts[j].unlisted){
+            // visible in home page only if unlisted is false
+            all_posts.push(results[i].posts[j]);
+          }
         }
       }}
   }
