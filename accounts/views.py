@@ -667,8 +667,6 @@ def GetAuthorProfile(request):
     content["userprofile"] = requestuser # this is the request user's profile
     # get the request parameter
     profile_url = request.GET.get("profile_url")
-    print("=================")
-    print(profile_url)
     if not profile_url:
         HttpResponseBadRequest("bad request! No profile url in the request body")
     # send a request to api to ask for the userprofile data
@@ -694,16 +692,11 @@ def GetAuthorProfile(request):
 def getFriendRequest(request):
     #user = UserProfile.objects.filter(author_id=request.user).first()
     content = dict()
-    content["User"] = request.user
-    
+    content["User"] = request.user  
     requestuser = UserProfile.objects.filter(user_id=request.user).first()
-    
     #reference answered by akotian https://stackoverflow.com/questions/14639106/how-can-i-retrieve-a-list-of-field-for-all-objects-in-django
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
-    print(follower)
     content["follower"] = follower
-    print(requestuser)
-    print(requestuser.url)
     content["userprofile"] = requestuser
     return render(request, 'friend_requests.html', content)
 

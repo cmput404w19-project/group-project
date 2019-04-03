@@ -26,11 +26,11 @@
             #accept{
                 position: relative;
                 margin-right: 10px;
-                margin-left: 590pt;   
+                margin-left: 500pt;   
             }
             #delete{
                 position: relative;
-                margin-right: 30px;      
+                margin-right: 10px;      
             }
         </style>
 
@@ -56,14 +56,12 @@
                   },
                   body: JSON.stringify(data)
                 });
-                alert("dididadida")
 
                 declineButton();
                 window.location.reload(0);
             }
 
             function declineButton(){
-              alert("123")
               data = {
                 "query": "deleteFriendrequest",
                 "author":{
