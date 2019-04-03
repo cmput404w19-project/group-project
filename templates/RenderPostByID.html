@@ -1,7 +1,26 @@
-{% extends 'base.html' %}
-
-
-{% block title %}Home{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <!-- bootstrap -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <!--JQuery-->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   {% block head %}
+   {% endblock %}
+   <!-- css -->
+   {% load static %}
+   <link rel="stylesheet" href="{% static 'accounts/style.css' %}" type="text/css">
+  <title>{% block title %}Show Post By ID{% endblock %}</title>
+  <!-- Open Source JS Library -->
+  <!-- Reference: https://github.com/showdownjs/showdown -->
+  <script type="text/javascript" src="https://rawgit.com/showdownjs/showdown/develop/dist/showdown.min.js"></script>
+</head>
+<body>
 
 {% block content %}
 {% if user.is_authenticated %}
@@ -9,24 +28,7 @@
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:30px">
   <!-- The Grid -->
   <div class="w3-row">
-    <!-- Left Column -->
-    <div class="w3-col m3">
-      <!-- Profile -->
-      <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
-        <div class="w3-container">
-          <h4 class="w3-center" style="font-family:Muli; font-size: 1.5em">{{ userprofile.displayName }}</h4>
-          <br>
-          <div class="btn-group btn-group-justified">
-            <a href="{% url 'logout' %}" class="btn btn-default">logout</a>
-            <a href="{% url 'password_reset' %}" class="btn btn-default">reset password</a>
-          </div>
-          <hr>
-          <div class="w3-center">
-            <p><a href="{% url 'render_post' %}" class="btn btn-default">Make Post</a></p>
-          </div>
-        </div>
-      </div>   <!--Profile End-->
-    </div>  <!--Left Column End-->
+
 
     <!-- Middle Column -->
     <div id="MiddleColumn" class="w3-col m9" style="position:relative">
@@ -38,6 +40,7 @@
   </div> <!--Grid End-->
 </div> <!--Page Container End-->
 {% endif %}
+</body>
 
 <!-- Following will be the JavaScript that create the views for Posts -->
 <script type="text/javascript">
@@ -305,3 +308,4 @@ Promise.all(fetches).then( function(results){
 
 
 {% endblock %}
+</html>
