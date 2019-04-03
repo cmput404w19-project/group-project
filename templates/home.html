@@ -33,8 +33,6 @@
       <!--Posts-->
 
 
-
-
       <!--Posts Ends-->
     </div> <!-- End Middle Column -->
   </div> <!--Grid End-->
@@ -105,8 +103,10 @@ function renderPosts(posts){
     // show the button for Editing and Deleting the post
 
 
-
-    if ("{{userprofile.author_id}}"===post.author.id){
+    let actual_post_author_id = post.author.id.replace(/\/+$/, "");
+    actual_post_author_id = actual_post_author_id.split("/");
+    actual_post_author_id = actual_post_author_id[actual_post_author_id.length-1];
+    if ("{{userprofile.author_id}}"===actual_post_author_id){
       var DeleteprofileForm = document.createElement("form");
       //referenced answered by v1k45 from https://stackoverflow.com/questions/36131472/django-csrf-token-with-js
       var csrf = document.createElement("input");
@@ -121,7 +121,7 @@ function renderPosts(posts){
       var DeleteButtonDiv = document.createElement("div");
       var DeleteButton = document.createElement("button");
       DeleteButton.classList.add("btn")
-      DeleteButton.classList.add("btn-default")
+      DeleteButton.classList.add("btn-danger")
       DeleteButton.classList.add("btn-primary")
       DeleteButton.innerHTML = "Delete";
       //DeleteButton.classList.add("btn btn-default");
@@ -246,8 +246,6 @@ function renderPosts(posts){
     commentListDiv.appendChild(PostCommentButton);
 
 
-
-
     Post2ndOutterDiv.appendChild(userprofile_name_a);
     Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
     Post3rdDiv.appendChild(generate_br());
@@ -256,7 +254,7 @@ function renderPosts(posts){
 
     Post2ndOutterDiv.appendChild(Post3rdDiv);
 
-    if ("{{userprofile.author_id}}"==post.author.id) {
+    if ("{{userprofile.author_id}}"===actual_post_author_id) {
       Post2ndOutterDiv.appendChild(DeleteprofileForm);
     }
 
@@ -348,8 +346,6 @@ function addComment(post, user_id, user_host, user_displayName, user_url, user_g
         "Authorization":"Basic "+ btoa("team14:team14"),
         "Content-Type": "application/json",
         "X-CSRFToken": getToken()
-
-
       },
 
     }).then(res => res.json())
@@ -386,22 +382,15 @@ function getToken() {
 function addToPostList(post){
   all_posts.push(post);
 }
-// function getAuthorData(url, userObject){
-//   $.ajax({
-//     type: 'GET',
-//     url: url,
-//     success: function(user, userObject){
 
-//     }
-//   });
-// }
 
-// call the function the send GET request for Post data
+// initial fetch to all server to get all posts that is visible to this user
 
 var fetches = [];
 var array = new Array();
 
 var resp = "{{ endpoints_url_string }}";
+// do some string operation to get all end point url into an array
 if (resp === ""){
   resp = [];
 }else{
@@ -433,6 +422,7 @@ Promise.all(fetches).then( function(results){
   var all_posts = [];
   console.log(results);
   for (i in results){
+    // ensure that undefined data will not proceed the render
     if (results[i] !== undefined) {
       if (results[i].posts !== undefined) {
         for (j in results[i].posts){
@@ -445,6 +435,7 @@ Promise.all(fetches).then( function(results){
     }
   }
   console.log(all_posts);
+  // sorting the post lists
   all_posts.sort(function(a,b){
     return new Date(a.published) - new Date(b.published);
   });
