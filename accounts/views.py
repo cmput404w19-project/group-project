@@ -153,11 +153,26 @@ class AuthorPosts(APIView):
 
         user = UserProfile.objects.filter(user_id=request.user).first()
         posts = Post.objects.filter(visibility = "PUBLIC").all()
-        posts = posts | Post.objects.filter(user_id=user).exclude(visibility="PUBLIC").all()
+        posts = list(posts)
+        posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
+
+        # own post
 
         # TODO add friend stuff to this, will just do non-friend for now
+        # return all friends post which the authors are following this requested user
+
+        thisRequestUserUrl = request.META['HTTP_X_REQUEST_USER_ID']
+        # get all visibility = "FRIENDS"
+        all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
+        for userurl in all_user_who_follow_requestUser:
+            authorid = userurl.rstrip("/").split("/")[-1]
+            # find this user's friend post
+            posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+
+        print(posts)
 
         # TODO add post_visible_to stuff
+
 
         count = len(posts)
         resp['count'] = count
@@ -169,7 +184,7 @@ class AuthorPosts(APIView):
         pageSize = int(pageSize)
 
         resp['size'] = pageSize
-        posts = list(posts)
+        # posts = list(posts)
         posts.sort(key=lambda post: post.published, reverse=True)
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
@@ -530,6 +545,9 @@ def home(request):
             user.host = protocol+str(request.get_host())
             user.save()
         context["userprofile"] = user
+        # get all the follow list of this user (a list of people that this user are following)
+        followinglist = Follow.objects.filter(follower_url=user.url).all().values_list('following_url', flat=True)
+        context["followlist"] = " ".join(followinglist)
         # since this is our server, no need domain name for the url just the path
         # so this will be our post api path
         endpoints = ExternalServer.objects.all()

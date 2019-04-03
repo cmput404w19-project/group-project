@@ -389,6 +389,18 @@ function addToPostList(post){
 var fetches = [];
 var array = new Array();
 
+var followlist = "{{ followlist }}";
+if (followlist === ""){
+  followlist = {};
+}
+else{
+  let followlist_tmp = followlist.split(" ");
+  followlist = {};
+  for (let i=0;i<followlist_tmp.length;i++){
+    followlist[followlist_tmp[i]] = null;
+  }
+}
+
 var resp = "{{ endpoints_url_string }}";
 // do some string operation to get all end point url into an array
 if (resp === ""){
@@ -428,7 +440,15 @@ Promise.all(fetches).then( function(results){
         for (j in results[i].posts){
           if (!results[i].posts[j].unlisted){
             // visible in home page only if unlisted is false
-            all_posts.push(results[i].posts[j]);
+            if (results[i].posts[j].visibility === "FRIENDS"){
+              if (results[i].posts[j].author.id in followlist || results[i].posts[j].author.id === "{{ userprofile.url }}"){
+                // this will be visible if this user is following the author
+                all_posts.push(results[i].posts[j]);
+              }
+            }
+            else{
+              all_posts.push(results[i].posts[j]);
+            }
           }
         }
       }
