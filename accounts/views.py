@@ -151,24 +151,28 @@ class AuthorPosts(APIView):
     """
     def get(self, request):
         resp = {}
-
-        user = UserProfile.objects.filter(user_id=request.user).first()
+        # look for the userprofile if this is our own server user
+        if request.user.is_authenticated:
+            user = UserProfile.objects.filter(user_id=request.user).first()
+        # All the public posts 
         posts = Post.objects.filter(visibility = "PUBLIC").all()
         posts = list(posts)
-        posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
+        # Only for our own server user
+        if request.user.is_authenticated:
+            # user's own post and prevent duplication
+            # by excluding those are public
+            posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
 
-        # own post
-
-        # TODO add friend stuff to this, will just do non-friend for now
         # return all friends post which the authors are following this requested user
-
-        thisRequestUserUrl = request.META['HTTP_X_REQUEST_USER_ID']
-        # get all visibility = "FRIENDS"
-        all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
-        for userurl in all_user_who_follow_requestUser:
-            authorid = userurl.rstrip("/").split("/")[-1]
-            # find this user's friend post
-            posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+        thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
+        if thisRequestUserUrl:
+            # get all visibility = "FRIENDS"
+            all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
+            # add all request user 's follower 
+            for userurl in all_user_who_follow_requestUser:
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                # find this user's "friend"(follower) post
+                posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
 
         print(posts)
 
