@@ -350,7 +350,6 @@ class CommentsByPostId(APIView):
         #comment_data['query'] == 'addcomment'
         #post = Post.objects.filter(post_id=post_id)
 
-        print(request.data)
 
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
