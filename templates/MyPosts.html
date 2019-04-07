@@ -343,7 +343,7 @@ function addComment(post, user_id, user_host, user_displayName, user_url, user_g
       body: JSON.stringify(data),
 
       headers: {
-        "Authorization":"Basic "+ btoa("team14:team14"),
+        "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
         "Content-Type": "application/json",
         "X-CSRFToken": getToken()
       },
@@ -417,7 +417,7 @@ for (server in resp) {
     fetch(resp[server] + '/author/posts/?size=10', {
       method: "GET",
       headers: {
-        "Authorization":"Basic "+ btoa("team14:team14"),
+        "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
         "Content-Type": "application/json",
         "X-CSRFToken": getToken(),
         "X-Request-User-ID" : "{{userprofile.url}}",
@@ -472,7 +472,7 @@ Promise.all(fetches).then( function(results){
 //   fetch(resp[server] + '/author/posts/?size=10', {
 //       method: "GET",
 //       headers: {
-//         "Authorization":"Basic "+ btoa("team14:team14"),
+//         "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
 //         "Content-Type": "application/json",
 //         "X-CSRFToken": getToken(),
 //         "X-Request-User-ID" : "{{userprofile.url}}",
