@@ -17,7 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
     categories = serializers.SerializerMethodField()
-    visibleTo = serializers.SerializerMethodField()
+    #visibleTo = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
     next = serializers.SerializerMethodField()
@@ -28,13 +28,13 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'title', 'source', 'origin', 'description', 'contentType',
-        'author', 'content', 'visibility', 'categories', 'visibleTo', 'unlisted', 
+        'author', 'content', 'visibility', 'categories', 'visibleTo', 'unlisted',
         'count', 'size', 'next', 'comments', 'published', 'user_id', 'host')
         #read_only_fields = ('user_id',)
 
     def get_id(self, obj):
         return obj.post_id
-    
+
     def get_author(self, obj):
         return GETProfileSerializer(obj.user_id).data
 
@@ -104,7 +104,7 @@ class GETCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('author','comment','contentType','published','id', 'post_id')
-    
+
     def get_comment(self, obj):
         return obj.content
 
@@ -135,4 +135,3 @@ class ExternalServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalServer
         fields = ('server_url', 'user', 'password')
-
