@@ -111,7 +111,7 @@ function renderPosts(posts){
 
     var Post2ndOutterDiv = document.createElement("div");
     Post2ndOutterDiv.classList.add("Post");
-
+    /*
     var userprofile_name_a = document.createElement("a");
     userprofile_name_a.classList.add("a-dec2");
     userprofile_name_a.classList.add("post-author-text");
@@ -120,7 +120,7 @@ function renderPosts(posts){
 
     userprofile_name_a.innerHTML = post.author.displayName;
     userprofile_name_a.id = "user_profile";
-
+    */
     var Post3rdDiv = document.createElement("div");
     var Post3rdDiv_spanTitle = document.createElement("span");
     Post3rdDiv_spanTitle.classList.add("span-a");
@@ -283,7 +283,9 @@ function renderPosts(posts){
     commentListDiv.appendChild(PostCommentButton);
     */
 
+    /*
     Post2ndOutterDiv.appendChild(userprofile_name_a);
+    */
     Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
     Post3rdDiv.appendChild(generate_br());
     Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
@@ -318,10 +320,20 @@ function renderPosts(posts){
       Post2ndOutterDiv.appendChild(postID);
 
       Post1stOutterDiv.classList.add("w3-sand");
+
+      var labelImage = document.createElement("p");
+      labelImage.id = "labelImage";
+      labelImage.name = "labelImage";
+      labelImage.innerHTML = "IMAGE POST";
+      labelImage.align = "right";
+      labelImage.style = "color:orange";
     }
 
     Post2ndOutterDiv.appendChild(description);
 
+    if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+        Post2ndOutterDiv.appendChild(labelImage);
+    }
     /*
     Post2ndOutterDiv.appendChild(commentListDiv);
     */
