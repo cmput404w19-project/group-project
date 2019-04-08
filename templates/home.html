@@ -507,13 +507,6 @@ async function get_github(post, user_host, user_displayName, user_url, user_gith
 
   let response = await fetch("https://api.github.com/users/" + github_name + "/events", {
     method:'get',
-    // headers: {
-    //   //"Authorization":"Basic "+ btoa("team14:team14"),
-    //   'Authorization': `Basic ${authheader}`,
-    //   "Content-Type": "application/json",
-    //   //"X-CSRFToken": getToken(),
-    //   //"X-Request-User-ID" : "{{userprofile.url}}",
-    // },
   }
 ).then((response)=>{ console.log(response);  return response.json();})
 .then((json)=>{console.log('Success:', JSON.stringify(json));
@@ -547,65 +540,7 @@ async function get_github(post, user_host, user_displayName, user_url, user_gith
                }
                })
   .catch((err)=> alert("GitHub url is Wrong!"));
-  //alert(json);
-  //let act = await response.json();
 
-  // for (var a = 0; a < 20; a++){
-  //   // if (response[i]['id'] == oldId) {
-  //   //         break;
-  //   //     }
-  //   var body = github_post(response[a]);
-  //   // let data = {
-  //   //   "query": "addComment",
-  //   //   //"post": post.origin,
-  //   //   "comment":
-  //   //   {
-  //   //     "author":{
-  //   //       "id": user_url,
-  //   //       "host": user_host,
-  //   //       "displayName": user_displayName,
-  //   //       // url to the authors information
-  //   //       "url": user_url,
-  //   //       // HATEOS url for Github API
-  //   //       "github": user_github
-  //   //     },
-  //   //     //"comment": content,
-  //   //     "contentType":"text/plain"
-  //   //   }
-  //   //
-  //   //
-  //   // };
-  //   await fetch('posts/',{
-  //     method: "POST",
-  //     body: JSON.stringify(body),
-  //
-  //     headers: {
-  //
-  //       "Content-Type": "application/json",
-  //       "X-CSRFToken": getToken()
-  //     },
-  //
-  //   }
-  //
-  //   )
-  // }
-  // //let newId = response[0]['id'];
-  // //let gitbody = {"id": newId}
-  //
-  // await fetch('frontend/author/github/',{
-  //   method: "POST",
-  //   body: JSON.stringify(body),
-  //
-  //   headers: {
-  //
-  //     "Content-Type": "application/json",
-  //     "X-CSRFToken": getToken()
-  //   },
-  //
-  // }
-  //
-  // );
-  // window.location.reload(true);
 }
 function github_post(response){
   let gitpost = [];
@@ -638,48 +573,6 @@ function github_post(response){
     return gitpost;
 
 }
-// setInterval( function(){
-// for (server in resp) {
-//   fetches.push(
-//   fetch(resp[server] + '/author/posts/?size=10', {
-//       method: "GET",
-//       headers: {
-//         "Authorization":"Basic "+ btoa("team14:team14"),
-//         "Content-Type": "application/json",
-//         "X-CSRFToken": getToken(),
-//         "X-Request-User-ID" : "{{userprofile.url}}",
-//       },
-//   }).then((response)=>{ console.log(response);  return response.json();})
-//   .catch((err)=> console.log(err))
-//   );
-// }}, 600000
-// );
-
-
-// setInterval(
-//   function(){
-// Promise.all(fetches).then( function(results){
-//   // results are list of post jsons from each server
-//   // p1 = results[0]; // this is json
-//   // console.log(p1);
-//   var all_posts = [];
-//   console.log(results);
-//   for (i in results){
-//     for (j in results[i].posts){
-//       all_posts.push(results[i].posts[j]);
-
-//     }
-//   }
-//   console.log(all_posts);
-//   all_posts.sort(function(a,b){
-//     return new Date(a.published) - new Date(b.published);
-//   });
-//   console.log(all_posts);
-//   $("#MiddleColumn").empty();
-//   renderPosts(all_posts);
-//   fetches = [];
-// }).catch((err)=> console.log(err));}, 600000
-// );
 </script>
 
 
