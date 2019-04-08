@@ -867,6 +867,7 @@ class MakePost(APIView):
         context["serializer"] = serializer
         context["friendlist"] = friendlist
         context["postDic"] = postDic
+        context["userprofile"] = userprofile
         return Response(context)
 
 def ShowMyPosts(request, author_id):
