@@ -212,7 +212,7 @@ function renderPosts(posts){
     postID.style = "color:#c0c4c3";
 
 
-
+    /*
     var commentListDiv = document.createElement("div");
     commentListDiv.class = "container";
     commentListDiv.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
@@ -260,10 +260,10 @@ function renderPosts(posts){
     thisName.innerHTML = "{{ userprofile.displayName }}"+ " :";
     postComment.appendChild(thisName);
     commentListDiv.appendChild(postComment);
+    */
 
 
-
-
+    /*
     ///this shows comment button and input
 
     var PostCommentInput = document.createElement("input");
@@ -284,7 +284,7 @@ function renderPosts(posts){
 
     commentListDiv.appendChild(PostCommentInput);
     commentListDiv.appendChild(PostCommentButton);
-
+    */
 
     Post2ndOutterDiv.appendChild(userprofile_name_a);
     Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
@@ -316,9 +316,9 @@ function renderPosts(posts){
 
     Post2ndOutterDiv.appendChild(description);
     Post2ndOutterDiv.appendChild(postID);
-
+    /*
     Post2ndOutterDiv.appendChild(commentListDiv);
-
+    */
 
     Post1stOutterDiv.appendChild(Post2ndOutterDiv);
     document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
@@ -346,7 +346,7 @@ function generate_br(){
   return document.createElement("br");
 }
 
-
+/*
 // Reference:
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 function addComment(post, user_id, user_host, user_displayName, user_url, user_github){
@@ -398,7 +398,7 @@ function addComment(post, user_id, user_host, user_displayName, user_url, user_g
       .catch(error => console.error('Error:', error));
   }
 }
-
+*/
 
 // Reference:
 // https://docs.djangoproject.com/en/2.1/ref/csrf/
