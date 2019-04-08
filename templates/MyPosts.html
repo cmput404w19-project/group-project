@@ -543,7 +543,10 @@ async function get_github(post, user_host, user_displayName, user_url, user_gith
                  var Display3 = document.createElement("p");
                  Display3.style.fontSize = "0.8em";
 
-                 Display3.innerHTML = gitposts[i].time;
+                 //Display3.innerHTML = gitposts[i].time;
+                 var newDate = new Date(gitposts[i].time);
+
+                 Display3.innerHTML = " created at : " + newDate;
                  var gitpost = document.getElementById("gitpost");
                  gitpost.appendChild(Display);
                  Display.appendChild(Display1);
@@ -635,7 +638,7 @@ function github_post(response){
       //content:response[a]["actor"]["display_login"] + event_type + response[a]["repo"]["name"] + " created at : " + response[a]["created_at"],
       user:response[a]["actor"]["display_login"],
       event: event_type + response[a]["repo"]["name"],
-      time:" created at : " + response[a]["created_at"],
+      time:response[a]["created_at"],
     })
   }
     console.log("hhhhhhhhhhhh");
