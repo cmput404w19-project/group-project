@@ -441,7 +441,7 @@ else{
     followlist[followlist_tmp[i]] = null;
   }
 }
-
+/*
 var resp = "{{ endpoints_url_string }}";
 // do some string operation to get all end point url into an array
 if (resp === ""){
@@ -449,13 +449,15 @@ if (resp === ""){
 }else{
   resp = resp.split(" ");
 }
+*/
+resp = [];
 console.log(resp);
 resp.push("{{ author_post_api_url }}");
 console.log(resp);
 for (server in resp) {
   console.log(resp[server]);
   fetches.push(
-    fetch(resp[server] + '/author/posts/?size=10', {
+    fetch(resp[server] + '/author/posts/', {
       method: "GET",
       headers: {
         "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
