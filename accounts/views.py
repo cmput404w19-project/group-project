@@ -27,7 +27,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 
 import copy
 
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 
 from django.core.paginator import Paginator
 
@@ -65,51 +65,45 @@ class Posts(APIView):
     get all public posts from server
     """
     def get(self, request):
-        resp = {}
-
-        posts = Post.objects.filter(visibility = "PUBLIC").all().order_by('-published')
-
-        count = len(posts)
-        resp['count'] = count
-
-        pageSize = request.GET.get('size')
-        if not pageSize:
-            pageSize = 50
-
-        pageSize = int(pageSize)
-
-        resp['size'] = pageSize
-
-        paginator = Paginator(posts,pageSize)
-        posts = paginator.get_page(request.GET.get('page'))
-
-        # No need to return next if last page
-        # No need to return previous if page is 0
-        # next = None;
-        # previous = None;
-
-        if posts.has_next():
-            resp['next'] =  str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.next_page_number())
-        if posts.has_previous():
-            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
-
-        serializer = PostSerializer(posts, many=True)
-
-        # paginate comments
-        for post in serializer.data:
-            post['size'] = pageSize
-            comments = Comment.objects.filter(post_id=post['id']).all()
-            commentPaginator = Paginator(comments, pageSize)
-            comments = commentPaginator.get_page(0)
-            comments = GETCommentSerializer(comments, many=True).data
-            post['comments'] = comments
-            post['author']['friends'] = find_friends(post['author']['id'])
-
-        resp['posts'] = serializer.data
-
-        resp['query'] = 'posts'
-
-        return Response(resp)
+        if request.user.is_authenticated:
+            resp = {}
+            posts = Post.objects.filter(visibility = "PUBLIC").all().order_by('-published')
+            count = len(posts)
+            resp['count'] = count
+            pageSize = request.GET.get('size')
+            if not pageSize:
+                pageSize = 50
+            pageSize = int(pageSize)
+            resp['size'] = pageSize
+            paginator = Paginator(posts,pageSize)
+            posts = paginator.get_page(request.GET.get('page'))
+            # No need to return next if last page
+            # No need to return previous if page is 0
+            # next = None;
+            # previous = None;
+            if posts.has_next():
+                resp['next'] =  str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            if posts.has_previous():
+                resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            serializer = PostSerializer(posts, many=True)
+            # paginate comments
+            for post in serializer.data:
+                post['size'] = pageSize
+                comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
+                commentPaginator = Paginator(comments, pageSize)
+                post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
+                post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
+                post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
+                comments = commentPaginator.get_page(0)
+                comments = GETCommentSerializer(comments, many=True).data
+                post['comments'] = comments
+            resp['posts'] = serializer.data
+            resp['query'] = 'posts'
+            return Response(resp)
+        
+        else:
+            # unauthorized
+            return HttpResponse('Unauthorized', status=401)
 
 class PostById(APIView):
     """
@@ -117,29 +111,27 @@ class PostById(APIView):
     get a post by it's {post_id}
     """
     def get(self, request, post_id):
-        resp = {'query': 'getPost'}
-        posts = Post.objects.filter(post_id=post_id).first()
-        serializer = PostSerializer(posts)
+        if request.user.is_authenticated:
+            resp = {'query': 'getPost'}
+            posts = Post.objects.filter(post_id=post_id).first()
+            serializer = PostSerializer(posts)
+            pageSize = request.GET.get('size')
+            if not pageSize:
+                pageSize = 50
+            pageSize = int(pageSize)
+            post = serializer.data
+            post['size'] = pageSize
+            comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
+            commentPaginator = Paginator(comments, pageSize)
+            comments = commentPaginator.get_page(0)
+            comments = GETCommentSerializer(comments, many=True).data
+            post['comments'] = comments
+            resp['post'] = post
+            return Response(resp)
+        else:
+            # unauthorized
+            return HttpResponse('Unauthorized', status=401)
 
-        pageSize = request.GET.get('size')
-        if not pageSize:
-            pageSize = 50
-
-        pageSize = int(pageSize)
-
-        post = serializer.data
-
-        post['size'] = pageSize
-        comments = Comment.objects.filter(post_id=post['id']).all()
-        commentPaginator = Paginator(comments, pageSize)
-        comments = commentPaginator.get_page(0)
-        comments = GETCommentSerializer(comments, many=True).data
-        post['comments'] = comments
-        post['author']['friends'] = find_friends(post['author']['id'])
-
-        resp['post'] = post
-
-        return Response(resp)
 
 class AuthorPosts(APIView):
     """
@@ -154,6 +146,8 @@ class AuthorPosts(APIView):
         # look for the userprofile if this is our own server user
         if request.user.is_authenticated:
             user = UserProfile.objects.filter(user_id=request.user).first()
+        else:
+            return HttpResponse('Unauthorized', status=401)
         # All the public posts 
         posts = Post.objects.filter(visibility = "PUBLIC").all()
         posts = list(posts)
@@ -163,7 +157,6 @@ class AuthorPosts(APIView):
             # by excluding those are public
             if user:
                 posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
-
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
         print(thisRequestUserUrl)
@@ -175,39 +168,34 @@ class AuthorPosts(APIView):
                 authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
                 # find this user's "friend"(follower) post
                 posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
-
         print(posts)
-
         # TODO add post_visible_to stuff
 
 
         count = len(posts)
         resp['count'] = count
-
         pageSize = request.GET.get('size')
         if not pageSize:
             pageSize = 50
-
         pageSize = int(pageSize)
-
         resp['size'] = pageSize
         # posts = list(posts)
         posts.sort(key=lambda post: post.published, reverse=True)
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
-
         # No need to return next if last page
         # No need to return previous if page is 0
         # next = None;
         # previous = None;
-
         if posts.has_next():
             resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.next_page_number())
+            if pageSize != 50:
+                resp['next'] += "&size="+str(pageSize)
         if posts.has_previous():
             resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.previous_page_number())
-
+            if pageSize != 50:
+                resp['previous'] += "&size="+str(pageSize)
         serializer = PostSerializer(posts, many=True)
-
         # paginate comments and add friend list
         #counter = 0
         for post in serializer.data:
@@ -218,12 +206,13 @@ class AuthorPosts(APIView):
             comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
+            post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
+            post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
+            post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             comments = GETCommentSerializer(comments, many=True).data
             post['comments'] = comments
-            # post['author']['friends'] = find_friends(post['author']['id'])
-
+            
         resp['posts'] = serializer.data
-
         resp['query'] = 'posts'
         return Response(resp)
 
@@ -234,19 +223,20 @@ class AuthorPosts(APIView):
         # http://www.chenxm.cc/article/244.html
         # http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
         #profile = get_object_or_404(Profile, pk=pk)
-        new_data = request.data.copy()
-        user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
-        new_data.__setitem__("user_id", user_id)
-        host = request.scheme + "://" + request.get_host() +  "/"
-        new_data["host"] = host
-        serializer = PostSerializer(data=new_data)
-
-        if not serializer.is_valid():
-            return Response({'serializer': serializer})
-        serializer.save()
-        # TODO Response cannot allow a redirect so just use redirect('/') now
-        return redirect('/')
-
+        if request.user.is_authenticated:
+            new_data = request.data.copy()
+            user_id = str(UserProfile.objects.filter(user_id = request.user).first().author_id)
+            new_data.__setitem__("user_id", user_id)
+            host = request.scheme + "://" + request.get_host() +  "/"
+            new_data["host"] = host
+            serializer = PostSerializer(data=new_data)
+            if not serializer.is_valid():
+                return Response({'serializer': serializer})
+            serializer.save()
+            # TODO Response cannot allow a redirect so just use redirect('/') now
+            return redirect('/')
+        else:
+            return HttpResponse('Unauthorized', status=401)
 
 class AuthorPostsById(APIView):
     """
@@ -254,56 +244,79 @@ class AuthorPostsById(APIView):
     get all posts made by {author_id} and visible to current user
     """
     def get(self, request, author_id):
+        if not request.user.is_authenticated:
+            return HttpResponse('Unauthorized', status=401)
         resp = {}
-
-        request_user = UserProfile.objects.filter(user_id=request.user).first()
+        # public posts that is made by this author
         author = UserProfile.objects.filter(author_id=author_id).first()
         posts = Post.objects.filter(user_id = author).filter(visibility="PUBLIC").all()
-
+        posts = list(posts)
+        request_user = UserProfile.objects.filter(user_id=request.user).first()
+        print("------")
+        print(request_user.author_id)
+        print(author_id)
+        print("------")
+        if request_user:
+            if str(request_user.author_id) == str(author_id):
+                print("check")
+                posts += list(Post.objects.filter(user_id = author).exclude(visibility="PUBLIC").all())
         # TODO add friend stuff to this
+        thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
+        print(thisRequestUserUrl)
+        if thisRequestUserUrl:
+            # get all visibility = "FRIENDS"
+            all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
+            # add all request user 's follower 
+            for userurl in all_user_who_follow_requestUser:
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                if authorid == str(author_id):
+                    # find this user's "friend"(follower) post
+                    posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+                    break
+        else:
+            all_user_who_follow_requestUser = Follow.objects.filter(following_url=request_user.url).all().values_list('follower_url', flat=True)
+            # add all request user 's follower 
+            for userurl in all_user_who_follow_requestUser:
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                if authorid == str(author_id):
+                    # find this user's "friend"(follower) post
+                    posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+                    break
 
         # TODO implement visible_to
 
         count = len(posts)
         resp['count'] = count
-
         pageSize = request.GET.get('size')
         if not pageSize:
             pageSize = 50
-
         pageSize = int(pageSize)
-
         resp['size'] = pageSize
-
+        posts.sort(key=lambda post: post.published, reverse=True)
         paginator = Paginator(posts,pageSize)
         posts = paginator.get_page(request.GET.get('page'))
-
         # No need to return next if last page
         # No need to return previous if page is 0
         # next = None;
         # previous = None;
-
         if posts.has_next():
             resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
             resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.previous_page_number())
-
         serializer = PostSerializer(posts, many=True)
-
          # paginate comments and add friend list
         for post in serializer.data:
             post['size'] = pageSize
-            comments = Comment.objects.filter(post_id=post['id']).all()
+            comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
+            post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
+            post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
+            post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             comments = GETCommentSerializer(comments, many=True).data
             post['comments'] = comments
-            post['author']['friends'] = find_friends(post['author']['id'])
-
         resp['posts'] = serializer.data
-
         resp['query'] = 'posts'
-
         return Response(resp)
 
 class CommentsByPostId(APIView):
@@ -315,64 +328,47 @@ class CommentsByPostId(APIView):
     create new comment on {post_id}
     """
     def get(self, request, post_id):
+        if not request.user.is_authenticated:
+            return HttpResponse('Unauthorized', status=401)
         resp = {}
-
         comments = Comment.objects.filter(post_id=post_id).order_by("-published").all()
-
         count = len(comments)
         resp['count'] = count
-
         pageSize = request.GET.get('size')
         if not pageSize:
             pageSize = 50
-
         pageSize = int(pageSize)
-
         resp['size'] = pageSize
-
         paginator = Paginator(comments,pageSize)
         comments = paginator.get_page(request.GET.get('page'))
-
-        # No need to return next if last page
-        # No need to return previous if page is 0
-        # next = None;
-        # previous = None;
-
         if comments.has_next():
             resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
         if comments.has_previous():
             resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
-
         serializer = GETCommentSerializer(comments, many=True)
-
         resp['comments'] = serializer.data
-
         resp['query'] = 'comments'
-
         return Response(resp)
+
     def post(self, request, post_id):
+        if not request.user.is_authenticated:
+            return HttpResponse('Unauthorized', status=401)
         #data = request.data
         comment_data = dict()
         #comment_data['query'] == 'addcomment'
         #post = Post.objects.filter(post_id=post_id)
-
-
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url
         comment_data['content'] = request.data['comment']['comment']
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
         failed = False
-
         print(comment_data)
-
         comment_serializer = CommentSerializer(data=comment_data)
-
         if comment_serializer.is_valid():
             comment_serializer.save()
         else:
             failed = True
-
         if not failed:
             return Response({"success": True, "message": "Comment Saved"}, status=status.HTTP_200_OK)
         else:
