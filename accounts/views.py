@@ -89,9 +89,9 @@ class Posts(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] =  str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -161,10 +161,12 @@ class AuthorPosts(APIView):
         if request.user.is_authenticated:
             # user's own post and prevent duplication
             # by excluding those are public
-            posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
+            if user:
+                posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
 
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
+        print(thisRequestUserUrl)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
@@ -200,9 +202,9 @@ class AuthorPosts(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -282,9 +284,9 @@ class AuthorPostsById(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -337,9 +339,9 @@ class CommentsByPostId(APIView):
         # previous = None;
 
         if comments.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(comments.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
         if comments.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(comments.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
 
         serializer = GETCommentSerializer(comments, many=True)
 
