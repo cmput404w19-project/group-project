@@ -104,11 +104,11 @@ class PostVisibleTo(models.Model):
     # Post id
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     # user id : who can see the post
-    # this will be the url for that user profile
-    user_id = models.URLField(default="")
 
-    class Meta:
-        unique_together = ("post_id", "user_id")
+    # this will be the url for that user profile
+
+    user_url = models.URLField(default="")
+
 
 
 class Comment(models.Model):

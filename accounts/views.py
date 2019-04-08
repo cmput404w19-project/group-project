@@ -852,7 +852,13 @@ class MakePost(APIView):
     def get(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer()
-        return Response({'serializer':serializer})
+        userprofile = UserProfile.objects.filter(user_id = request.user).first()
+        friendlist = find_friends(userprofile.url)
+        friendlist = " ".join(friendlist)
+        context = {}
+        context["serializer"] = serializer
+        context["friendlist"] = friendlist
+        return Response(context)
 
 def ShowMyPosts(request, author_id):
     # so right now we decide to use javacript to get all the posts and comments data

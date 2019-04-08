@@ -115,8 +115,9 @@
                 </div>
             </div>
             <div>
-                <label for="visibility">Visibility: </label>
-                <select name="visibility">
+                <label  for="visibility">Visibility: </label>
+                <!--add a function here-->
+                <select id="visibility" name="visibility" onchange="show_friendlist()">
                     <option value="PUBLIC">
                         public to everyone
                     </option>
@@ -134,6 +135,115 @@
                     </option>
                 </select>
             </div>
+
+            <div id="friend" style="display:none; ">
+                <div id="scroll" style=" margin-left: 7em">
+                    <script>
+                        var friends = "{{ friendlist }}";
+                        function split_friendlist(){
+                            if(friends === ""){
+                                friends =[];
+                            }else{
+                                friends = friends.split(" ");
+                            }
+                        }
+                        
+
+                        function getToken() {
+                            var cookieValue = null;
+                            var name = "csrftoken"
+                            if (document.cookie && document.cookie !== '') {
+                                var cookies = document.cookie.split(';');
+                                for (var i = 0; i < cookies.length; i++) {
+                                    var cookie = jQuery.trim(cookies[i]);
+                                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                        break;
+                                    }
+                                }
+                            }
+                            return cookieValue;
+                        }
+
+                        function fetch_userdata(friends){
+                            var friend_name = []
+                            for (let url of friends){
+                                //alert(url);
+                                var data = fetch_each(url);
+                                friend_name.push(data);
+                                //data.then(val=> {
+                                //    name = val;
+                                //});
+
+                            }
+                            //alert(friend_name);
+                            return friend_name;
+                            
+                        }
+                        
+                        function fetch_each(url){
+                            return fetch(url, 
+                                {
+                                    method: "GET",
+                                    headers:{
+                                        "Content-Type": "application/json",
+                                        'X-CSRFToken': getToken()
+                                    }
+                                }).then(function(response) {
+                                    return response.json();
+                                }).then(function (user_json){
+                                    user_name = user_json['displayName'] +"\xa0 "+ user_json['url'];
+                                    //user_url = user_json['url']
+                                    //context["user_name"] = user_name;
+                                    //context["user_url"] = user_url;
+                                    return user_name;
+                                }).catch(
+                                    error => console.error(error)
+                                );
+                            return response;
+                        }
+                            
+                        
+                        function create_friendDiv(friend_name){
+                            selectDiv = document.getElementById("scroll");
+                            var label = document.createElement("label");
+                            label.innerHTML = "Choose the user who can see this";
+                            selectDiv.appendChild(label);
+                            var select_friend = document.createElement("select");
+                            select_friend.style = ""
+
+                            for (var i=0; i<friend_name.length; i++){
+                                friend_name[i].then(name=>{
+
+                                    if(name === ""){
+                                        name =[];
+                                    }else{
+                                        name = name.split(" ");
+                                    }
+                                    
+                                    var frienddiv = document.createElement("option");
+                                    frienddiv.innerHTML = name[0];
+
+                                    //var checkbox = document.createElement("input");
+                                    //checkbox.type = "checkbox";
+
+                                    select_friend.appendChild(frienddiv);
+                                    
+                                })
+                                selectDiv.appendChild(select_friend);
+                            }
+
+                              
+                        }
+                        split_friendlist();
+                        var friend_name = fetch_userdata(friends);
+                        //alert(friend_name);
+                        create_friendDiv(friend_name);
+                    </script>
+                </div>
+            </div>
+
+
             <div>
                 <!--br>
                 Or select who can see your posts-->
@@ -148,6 +258,26 @@
         </div>
 
     </form>
+
+    <script>
+        document.getElementById("visibility").addEventListener("change", pass)
+
+        function show_friendlist(){
+            vis = document.getElementById("visibility");
+            friendlist = document.getElementById("friend");
+            if((vis.value=="PRIVATE")){
+                friendlist.style.display = "inline";
+            }
+            else{
+                friendlist.style.display = "none";
+            }
+        }
+
+        
+
+        
+    </script>
+
 
     <script>
         document.getElementById("image").addEventListener("change", readImage);
