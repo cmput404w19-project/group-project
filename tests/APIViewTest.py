@@ -74,11 +74,14 @@ class PostTest(TestCase):
         self.assertEqual(temp_user1.displayName, "user1")
         response = self.client.get("http://127.0.0.1:8000/posts/")
         self.assertTrue(response.status_code, 200)
-        post = response.data["posts"][0]
+        
+        #post = response["post_id"]
+        print("===============")
+        print(response)
         post_id = post.get("id")
         self.assertEqual(post_id, self.post1.post_id)
 
-class PostByIdTest(TestCase):
+'''class PostByIdTest(TestCase):
 
     def setUp(self):
         global temp_user1
@@ -97,7 +100,7 @@ class PostByIdTest(TestCase):
         self.assertTrue(response.status_code, 200)
         post = response.data["post"]
         post_id = post.get("id")
-        self.assertEqual(post_id, self.post1.post_id)
+        self.assertEqual(post_id, self.post1.post_id)'''
 
 class AuthorPostsByIdTest(TestCase):
     

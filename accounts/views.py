@@ -164,6 +164,10 @@ class AuthorPosts(APIView):
 
     post:
     Create a post for the currently authenticated user
+
+    Important: in order to return "friend" and "private" and "serveronly" posts 
+    the one who sen d the request MUST have this header:
+    X-request-user-ID
     """
     def get(self, request):
         resp = {}
@@ -180,6 +184,9 @@ class AuthorPosts(APIView):
             # user's own post and prevent duplication
             # by excluding those are public
             if user:
+                # if this user's userprofile exists in our server 
+                # that means this is our own server user 
+                # not external endpoint user
                 posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
@@ -193,10 +200,22 @@ class AuthorPosts(APIView):
                 authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id
                 # find this user's "friend"(follower) post
                 posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+                # here also check for request user is in our server
+                if user:
+                    # if the followers of the request user on our server has SERVERONLY
+                    # and this request user is our server user 
+                    # get all the "SERVERONLY" post for this user
+                    posts += list(Post.objects.filter(visibility="SERVERONLY").filter(user_id=authorid).all())
         # TODO add post_visible_to stuff
-
-
-
+        # Get all visibility as "PRIVATE"
+        if thisRequestUserUrl:
+            all_private_posts = Post.objects.filter(visibility="PRIVATE").all()
+            for private_post in all_private_posts:
+                # check the visibleTo table
+                all_who_can_see = PostVisibleTo.objects.filter(post_id=private_post.post_id).values_list('user_url', flat=True)
+                if thisRequestUserUrl in all_who_can_see:
+                    # if this user is indeed inside the visibleTo list
+                    posts.append(private_post)
         count = len(posts)
         resp['count'] = count
         pageSize = request.GET.get('size')
