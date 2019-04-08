@@ -111,7 +111,7 @@ function renderPosts(posts){
 
     var Post2ndOutterDiv = document.createElement("div");
     Post2ndOutterDiv.classList.add("Post");
-
+    /*
     var userprofile_name_a = document.createElement("a");
     userprofile_name_a.classList.add("a-dec2");
     userprofile_name_a.classList.add("post-author-text");
@@ -120,7 +120,7 @@ function renderPosts(posts){
 
     userprofile_name_a.innerHTML = post.author.displayName;
     userprofile_name_a.id = "user_profile";
-
+    */
     var Post3rdDiv = document.createElement("div");
     var Post3rdDiv_spanTitle = document.createElement("span");
     Post3rdDiv_spanTitle.classList.add("span-a");
@@ -207,12 +207,9 @@ function renderPosts(posts){
     description.innerHTML = "Description: " + post.description;
     description.style = "color:#c0c4c3";
 
-    var postID = document.createElement("p");
-    postID.innerHTML = "postRenderURL: " + post.origin + "/render";
-    postID.style = "color:#c0c4c3";
 
 
-
+    /*
     var commentListDiv = document.createElement("div");
     commentListDiv.class = "container";
     commentListDiv.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
@@ -260,10 +257,10 @@ function renderPosts(posts){
     thisName.innerHTML = "{{ userprofile.displayName }}"+ " :";
     postComment.appendChild(thisName);
     commentListDiv.appendChild(postComment);
+    */
 
 
-
-
+    /*
     ///this shows comment button and input
 
     var PostCommentInput = document.createElement("input");
@@ -284,9 +281,11 @@ function renderPosts(posts){
 
     commentListDiv.appendChild(PostCommentInput);
     commentListDiv.appendChild(PostCommentButton);
+    */
 
-
+    /*
     Post2ndOutterDiv.appendChild(userprofile_name_a);
+    */
     Post3rdDiv.appendChild(Post3rdDiv_spanTitle);
     Post3rdDiv.appendChild(generate_br());
     Post3rdDiv.appendChild(Post3rdDiv_spanPublishTime);
@@ -311,14 +310,33 @@ function renderPosts(posts){
     if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
       Post2ndOutterDiv.appendChild(meta1);
       Post2ndOutterDiv.appendChild(imageshow);
+      //Post1stOutterDiv.style = "background-color:#FFFF00;";
+      //Post2ndOutterDiv.style = "background-color:#FFFF00;";
+      Post1stOutterDiv.classList.remove("w3-white");
 
+      var postID = document.createElement("p");
+      postID.innerHTML = "<I>" + "postRenderURL: " + post.origin + "/render/image" + "</I>";
+      postID.style = "color:#c0c4c3";
+      Post2ndOutterDiv.appendChild(postID);
+
+      Post1stOutterDiv.classList.add("w3-sand");
+
+      var labelImage = document.createElement("p");
+      labelImage.id = "labelImage";
+      labelImage.name = "labelImage";
+      labelImage.innerHTML = "IMAGE POST";
+      labelImage.align = "right";
+      labelImage.style = "color:orange";
     }
 
     Post2ndOutterDiv.appendChild(description);
-    Post2ndOutterDiv.appendChild(postID);
 
+    if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
+        Post2ndOutterDiv.appendChild(labelImage);
+    }
+    /*
     Post2ndOutterDiv.appendChild(commentListDiv);
-
+    */
 
     Post1stOutterDiv.appendChild(Post2ndOutterDiv);
     document.getElementById("MiddleColumn").appendChild(Post1stOutterDiv);
@@ -346,7 +364,7 @@ function generate_br(){
   return document.createElement("br");
 }
 
-
+/*
 // Reference:
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 function addComment(post, user_id, user_host, user_displayName, user_url, user_github){
@@ -398,7 +416,7 @@ function addComment(post, user_id, user_host, user_displayName, user_url, user_g
       .catch(error => console.error('Error:', error));
   }
 }
-
+*/
 
 // Reference:
 // https://docs.djangoproject.com/en/2.1/ref/csrf/
@@ -441,7 +459,7 @@ else{
     followlist[followlist_tmp[i]] = null;
   }
 }
-
+/*
 var resp = "{{ endpoints_url_string }}";
 // do some string operation to get all end point url into an array
 if (resp === ""){
@@ -449,13 +467,15 @@ if (resp === ""){
 }else{
   resp = resp.split(" ");
 }
+*/
+resp = [];
 console.log(resp);
 resp.push("{{ author_post_api_url }}");
 console.log(resp);
 for (server in resp) {
   console.log(resp[server]);
   fetches.push(
-    fetch(resp[server] + '/author/posts/?size=10', {
+    fetch(resp[server] + '/author/posts/', {
       method: "GET",
       headers: {
         "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
