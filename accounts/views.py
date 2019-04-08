@@ -72,6 +72,7 @@ def find_friends(author_url):
 
     author1_id = author_url.split('/')[-1]
     for follow in remaining_follows_to_check:
+        author2_host  = '/'.join(follow.split('/')[0:3])
         author2_url = urllib.parse.quote_plus(follow)
         r = requests.get("{}/author/{}/friends/{}".format(author2_host,author1_id, author2_url))
         if r.status_code != 200:
