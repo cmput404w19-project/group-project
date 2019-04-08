@@ -57,7 +57,7 @@ class PostSerializer(serializers.ModelSerializer):
         all_visible_to_this_post = PostVisibleTo.objects.filter(post_id=obj.post_id).all()
         visibleTo = []
         for visible in all_visible_to_this_post:
-            visibleTo.append(visible.user_id)
+            visibleTo.append(visible.user_url)
         return visibleTo
 
     def get_origin(self, obj):
