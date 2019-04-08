@@ -34,6 +34,9 @@ from django.core.paginator import Paginator
 from urllib import request
 import requests, urllib
 
+from django.http import HttpResponse
+import base64
+
 DEBUG = False
 
 # Reference: Django class-based view
@@ -57,7 +60,7 @@ def find_friends(author_url):
     follower_list = FollowSerializer(followers, many=True)
     follower_url_list = list(follower_list.data[i]['following_url'] for i in range(len(follower_list.data)))
 
-    # initialize the list of friends with all our local friends 
+    # initialize the list of friends with all our local friends
     friend_list = list(set(following_url_list) & set(follower_url_list))
 
     # our list of remaining people to check
@@ -174,7 +177,7 @@ class AuthorPosts(APIView):
         # look for the userprofile if this is our own server user
         if request.user.is_authenticated:
             user = UserProfile.objects.filter(user_id=request.user).first()
-        # All the public posts 
+        # All the public posts
         posts = Post.objects.filter(visibility = "PUBLIC").all()
         posts = list(posts)
         # Only for our own server user
@@ -190,9 +193,9 @@ class AuthorPosts(APIView):
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
-            # add all request user 's follower 
+            # add all request user 's follower
             for userurl in all_user_who_follow_requestUser:
-                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id
                 # find this user's "friend"(follower) post
                 posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
 
@@ -455,7 +458,7 @@ class CheckFriendStatus(APIView):
 
 
         # We just check for a follow relation from author_1 to author_2, since that's all we really care about here
-        
+
         # build the URL of the first user so we can check
         protocol = str(self.request.scheme)
         author_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author1_id)
@@ -794,7 +797,7 @@ class PublicPosts(APIView):
         return Response(serializer.data)
 
 class UpdateGithubId(APIView):
-    
+
     def post(self, request):
         user = request.user
         newId = request.data['id']
@@ -938,6 +941,19 @@ def RenderPostByID(request, post_id):
     else:
         # not login
         return render(request, 'landingPage.html')
+
+
+# Reference:
+# Antti Haapala Jul 26 '14 at 14:00
+# https://stackoverflow.com/questions/24971729/django-python-todataurl-return-a-response-with-the-string-from-todataurl
+def RenderPostByIDImage(request, post_id):
+    post = Post.objects.filter(post_id = post_id).first()
+    print(post.content)
+    image_data = post.content.partition('base64,')[2]
+    return HttpResponse(
+        base64.b64decode(image_data), content_type='image/jpg'
+    )
+
 
 def profile(request):
     # user has login
