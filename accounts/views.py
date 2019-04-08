@@ -123,7 +123,7 @@ class Posts(APIView):
             resp['posts'] = serializer.data
             resp['query'] = 'posts'
             return Response(resp)
-        
+
         else:
             # unauthorized
             return HttpResponse('Unauthorized', status=401)
@@ -171,7 +171,7 @@ class AuthorPosts(APIView):
             user = UserProfile.objects.filter(user_id=request.user).first()
         else:
             return HttpResponse('Unauthorized', status=401)
-        # All the public posts 
+        # All the public posts
         posts = Post.objects.filter(visibility = "PUBLIC").all()
         posts = list(posts)
         # Only for our own server user
@@ -288,18 +288,18 @@ class AuthorPostsById(APIView):
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
-            # add all request user 's follower 
+            # add all request user 's follower
             for userurl in all_user_who_follow_requestUser:
-                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id
                 if authorid == str(author_id):
                     # find this user's "friend"(follower) post
                     posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
                     break
         else:
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=request_user.url).all().values_list('follower_url', flat=True)
-            # add all request user 's follower 
+            # add all request user 's follower
             for userurl in all_user_who_follow_requestUser:
-                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id
                 if authorid == str(author_id):
                     # find this user's "friend"(follower) post
                     posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
@@ -850,9 +850,16 @@ class MakePost(APIView):
     #login_url="/accounts/login/"
 
     def get(self, request):
-        posts = Post.objects.all()
+        user = UserProfile.objects.filter(user_id=request.user).first()
+        posts = Post.objects.filter(user_id=user.author_id).all()
+        postDic = {}
+        #print("--------")
+        for post in posts:
+            if (post.contentType == 'image/png;base64' or post.contentType == 'image/jpeg;base64'):
+                postDic[str(post.title)] = str(post.host) + "posts/" + str(post.post_id) + "/render/image"
+        #print(postDic)
         serializer = PostSerializer()
-        return Response({'serializer':serializer})
+        return Response({'serializer':serializer, 'postDic':postDic})
 
 def ShowMyPosts(request, author_id):
     # so right now we decide to use javacript to get all the posts and comments data
@@ -945,7 +952,7 @@ def RenderPostByID(request, post_id):
 # https://stackoverflow.com/questions/24971729/django-python-todataurl-return-a-response-with-the-string-from-todataurl
 def RenderPostByIDImage(request, post_id):
     post = Post.objects.filter(post_id = post_id).first()
-    print(post.content)
+    #print(post.content)
     image_data = post.content.partition('base64,')[2]
     return HttpResponse(
         base64.b64decode(image_data), content_type='image/jpg'

@@ -28,6 +28,10 @@
             margin-left: 5em;
             width: 100%;
         }
+        #previewImage{
+            text-align: left;
+            margin-left: 5em;
+        }
         .upload_label{
             font-size: 0.8em;
         }
@@ -65,15 +69,33 @@
                  <label for="category">Category: </label>
                  <input id="category" name="category"/>
             </div>
-            <div>
+            <div id="chooseImage" tyle="display: inline">
+                <label for="chooseImageSelector">Choose Posted Image: </label>
+                <select id="chooseImageSelector" onchange="changeShownPageLink()">
+                    <option value="none"></option>
+                </select>
+                <br>
+                <div id = "preview" style="display: none">
+                    <label for="previewImage">Preview Image: </label>
+                    <br>
+                    <img id="previewImage" height="300" >
+                </div>
+            </div>
+            <div id="alterContentType" style="display: none">
+                <label>ContantType: </label>
+                <span> text/markdown </span>
+                <br>
+            </div>
+            <div id="contentType">
                  <label for="contentType">ContantType: </label>
                  <select id="section" name="contentType" onchange="changeShownPage()">
-                     <option value="text/plain">
-                         text/plain
-                     </option>
                      <option value="text/markdown">
                          text/markdown
                      </option>
+                     <option value="text/plain">
+                         text/plain
+                     </option>
+
                      <!--
                      <option value="application/base64">
                          application/base64
@@ -142,16 +164,90 @@
                 <label for="unlisted">Unlisted: </label>
                 <input id="unlisted" type="checkbox" name="unlisted" value="True">
             </div>
-            <div class="btn">
-                <input type="submit" value="Save" style="font-size: 1.5em; margin-left:0em" class="btn btn-default">
+            <div class="btn" >
+                <input type="submit" value="Save" style="font-size: 1.5em; margin-left:0em" class="btn btn-default" onclick="updateContent()">
             </div>
         </div>
 
     </form>
 
     <script>
+        var postArray = "{{postDic}}".split('&#39;');
+        var postMap = new Map();
+        console.log(postArray);
+        for (var i=0; i<postArray.length; i++)
+        {
+            if(postArray[i] == ': ' && (postArray[i-2] == '{' || postArray[i-2] == ', ')) {
+                postMap.set(postArray[i-1],postArray[i+1]);
+            }
+        }
+        console.log(postMap);
+        chooseImage = document.getElementById("chooseImageSelector");
+        for (var [key, value] of postMap) {
+            console.log(key + ' = ' + value);
+            var option = document.createElement("option");
+            option.value = value;
+            option.innerHTML = key;
+            chooseImage.appendChild(option);
+        }
+
+
+
+        //console.log(postMap.keys());
+        //alert("{{postDic}}");
         document.getElementById("image").addEventListener("change", readImage);
         document.getElementById("file").addEventListener("change", readFile);
+
+        function updateContent() {
+            chooseImageSelector = document.getElementById("chooseImageSelector");
+            texta = document.getElementById("texta");
+            selection = document.getElementById("section");
+            if (chooseImageSelector.value != "none") {
+                texta.value = "<font size=5>"+texta.value+"</font>" + "\r\n***  \r\n*<font size=2>Source Image:</font>*  \r\n ![image]("+chooseImageSelector.value+" =500x*)";
+            }
+        }
+
+        function changeShownPageLink() {
+            chooseImageSelector = document.getElementById("chooseImageSelector");
+            contentType = document.getElementById("contentType");
+            preview = document.getElementById("preview");
+            previewImage = document.getElementById("previewImage");
+            alterContentType = document.getElementById("alterContentType");
+            if (chooseImageSelector.value != "none") {
+                preview.style.display = "inline";
+                set_select_checked("section", "text/markdown");
+                //section.value = "text/markdown";
+                //alert(selection.value)
+                //selection.disabled = "disabled";
+                contentType.style.display = "none";
+                alterContentType.style.display = "inline";
+                previewImage.src = chooseImageSelector.value;
+            }
+            else {
+                preview.style.display = "none";
+                //selection.disabled = "";
+                contentType.style.display = "inline";
+                alterContentType.style.display = "none";
+                previewImage.src = "";
+            }
+            changeShownPage()
+        }
+
+        // References:
+        // https://my.oschina.net/fengJeen/blog/1557344
+        function set_select_checked(selectId, checkValue){
+            var select = document.getElementById(selectId);
+
+            for (var i = 0; i < select.options.length; i++){
+                if (select.options[i].value == checkValue){
+                    select.options[i].selected = true;
+                    //break;
+                }
+                else {
+                    select.options[i].selected = false;
+                }
+            }
+        }
 
         function changeShownPage() {
             // Referencee
@@ -164,6 +260,9 @@
             image = document.getElementById("image");
             file = document.getElementById("file");
             unlisted = document.getElementById("unlisted");
+            image64 = document.getElementById("image64");
+            imageText = document.getElementById("imageText")
+
             if ((selection.value == "image/png;base64")||(selection.value == "image/jpeg;base64")) {
                 //texta.value = '';
                 file.value = '';
@@ -181,7 +280,11 @@
                 unlisted.checked = false;
             }
             else{
+                texta.value='';
                 image.value = '';
+                image.src = '';
+                image64.src = '';
+                imageText.value = '';
                 file.value = '';
                 textarea.style.display = 'inline';
                 uploadImage.style.display = 'none';
