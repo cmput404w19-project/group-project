@@ -82,8 +82,8 @@ urlpatterns = [
     path(r'author/<str:author_id>/friends/', views.FriendListByAuthorId().as_view()),
     path(r'author/<str:author_id>/friends', views.FriendListByAuthorId().as_view()),
 
-    path(r'author/<str:author1_id>/friends/<str:author2_id>/', views.CheckFriendStatus().as_view()),
-    path(r'author/<str:author1_id>/friends/<str:author2_id>', views.CheckFriendStatus().as_view()),
+    path(r'author/<str:author1_id>/friends/<path:author2_id>/', views.CheckFriendStatus().as_view()),
+    path(r'author/<str:author1_id>/friends/<path:author2_id>', views.CheckFriendStatus().as_view()),
 
     path(r'posts/<str:post_id>/comments/', views.CommentsByPostId().as_view()),
     path(r'posts/<str:post_id>/comments', views.CommentsByPostId().as_view()),

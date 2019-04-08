@@ -32,6 +32,7 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpRespon
 from django.core.paginator import Paginator
 
 from urllib import request
+import urllib
 import requests, urllib
 
 from django.http import HttpResponse
@@ -71,9 +72,9 @@ def find_friends(author_url):
 
     author1_id = author_url.split('/')[-1]
     for follow in remaining_follows_to_check:
-        author2_id = follow.split('/')[-1]
         author2_host  = '/'.join(follow.split('/')[0:3])
-        r = requests.get("{}/author/{}/friends/{}".format(author2_host,author1_id, author2_id))
+        author2_url = urllib.parse.quote_plus(follow)
+        r = requests.get("{}/author/{}/friends/{}".format(author2_host,author1_id, author2_url))
         if r.status_code != 200:
             continue
         data = r.json()
@@ -183,6 +184,7 @@ class AuthorPosts(APIView):
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
         print(thisRequestUserUrl)
+        print("URL IS FROM :",request.META)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
@@ -453,25 +455,19 @@ class CheckFriendStatus(APIView):
     def get(self, request, author1_id, author2_id):
         resp = {}
 
-
         # We just check for a follow relation from author_1 to author_2, since that's all we really care about here
 
         # build the URL of the first user so we can check
         protocol = str(self.request.scheme)
         author_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author1_id)
-        author2_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author2_id)
-        follows = Follow.objects.filter(follower_url=author_url).all()
 
-        follow_list = FollowSerializer(follows, many=True)
-        follow_url_list = list(follow_list.data[i]['following_url'] for i in range(len(follow_list.data)))
+        author2_url = urllib.parse.unquote_plus(author2_id)
+        follows = Follow.objects.filter(follower_url=author_url, following_url=author2_url).all()
 
-        resp['friends'] = False
-        # check if any of the friends of author_1 match author_2
-        print(follow_url_list, author_url)
-        for author in follow_url_list:
-            if author.split('/')[-1] == author2_id:
-                author2_url = author
-                resp['friends'] = True
+        if len(follows) == 0:
+            resp['friends'] = False
+        else:
+            resp['friends'] = True
 
         resp['query'] = 'friends'
 
