@@ -10,7 +10,7 @@
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
-    <div class="w3-col m3">
+    <div id="LeftColumn" class="w3-col m3">
       <!-- Profile -->
       <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
         <div class="w3-container">
@@ -26,6 +26,21 @@
           </div>
         </div>
       </div>   <!--Profile End-->
+      <div id="git" class="w3-container w3-center">
+
+        </div>
+        <br>
+      <div class="w3-card w3-round w3-white" style="margin-bottom: 1em">
+        <div class="w3-center">
+          <br>
+          <p style="font-family:Muli; font-size: 1.7em">GitHub Activity </p>
+          <hr>
+        </div>
+        <div id="gitpost" class="w3-container">
+
+
+          </div>
+        </div>
     </div>  <!--Left Column End-->
 
     <!-- Middle Column -->
@@ -53,7 +68,27 @@
     //var html = converter.makeHtml(text);
     //document.getElementById("toMarkdown").innerHTML = html;
   }
+  function renderGits(post){
 
+    var GitButtonDiv = document.createElement("div");
+    var GitButton = document.createElement("button");
+    GitButton.classList.add("btn")
+    GitButton.classList.add("btn-default")
+    GitButton.classList.add("btn-primary")
+    GitButton.innerHTML = "Pull My GitHub Activity";
+    GitButton.onclick=function(){
+      if("{{userprofile.github}}"){
+      get_github(post, "{{userprofile.host}}",
+        "{{userprofile.displayName}}", "{{userprofile.url}}", "{{userprofile.github}}")
+    // window.location.href = '/#'+String(post.id);
+    //window..reload();
+  }else alert("No Github URL!");
+  } ;
+
+    GitButtonDiv.appendChild(GitButton);
+    //GitButtonOutDiv.appendChild(GitButtonDiv);
+    document.getElementById("git").appendChild(GitButtonDiv);
+  }
 
 function renderPosts(posts){
   $.each(posts.reverse(), function(i, post){
@@ -461,11 +496,146 @@ Promise.all(fetches).then( function(results){
   });
   console.log(all_posts);
   $("#MiddleColumn").empty();
+  renderGits();
   renderPosts(all_posts);
   fetches = [];
 }).catch((err)=> console.log(err));
 
+async function get_github(post, user_host, user_displayName, user_url, user_github){
+  let github_split = user_github.split("/");
+  let github_name = github_split[github_split.length - 1];
 
+  let response = await fetch("https://api.github.com/users/" + github_name + "/events", {
+    method:'get',
+    // headers: {
+    //   //"Authorization":"Basic "+ btoa("team14:team14"),
+    //   'Authorization': `Basic ${authheader}`,
+    //   "Content-Type": "application/json",
+    //   //"X-CSRFToken": getToken(),
+    //   //"X-Request-User-ID" : "{{userprofile.url}}",
+    // },
+  }
+).then((response)=>{ console.log(response);  return response.json();})
+.then((json)=>{console.log('Success:', JSON.stringify(json));
+               var gitposts = [];
+               gitposts = github_post(json);
+
+               $("#gitpost").empty();
+               for(let i=0; i<gitposts.length; i++){
+                 var Display = document.createElement("p");
+                 Display.style = "background-color: #f2f2f2; margin-bottom:1em; max-width: 100%";
+
+                 var Display1 = document.createElement("p");
+                 Display1.style.fontSize = "1.3em";
+
+                 Display1.innerHTML = gitposts[i].user;
+                 var Display2 = document.createElement("p");
+                 Display2.style.fontSize = "1em";
+
+                 Display2.innerHTML = gitposts[i].event;
+                 var Display3 = document.createElement("p");
+                 Display3.style.fontSize = "0.8em";
+
+                 Display3.innerHTML = gitposts[i].time;
+                 var gitpost = document.getElementById("gitpost");
+                 gitpost.appendChild(Display);
+                 Display.appendChild(Display1);
+                 Display.appendChild(Display2);
+                 Display.appendChild(Display3);
+               }
+               })
+  .catch((err)=> alert("GitHub url is Wrong!"));
+  //alert(json);
+  //let act = await response.json();
+
+  // for (var a = 0; a < 20; a++){
+  //   // if (response[i]['id'] == oldId) {
+  //   //         break;
+  //   //     }
+  //   var body = github_post(response[a]);
+  //   // let data = {
+  //   //   "query": "addComment",
+  //   //   //"post": post.origin,
+  //   //   "comment":
+  //   //   {
+  //   //     "author":{
+  //   //       "id": user_url,
+  //   //       "host": user_host,
+  //   //       "displayName": user_displayName,
+  //   //       // url to the authors information
+  //   //       "url": user_url,
+  //   //       // HATEOS url for Github API
+  //   //       "github": user_github
+  //   //     },
+  //   //     //"comment": content,
+  //   //     "contentType":"text/plain"
+  //   //   }
+  //   //
+  //   //
+  //   // };
+  //   await fetch('posts/',{
+  //     method: "POST",
+  //     body: JSON.stringify(body),
+  //
+  //     headers: {
+  //
+  //       "Content-Type": "application/json",
+  //       "X-CSRFToken": getToken()
+  //     },
+  //
+  //   }
+  //
+  //   )
+  // }
+  // //let newId = response[0]['id'];
+  // //let gitbody = {"id": newId}
+  //
+  // await fetch('frontend/author/github/',{
+  //   method: "POST",
+  //   body: JSON.stringify(body),
+  //
+  //   headers: {
+  //
+  //     "Content-Type": "application/json",
+  //     "X-CSRFToken": getToken()
+  //   },
+  //
+  // }
+  //
+  // );
+  // window.location.reload(true);
+}
+function github_post(response){
+  let gitpost = [];
+  for (var a = 0; a < 5; a++){
+
+  if (response[a]["type"] == "PushEvent") {
+        var event_type = " pushed to ";
+    } else if (response[a]["type"] == "IssuesEvent") {
+        var event_type = " made an issue on ";
+    } else if (response[a]["type"] == "ForkEvent") {
+        var event_type = " forked ";
+    } else if (response[a]["type"] == "IssueCommentEvent") {
+        var event_type = " commented on an issue on ";
+    } else if (response[a]["type"] == "CreateEvent") {
+        var event_type = " created the repository ";
+    } else {
+        var event_type = " did something on ";
+    }
+    gitpost.push({
+      title:"github activity",
+      description:"github activity",
+      //content:response[a]["actor"]["display_login"] + event_type + response[a]["repo"]["name"] + " created at : " + response[a]["created_at"],
+      user:response[a]["actor"]["display_login"],
+      event: event_type + response[a]["repo"]["name"],
+      time:" created at : " + response[a]["created_at"],
+    })
+  }
+    console.log("hhhhhhhhhhhh");
+    console.log(gitpost);
+    return gitpost;
+
+}
 // setInterval( function(){
 // for (server in resp) {
 //   fetches.push(

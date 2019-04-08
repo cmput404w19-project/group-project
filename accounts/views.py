@@ -740,6 +740,51 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+class UpdateGithubId(APIView):
+    
+    def post(self, request):
+        user = request.user
+        newId = request.data['id']
+        print(newId)
+
+        user = User.objects.get(id=user.id)
+        user.githubLastId = newId
+        user.save()
+
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+class GitHubView(APIView):
+    def get(self, request):
+        user = request.user
+        data = GETProfileSerializer(user).data
+        github = data['github']
+        github_id = github.split('/')[-1]
+        return render(request, 'edit_profile.html', context={'user': data})
+    #def post(self, request):
+    def post(self, request):
+
+        user = request.user
+        request_serializer = GETProfileSerializer(user)
+        update = (request.POST).dict()
+        for attribute, value in update.items():
+            if value != "":
+                setattr(user, attribute, value)
+        try:
+            user.save()
+        except:
+            github_url = request_serializer.data['github']
+            github_username = github_url.split('/')[-1]
+            return render(request, 'edit_profile.html', \
+                context={'user': request_serializer.data, 'github_username':github_username,
+                'error_message':'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = GETProfileSerializer(user)
+        github_url = serializer.data['github']
+        github_username = github_url.split('/')[-1]
+        return HttpResponseRedirect(reverse('frontauthorposts', args=[user.id]))
+
+
+
 class MakePost(APIView):
     """
     get:
