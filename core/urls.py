@@ -117,13 +117,26 @@ urlpatterns = [
     path(r'author/<str:author_id>/render/posts/', views.ShowMyPosts),
     path(r'author/<str:author_id>/render/posts', views.ShowMyPosts),
 
+    path(r'author/<str:author_id>/render/posts/posts/', views.ShowMyPosts),
+    path(r'author/<str:author_id>/render/posts/posts', views.ShowMyPosts),
+
     # the render of showing a specific post for specific user
     path(r'posts/<str:post_id>/render/', views.RenderPostByID),
     path(r'posts/<str:post_id>/render', views.RenderPostByID),
 
+    # the render of showing a specific post for specific user IMAGE ONLY
+    path(r'posts/<str:post_id>/render/image/', views.RenderPostByIDImage),
+    path(r'posts/<str:post_id>/render/image', views.RenderPostByIDImage),
 
     path(r'post/delete/<str:post_id>', views.postDelete().as_view(), name='deletepost'),
     path(r'post/edit/<str:post_id>', views.EditPost().as_view(),name='editpost'),
+
+    #path(r'author/<str:author_id>/render/posts/frontend/author/github/', views.GitHubView().as_view()),
+    #path(r'author/<str:author_id>/render/posts/frontend/author/github', views.GitHubView().as_view()),
+
+    path(r'author/<str:author_id>/render/posts/frontend/author/github/', views.GitHubView.as_view()),
+    path(r'author/<str:author_id>/render/posts/frontend/author/github', views.GitHubView.as_view()),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

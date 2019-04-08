@@ -34,6 +34,9 @@ from django.core.paginator import Paginator
 from urllib import request
 import requests, urllib
 
+from django.http import HttpResponse
+import base64
+
 DEBUG = False
 
 # Reference: Django class-based view
@@ -47,7 +50,7 @@ DEBUG = False
 # These are the views that are used for the REST API
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# given author_url finds all friends
+# given author_url return list of all friends
 def find_friends(author_url):
     following = Follow.objects.filter(following_url=author_url).all()
     following_list = FollowSerializer(following, many=True)
@@ -57,7 +60,27 @@ def find_friends(author_url):
     follower_list = FollowSerializer(followers, many=True)
     follower_url_list = list(follower_list.data[i]['following_url'] for i in range(len(follower_list.data)))
 
-    return list(set(following_url_list) & set(follower_url_list))
+    # initialize the list of friends with all our local friends
+    friend_list = list(set(following_url_list) & set(follower_url_list))
+
+    # our list of remaining people to check
+    remaining_follows_to_check = list(set(follower_url_list) - set(friend_list))
+
+    # for all non-local friends, we need to check with other servers to see if the follow relation
+    # exists on their end
+
+    author1_id = author_url.split('/')[-1]
+    for follow in remaining_follows_to_check:
+        author2_id = follow.split('/')[-1]
+        author2_host  = '/'.join(follow.split('/')[0:3])
+        r = requests.get("{}/author/{}/friends/{}".format(author2_host,author1_id, author2_id))
+        if r.status_code != 200:
+            continue
+        data = r.json()
+        if data['friends']:
+            friend_list.append(follow)
+
+    return friend_list
 
 class Posts(APIView):
     """
@@ -163,12 +186,11 @@ class AuthorPosts(APIView):
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
-            # add all request user 's follower 
+            # add all request user 's follower
             for userurl in all_user_who_follow_requestUser:
-                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id
                 # find this user's "friend"(follower) post
                 posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
-        print(posts)
         # TODO add post_visible_to stuff
 
 
@@ -211,7 +233,7 @@ class AuthorPosts(APIView):
             post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             comments = GETCommentSerializer(comments, many=True).data
             post['comments'] = comments
-            
+
         resp['posts'] = serializer.data
         resp['query'] = 'posts'
         return Response(resp)
@@ -376,6 +398,7 @@ class CommentsByPostId(APIView):
         #return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
 
 
+
 class FriendListByAuthorId(APIView):
     """
     get:
@@ -387,43 +410,72 @@ class FriendListByAuthorId(APIView):
     def get(self, request, author_id):
         resp = {}
 
-        # TODO get the URL from the request, combine with author_id
+        protocol = str(self.request.scheme)
+        author_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author_id)
 
-        protocol = str(self.request.scheme)+"://"
-        api_url = protocol + "localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a"
-        resp['authors'] = find_friends(api_url)
+        resp['authors'] = find_friends(author_url)
 
         resp['query'] = 'friends'
 
         return Response(resp)
 
     def post(self, request, author_id):
-        return Response({ "data": "none", "success": True }, status=status.HTTP_200_OK)
+        resp = {}
+
+        protocol = str(self.request.scheme)
+        author_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author_id)
+
+        if request.data['author'] != author_url:
+            return Response({"success": False, "message": "bad query", "query":"friends"}, status=status.HTTP_400_BAD_REQUEST)
+
+        resp["query"] = "friends"
+
+        resp["author"] = author_url
+
+        friend_list = []
+
+        friends_of_author = find_friends(author_url)
+
+        for author in request.data['authors']:
+            if author in friends_of_author:
+                friend_list.append(author)
+
+        resp["authors"] = friend_list
+
+        return Response(resp)
 
 class CheckFriendStatus(APIView):
     """
     get:
-    check if {author1_id} and {author2_id} are friends
+    check if {author1_id} follows {author2_id}
     """
 
     def get(self, request, author1_id, author2_id):
         resp = {}
 
-        # TODO get the URL from the request and turn it into the author
 
-        protocol = str(self.request.scheme)+"://"
-        author1url = protocol+'localhost:8000/author/a090224a-05a4-42fb-8ea9-5256c806d14a'
-        author2url = protocol+'localhost:8000/author/f2a252b1-77e1-4c2a-b129-d4006b3b0c17'
+        # We just check for a follow relation from author_1 to author_2, since that's all we really care about here
 
-        author1friends = find_friends(author1url)
-        if author2url in author1friends:
-            resp['friends'] = True
-        else:
-            resp['friends'] = False
+        # build the URL of the first user so we can check
+        protocol = str(self.request.scheme)
+        author_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author1_id)
+        author2_url = "{}://{}/author/{}".format(protocol, request.META["HTTP_HOST"], author2_id)
+        follows = Follow.objects.filter(follower_url=author_url).all()
+
+        follow_list = FollowSerializer(follows, many=True)
+        follow_url_list = list(follow_list.data[i]['following_url'] for i in range(len(follow_list.data)))
+
+        resp['friends'] = False
+        # check if any of the friends of author_1 match author_2
+        print(follow_url_list, author_url)
+        for author in follow_url_list:
+            if author.split('/')[-1] == author2_id:
+                author2_url = author
+                resp['friends'] = True
 
         resp['query'] = 'friends'
 
-        resp['authors'] = [author1url, author2url]
+        resp['authors'] = [author_url, author2_url]
 
         return Response(resp)
 
@@ -450,7 +502,7 @@ class FriendRequestNew(APIView):
             friend_request_serializer.save()
         else:
             return Response(friend_request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        print("friend request serializer pass")
+
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
 class InternalFriendRequest(APIView):
@@ -741,6 +793,51 @@ class PublicPosts(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+class UpdateGithubId(APIView):
+
+    def post(self, request):
+        user = request.user
+        newId = request.data['id']
+        print(newId)
+
+        user = User.objects.get(id=user.id)
+        user.githubLastId = newId
+        user.save()
+
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+class GitHubView(APIView):
+    def get(self, request):
+        user = request.user
+        data = GETProfileSerializer(user).data
+        github = data['github']
+        github_id = github.split('/')[-1]
+        return render(request, 'edit_profile.html', context={'user': data})
+    #def post(self, request):
+    def post(self, request):
+
+        user = request.user
+        request_serializer = GETProfileSerializer(user)
+        update = (request.POST).dict()
+        for attribute, value in update.items():
+            if value != "":
+                setattr(user, attribute, value)
+        try:
+            user.save()
+        except:
+            github_url = request_serializer.data['github']
+            github_username = github_url.split('/')[-1]
+            return render(request, 'edit_profile.html', \
+                context={'user': request_serializer.data, 'github_username':github_username,
+                'error_message':'Error'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = GETProfileSerializer(user)
+        github_url = serializer.data['github']
+        github_username = github_url.split('/')[-1]
+        return HttpResponseRedirect(reverse('frontauthorposts', args=[user.id]))
+
+
+
 class MakePost(APIView):
     """
     get:
@@ -841,6 +938,19 @@ def RenderPostByID(request, post_id):
     else:
         # not login
         return render(request, 'landingPage.html')
+
+
+# Reference:
+# Antti Haapala Jul 26 '14 at 14:00
+# https://stackoverflow.com/questions/24971729/django-python-todataurl-return-a-response-with-the-string-from-todataurl
+def RenderPostByIDImage(request, post_id):
+    post = Post.objects.filter(post_id = post_id).first()
+    print(post.content)
+    image_data = post.content.partition('base64,')[2]
+    return HttpResponse(
+        base64.b64decode(image_data), content_type='image/jpg'
+    )
+
 
 def profile(request):
     # user has login
