@@ -183,6 +183,7 @@ class AuthorPosts(APIView):
                 posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
+        print("URL IS FROM :",request.META)
         print(thisRequestUserUrl)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
@@ -193,6 +194,7 @@ class AuthorPosts(APIView):
                 # find this user's "friend"(follower) post
                 posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
         # TODO add post_visible_to stuff
+
 
 
         count = len(posts)
@@ -538,6 +540,30 @@ class acceptFriendRequest(APIView):
             follow_serializer.save()
         else:
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if 'weeb-tears' in request.data['friend']['url']:
+            new_payload = {}
+            friend_profile_request = requests.get(request.data['friend']['url'])
+            friend_profile = request.json()
+
+            new_payload['query'] = 'friendrequest'
+            new_payload['friend']['id'] = friend_profile['id']
+            new_payload['friend']['displayName'] = friend_profile['displayName']
+            new_payload['friend']['host'] = friend_profile['host']
+            new_payload['friend']['url'] = friend_profile['url']
+
+            author_profile_request = requests.get(request.data['author']['url'])
+            author_profile = request.json()
+            new_payload['query'] = 'profilerequest'
+            new_payload['author']['id'] = author_profile['id']
+            new_payload['author']['displayName'] = author_profile['displayName']
+            new_payload['author']['host'] = author_profile['host']
+            new_payload['author']['url'] = author_profile['url']
+
+            new_payload['query'] = "friendrequest"
+
+            resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=HTTPBasicAuth("Team14-Prod-User", "qweqweqweqwe"))
+
         print("follow serialzer pass")
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
@@ -746,6 +772,8 @@ def getFriendRequest(request):
     follower = FriendRequest.objects.filter(requestedTo_url=requestuser.url).all()#.values_list('requestedBy_url', flat=True)
     content["follower"] = follower
     content["userprofile"] = requestuser
+
+
     return render(request, 'friend_requests.html', content)
 
 
