@@ -10,14 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='comment',
-            name='user_id',
-            field=models.URLField(default=''),
-        ),
+        
         migrations.AlterField(
             model_name='postvisibleto',
-            name='user_id',
+            name='user_url',
             field=models.URLField(default=''),
         ),
     ]
