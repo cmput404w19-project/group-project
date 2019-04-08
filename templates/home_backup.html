@@ -62,7 +62,7 @@
     fetch(url, {
         method: "GET",
         headers: {
-          "Authorization":"Basic "+ btoa("team14:team14"),
+          "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
           "Content-Type": "application/json",
           "X-CSRFToken": getToken(),
           "X-Request-User-ID" : "{{userprofile.url}}",
@@ -352,7 +352,7 @@
                   body: JSON.stringify(data),
 
                   headers: {
-                      "Authorization":"Basic "+ btoa("team14:team14"),
+                      "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
                       "Content-Type": "application/json",
                       "X-CSRFToken": getToken()
 

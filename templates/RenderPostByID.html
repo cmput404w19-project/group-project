@@ -255,7 +255,7 @@ for (server in resp) {
     fetch(resp[server] + '/author/posts/?size=10', {
       method: "GET",
       headers: {
-        "Authorization":"Basic "+ btoa("team14:team14"),
+        "Authorization":"Basic "+ btoa("Team14-Prod-User:qweqweqweqwe"),
         "Content-Type": "application/json",
         "X-CSRFToken": getToken(),
         "X-Request-User-ID" : "{{userprofile.url}}",

@@ -89,9 +89,9 @@ class Posts(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] =  str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -151,24 +151,30 @@ class AuthorPosts(APIView):
     """
     def get(self, request):
         resp = {}
-
-        user = UserProfile.objects.filter(user_id=request.user).first()
+        # look for the userprofile if this is our own server user
+        if request.user.is_authenticated:
+            user = UserProfile.objects.filter(user_id=request.user).first()
+        # All the public posts 
         posts = Post.objects.filter(visibility = "PUBLIC").all()
         posts = list(posts)
-        posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
+        # Only for our own server user
+        if request.user.is_authenticated:
+            # user's own post and prevent duplication
+            # by excluding those are public
+            if user:
+                posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
 
-        # own post
-
-        # TODO add friend stuff to this, will just do non-friend for now
         # return all friends post which the authors are following this requested user
-
-        thisRequestUserUrl = request.META['HTTP_X_REQUEST_USER_ID']
-        # get all visibility = "FRIENDS"
-        all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
-        for userurl in all_user_who_follow_requestUser:
-            authorid = userurl.rstrip("/").split("/")[-1]
-            # find this user's friend post
-            posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
+        thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
+        print(thisRequestUserUrl)
+        if thisRequestUserUrl:
+            # get all visibility = "FRIENDS"
+            all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
+            # add all request user 's follower 
+            for userurl in all_user_who_follow_requestUser:
+                authorid = userurl.rstrip("/").split("/")[-1]  # this was url so need to extract author id 
+                # find this user's "friend"(follower) post
+                posts += list(Post.objects.filter(visibility="FRIENDS").filter(user_id=authorid).all())
 
         print(posts)
 
@@ -196,9 +202,9 @@ class AuthorPosts(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -278,9 +284,9 @@ class AuthorPostsById(APIView):
         # previous = None;
 
         if posts.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(posts.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.next_page_number())
         if posts.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(posts.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/author/"+str(author_id)+"/posts?page="+str(posts.previous_page_number())
 
         serializer = PostSerializer(posts, many=True)
 
@@ -333,9 +339,9 @@ class CommentsByPostId(APIView):
         # previous = None;
 
         if comments.has_next():
-            resp['next'] = str(request.get_host())+"/posts?page="+str(comments.next_page_number())
+            resp['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.next_page_number())
         if comments.has_previous():
-            resp['previous'] = str(request.get_host())+"/posts?page="+str(comments.previous_page_number())
+            resp['previous'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post_id)+"/comments?page="+str(comments.previous_page_number())
 
         serializer = GETCommentSerializer(comments, many=True)
 
@@ -350,7 +356,6 @@ class CommentsByPostId(APIView):
         #comment_data['query'] == 'addcomment'
         #post = Post.objects.filter(post_id=post_id)
 
-        print(request.data)
 
         user_url = request.data['comment']['author']['url']
         comment_data['user_id'] = user_url

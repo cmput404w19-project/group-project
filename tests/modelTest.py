@@ -63,7 +63,6 @@
 #     def setUp(self):
 #         global thisId
 #         global commentId
-#         thisId = uuid.uuid4()
 #         kehan1 = UserProfile()
 #         thisId = uuid.uuid4()
 #         kehan1.author_id=thisId 
@@ -135,7 +134,6 @@
 
 #         follow = Follow()
 #         follow.follower_id = kehan1
-#         print(follow.follower_id)
 #         follow.following_id = kehan2
 #         follow.save()
 
