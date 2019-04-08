@@ -184,7 +184,6 @@ class AuthorPosts(APIView):
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
         print(thisRequestUserUrl)
-        print("URL IS FROM :",request.META)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
