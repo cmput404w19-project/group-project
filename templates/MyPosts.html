@@ -207,9 +207,6 @@ function renderPosts(posts){
     description.innerHTML = "Description: " + post.description;
     description.style = "color:#c0c4c3";
 
-    var postID = document.createElement("p");
-    postID.innerHTML = "postRenderURL: " + post.origin + "/render";
-    postID.style = "color:#c0c4c3";
 
 
     /*
@@ -311,11 +308,20 @@ function renderPosts(posts){
     if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
       Post2ndOutterDiv.appendChild(meta1);
       Post2ndOutterDiv.appendChild(imageshow);
+      //Post1stOutterDiv.style = "background-color:#FFFF00;";
+      //Post2ndOutterDiv.style = "background-color:#FFFF00;";
+      Post1stOutterDiv.classList.remove("w3-white");
 
+      var postID = document.createElement("p");
+      postID.innerHTML = "<I>" + "postRenderURL: " + post.origin + "/render/image" + "</I>";
+      postID.style = "color:#c0c4c3";
+      Post2ndOutterDiv.appendChild(postID);
+
+      Post1stOutterDiv.classList.add("w3-sand");
     }
 
     Post2ndOutterDiv.appendChild(description);
-    Post2ndOutterDiv.appendChild(postID);
+
     /*
     Post2ndOutterDiv.appendChild(commentListDiv);
     */
