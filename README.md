@@ -141,7 +141,14 @@ https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 <br/> https://www.w3schools.com/jsref/prop_html_id.asp
 <br/>https://stackoverflow.com/questions/36131472/django-csrf-token-with-js
-<br/>
+<br/>https://www.jianshu.com/p/db2620e94a9b
+<br/>https://stackoverflow.com/questions/11821261/how-to-get-all-selected-values-from-select-multiple-multiple
+<br/>https://my.oschina.net/fengJeen/blog/1557344
+<br/>https://ilusm.iteye.com/blog/232236
+<br/>https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
+<br/>https://stackoverflow.com/questions/2941995/python-ignore-incorrect-padding-error-when-base64-decoding/49459036
+<br/>https://github.com/showdownjs/showdown
+<br/>https://github.com/showdownjs/showdown/wiki/Tutorial:-Markdown-editor-using-Showdown
 
 
 ### Post
