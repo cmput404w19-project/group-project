@@ -20,6 +20,9 @@ Contributors:
     Xinrui Lu (xinrui7@ualberta.ca)
     Kehan Wang (kehan1@ualberta.ca)
     Zhaozhen Liang (zhaozhen@ualberta.ca)
+    
+# Wiki
+https://github.com/cmput404w19-project/group-project/wiki
 
 # Installation
 Create a virtualenv and activate the python virtual environment
