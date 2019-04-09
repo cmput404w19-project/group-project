@@ -196,8 +196,6 @@ class AuthorPosts(APIView):
                 posts += list(Post.objects.filter(user_id=user.author_id).exclude(visibility="PUBLIC").all())
         # return all friends post which the authors are following this requested user
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
-        print("URL IS FROM :",request.META)
-        print(thisRequestUserUrl)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
@@ -248,8 +246,6 @@ class AuthorPosts(APIView):
         for post in serializer.data:
             #counter += 1
             post['size'] = pageSize
-            #print(counter)
-            #print(comments)
             comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
@@ -301,17 +297,11 @@ class AuthorPostsById(APIView):
         posts = Post.objects.filter(user_id = author).filter(visibility="PUBLIC").all()
         posts = list(posts)
         request_user = UserProfile.objects.filter(user_id=request.user).first()
-        print("------")
-        print(request_user.author_id)
-        print(author_id)
-        print("------")
         if request_user:
             if str(request_user.author_id) == str(author_id):
-                print("check")
                 posts += list(Post.objects.filter(user_id = author).exclude(visibility="PUBLIC").all())
         # TODO add friend stuff to this
         thisRequestUserUrl = request.META.get('HTTP_X_REQUEST_USER_ID') # this is the CUSTOM header we shared within connected group
-        print(thisRequestUserUrl)
         if thisRequestUserUrl:
             # get all visibility = "FRIENDS"
             all_user_who_follow_requestUser = Follow.objects.filter(following_url=thisRequestUserUrl).all().values_list('follower_url', flat=True)
@@ -419,7 +409,6 @@ class CommentsByPostId(APIView):
         comment_data['post_id'] = post_id #request.data['post'].split(...)
         comment_data['contentType'] = request.data['comment']['contentType']
         failed = False
-        print(comment_data)
         comment_serializer = CommentSerializer(data=comment_data)
         if comment_serializer.is_valid():
             comment_serializer.save()
@@ -595,13 +584,9 @@ class acceptFriendRequest(APIView):
             new_payload['author']['url'] = author_profile['url']
 
             new_payload['query'] = "friendrequest"
-
-            print("accepting friend request of :", new_payload)
             resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=("Team14-Prod-User", "qweqweqweqwe"), data=new_payload)
-            print(resp.status_code)
-            print(resp.json())
-            
-        print("follow serialzer pass")
+
+
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
 
 
@@ -858,7 +843,6 @@ class UpdateGithubId(APIView):
     def post(self, request):
         user = request.user
         newId = request.data['id']
-        print(newId)
 
         user = User.objects.get(id=user.id)
         user.githubLastId = newId
@@ -913,11 +897,10 @@ class MakePost(APIView):
         user = UserProfile.objects.filter(user_id=request.user).first()
         posts = Post.objects.filter(user_id=user.author_id).all()
         postDic = {}
-        #print("--------")
         for post in posts:
             if (post.contentType == 'image/png;base64' or post.contentType == 'image/jpeg;base64'):
                 postDic[str(post.title)] = str(post.host) + "posts/" + str(post.post_id) + "/render/image"
-        #print(postDic)
+ 
         serializer = PostSerializer()
 
         userprofile = UserProfile.objects.filter(user_id = request.user).first()
@@ -1021,7 +1004,7 @@ def RenderPostByID(request, post_id):
 # https://stackoverflow.com/questions/24971729/django-python-todataurl-return-a-response-with-the-string-from-todataurl
 def RenderPostByIDImage(request, post_id):
     post = Post.objects.filter(post_id = post_id).first()
-    #print(post.content)
+  
     image_data = post.content.partition('base64,')[2]
     return HttpResponse(
         base64.b64decode(image_data), content_type='image/jpg'

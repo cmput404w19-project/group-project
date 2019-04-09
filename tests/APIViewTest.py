@@ -4,21 +4,24 @@ from rest_framework.test import APIRequestFactory
 from django.test.client import RequestFactory 
 from rest_framework.test import force_authenticate
 from accounts.models import *
-from accounts.views import *
+from accounts.views import * 
 from django.contrib.auth.models import User
 import uuid
 import json
+import socket
 
 #this test is reference answered by Pedro M Duarte from https://stackoverflow.com/questions/2619102/djangos-self-client-login-does-not-work-in-unit-tests
 # create superuser answered by Sam Dolan from https://stackoverflow.com/questions/3495114/how-to-create-admin-user-in-django-tests-py
 
 def createUser(username1, password1):
+
     user = User.objects.create_superuser(username1, "nobody@gmail.com", password1)
     user.is_active = True
     user.save()
     return user
 
 def setupUser(user,display_name):
+    
     newuser = UserProfile()
     uuid1 = uuid.uuid4()
     newuser.author_id = uuid1
@@ -26,7 +29,7 @@ def setupUser(user,display_name):
     newuser.displayName = display_name
     newuser.bio = "bio"
     newuser.host = "http://127.0.0.1:8000/"
-    newuser.github = "https://github.com/cmput404w19-project/group-project/projects"
+    newuser.github = "https://github.com/cmput404w19-project/"
     newuser.url = "http://127.0.0.1:8000/author/" + str(uuid1)
     newuser.save()
     return newuser
@@ -58,6 +61,30 @@ def createComment(user, post):
     comment.save()
     return comment
 
+def createFriendObject(url1, url2):
+    follow1 = Follow()
+    follow2 = Follow()
+    follow1.follower_url = url1
+    follow1.following_url = url2
+    follow2.follower_url = url2
+    follow2.following_url = url1
+    follow1.save()
+    follow2.save()
+
+def createFollow(url1, url2):
+    follow1 = Follow()
+    follow1.follower_url = url1
+    follow1.following_url = url2
+    follow1.save()
+
+def createFriendRequest(user1, user2):
+
+    request = FriendRequest()
+    request.statusChoice = ("Pending","Pending")
+    request.requestedBy_name = user2.displayName
+    request.requestedBy_url = user2.url
+    request.requestedTo_url = user1.url
+    request.save()
 
 class PostTest(TestCase):
 
@@ -66,22 +93,24 @@ class PostTest(TestCase):
         self.user1 = createUser("kehan1", "1")
         temp_user1 = setupUser(self.user1, "user1")
         self.post1 = createPost(temp_user1)
+        self.factory = RequestFactory()
     
     def test_post(self):
+        view = Posts.as_view()
         c = Client()
         login = c.login(username='kehan1',password='1')
         self.assertTrue(login)
         self.assertEqual(temp_user1.displayName, "user1")
-        response = self.client.get("http://127.0.0.1:8000/posts/")
-        self.assertTrue(response.status_code, 200)
-        
-        #post = response["post_id"]
-        print("===============")
-        print(response)
-        post_id = post.get("id")
+        request = self.factory.get("http://127.0.0.1:8000/posts/")
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        post = response.data["posts"][0]
+        post_id = post['id']
         self.assertEqual(post_id, self.post1.post_id)
+        
 
-'''class PostByIdTest(TestCase):
+class PostByIdTest(TestCase):
 
     def setUp(self):
         global temp_user1
@@ -90,17 +119,21 @@ class PostTest(TestCase):
         # self.user2 = createUser("kehan2", "2")
         # temp_user2 = setupUser(self.user2, "user2")
         self.post1 = createPost(temp_user1)
+        self.factory = RequestFactory()
     
     def test_postbyid(self):
+        view = PostById.as_view()
         c = Client()
         login = c.login(username='kehan1',password='1')
         self.assertTrue(login)
         self.assertEqual(temp_user1.displayName, "user1")
-        response = self.client.get("http://127.0.0.1:8000/posts/"+str(self.post1.post_id))
+        request = self.factory.get("http://127.0.0.1:8000/posts/"+str(self.post1.post_id))
+        force_authenticate(request, user=self.user1)
+        response = view(request, self.post1.post_id)
         self.assertTrue(response.status_code, 200)
         post = response.data["post"]
-        post_id = post.get("id")
-        self.assertEqual(post_id, self.post1.post_id)'''
+        post_id = post['id']
+        self.assertEqual(post_id, self.post1.post_id)
 
 class AuthorPostsByIdTest(TestCase):
     
@@ -174,247 +207,264 @@ class CommentsByPostIdTest(TestCase):
         response = view(request2, self.post1.post_id)
         self.assertEqual(response.status_code, 200)
 
-# class FriendRequestTest(TestCase):
 
-#     def setUp(self):
-#         global kehan1
-#         global kehan2
-#         self.user = User.objects.create(username = 'kehan_wang')
-#         self.user.set_password('Mypossword123')
-#         self.user.is_active = True
-#         self.user.save()
+class FriendListByAuthorIdTest(TestCase):
 
-#         thisId = uuid.uuid4()
-#         kehan1 = UserProfile()
-#         thisId = uuid.uuid4()
-#         kehan1.author_id=thisId 
-#         # kehan1.user_id = User.objects.create_user(username='kehan_wang', email="kehan1@ualberta.ca",password="Mypossword123", is_active=True)
-#         kehan1.user_id = self.user
-#         kehan1.displayName="kehan1"
-#         kehan1.bio="bio"
-#         kehan1.host="host"
-#         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-#         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-#         kehan1.save()
+    def setUp(self):
+        global temp_user1, temp_user2
 
-#         thisId2 = uuid.uuid4()
-#         kehan2 = UserProfile()
-#         thisId2 = uuid.uuid4()
-#         kehan2.author_id=thisId 
-#         kehan2.user_id = User.objects.create_user(username='kehan_wang2', email="kehan1@ualberta.ca",password="Mypossword123", is_active=True)
-#         kehan2.displayName="kehan2"
-#         kehan2.bio="bio2"
-#         kehan2.host="host2"
-#         kehan2.github="https://github.com/cmput404w19-project/group-project/projects2",
-#         kehan2.url="https://github.com/cmput404w19-project/group-project/projects2"
-#         kehan2.save()
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.user2 = createUser("kehan2", "2")
+        temp_user2 = setupUser(self.user2, "user2")
+        createFriendObject(temp_user1.url, temp_user2.url)
+        self.factory = RequestFactory()
+
+    def test_getfriend(self):
+        view = FriendListByAuthorId.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+        ###not finish since cannot set http header for getting meta data
 
 
-#     def test_bad_friendRequest(self):
-#         c = Client()
-#         login = c.login(username='kehan_wang',password='Mypossword123')
-#         self.assertTrue(login)
-#         request = self.client.post('friendrequest/', {},  format='application/json')
-#         self.assertEqual(request.status_code, 404)
+class FriendRequestNewTest(TestCase):
 
+    def setUp(self):
+        global temp_user1, temp_user2
 
-
-
-
-
-# class HomeTest(TestCase):
-
-#     def setUp(self):
-#         self.user = User.objects.create_superuser(username = 'kehan_wang')
-#         self.user.set_password('Mypossword123')
-#         self.user.is_active = True
-#         self.user.save()
-#         global kehan1  
-#         thisId = uuid.uuid4()
-#         kehan1 = UserProfile()
-#         thisId = uuid.uuid4()
-#         kehan1.author_id=thisId 
-#         kehan1.user_id = self.user
-#         kehan1.displayName="kehan1"
-#         kehan1.bio="bio"
-#         kehan1.host="host"
-#         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-#         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-#         kehan1.save()
-
-#     def test_home(self):
-
-#         c = Client()
-#         login = c.login(username='kehan_wang',password='Mypossword123')
-#         self.assertTrue(login)
-#         request = self.client.get('http://127.0.0.1:8000/')
-#         self.assertEqual(request.status_code, 200)
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.user2 = createUser("kehan2", "2")
+        temp_user2 = setupUser(self.user2, "user2")
+        #createFriendRequest(temp_user1, temp_user2)
+        self.factory = RequestFactory()
     
-
-# # class AuthorProfileTest(TestCase):
-# #     def setUp(self):
-# #         self.user = User.objects.create(username = 'kehan_wang')
-# #         self.user.set_password('Mypossword123')
-# #         self.user.is_active = True
-# #         self.user.save()
-# #         global kehan1  
-# #         thisId = uuid.uuid4()
-# #         kehan1 = UserProfile()
-# #         thisId = uuid.uuid4()
-# #         kehan1.author_id=thisId 
-# #         kehan1.user_id = self.user
-# #         kehan1.displayName="kehan1"
-# #         kehan1.bio="bio"
-# #         kehan1.host="host"
-# #         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-# #         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-# #         kehan1.save()
-
-# #     def test_authorProfile(self):
-
-# #         c = Client()
-# #         login = c.login(username='kehan_wang',password='Mypossword123')
-# #         self.assertTrue(login)
-# #         request = self.client.get('http://127.0.0.1:8000/accounts/profile/')
-# #         self.assertEqual(request.status_code, 302)
-# #         request = self.client.get('http://127.0.0.1:8000/posts/')
-# #         self.assertEqual(request.status_code, 200)
-
-# class PostTest(TestCase):
-
-#     def setUp(self):
-#         self.user = User.objects.create(username = 'kehan_wang')
-#         self.user.set_password('Mypossword123')
-#         self.user.is_active = True
-#         self.user.save()
-#         global kehan1  
-#         thisId = uuid.uuid4()
-#         kehan1 = UserProfile()
-#         thisId = uuid.uuid4()
-#         kehan1.author_id=thisId 
-#         kehan1.user_id = self.user
-#         kehan1.displayName="kehan1"
-#         kehan1.bio="bio"
-#         kehan1.host="host"
-#         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-#         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-#         kehan1.save()
-
-#         post1 = Post()
-#         post1.typeChoice = ('text/markdown', 'text/markdown')
-#         post1.visibilityChoice = ("PUBLIC","PUBLIC")
-#         post1.post_id = thisId
-#         post1.user_id = kehan1
-#         post1.description = "This is description"
-#         post1.source = "myself"
-#         post1.origin = "myself"
-#         post1.content = "This is content"
-#         post1.category = "category"
-#         post1.visibility = "PUBLIC"
-#         post1.unlisted = True
-#         post1.save()
-#         self.post1 = post1
-
-#         comment = Comment()
-#         comment.typeChoice = ('text/plain','text/plain')
-#         commentId = uuid.uuid4()
-#         comment.comment_id = commentId
-#         comment.user_id = kehan1
-#         comment.content = "my comment"
-#         comment.contentType = "text/plain"
-#         comment.post_id = post1
-#         comment.save()
-#         self.comment = comment
-
-#     def test_postandcomment(self):
-#         c = Client()
-#         login = c.login(username='kehan_wang',password='Mypossword123')
-#         self.assertTrue(login)
-#         #get post
-#         request = self.client.get('http://127.0.0.1:8000/posts/%s' %(self.post1.post_id))
-#         self.assertTrue(request.status_code, 200)
-
-#         #get comment
-#         request = self.client.get('http://127.0.0.1:8000/posts/%s/comment' %(self.post1.post_id))
-#         self.assertTrue(request.status_code, 200)
-
-
-# # class AuthorPostsTest(TestCase):
-
-# #     def setUp(self):
-# #         self.user = User.objects.create(username='kehan_wang')
-# #         self.user.set_password('Mypossword123')
-# #         self.user.is_active = True
-# #         self.user.save()
-
-# #         global kehan1
-# #         thisId = uuid.uuid4()
-# #         kehan1 = UserProfile()
-# #         thisId = uuid.uuid4()
-# #         kehan1.author_id=thisId 
-# #         kehan1.user_id = self.user
-# #         kehan1.displayName="kehan1"
-# #         kehan1.bio="bio"
-# #         kehan1.host="host"
-# #         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-# #         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-# #         kehan1.save()
-    
-# #     def test_authorpost(self):
-# #         c = Client()
-# #         login = c.login(username='kehan_wang',password='Mypossword123')
-# #         self.assertTrue(login)
-# #         request = self.client.get('http://127.0.0.1:8000/author/posts/')
+    def test_friendRequest(self):
+        view = FriendRequestNew.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
         
-# #         self.assertEqual(request.status_code, 200)
+        data = {
+              "author": {
+                "id": temp_user2.url,
+                "host": temp_user2.host,
+                "displayName": temp_user2.displayName,
+                "url": temp_user2.url
+              },
+              "friend": {
+                "id": temp_user1.url,
+                "host": temp_user1.host,
+                "displayName": temp_user1.displayName,
+                "url": temp_user1.url
+              }
+            }
+        data1 = json.dumps(data)
+        request = self.factory.post("http://127.0.0.1:8000/friendrequest/", data1, content_type='application/json')
+        force_authenticate(request, user=self.user2)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        send_status = response.data["success"]
+        self.assertTrue(send_status)
 
 
+class acceptFriendRequestTest(TestCase):
 
-# class unFollowTest(TestCase):
+    def setUp(self):
+        global temp_user1, temp_user2
 
-#     def setUp(self):
-#         self.user = User.objects.create(username='kehan_wang')
-#         self.user.set_password('Mypossword123')
-#         self.user.is_active = True
-#         self.user.save()
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.user2 = createUser("kehan2", "2")
+        temp_user2 = setupUser(self.user2, "user2")
+        createFriendRequest(temp_user1, temp_user2)
+        self.factory = RequestFactory()
 
-#         global kehan1
-#         global kehan2
-#         thisId = uuid.uuid4()
-#         kehan1 = UserProfile()
-#         thisId = uuid.uuid4()
-#         kehan1.author_id=thisId 
-#         kehan1.user_id = self.user
-#         kehan1.displayName="kehan1"
-#         kehan1.bio="bio"
-#         kehan1.host="host"
-#         kehan1.github="https://github.com/cmput404w19-project/group-project/projects",
-#         kehan1.url="https://github.com/cmput404w19-project/group-project/projects"
-#         kehan1.save()
+    def test_acceptrequest(self):
+        view = acceptFriendRequest.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
 
-#         thisId2 = uuid.uuid4()
-#         kehan2 = UserProfile()
-#         thisId2 = uuid.uuid4()
-#         kehan2.author_id=thisId 
-#         kehan2.user_id = User.objects.create_user(username='kehan_wang2', email="kehan1@ualberta.ca",password="Mypossword123", is_active= True)
-#         kehan2.displayName="kehan2"
-#         kehan2.bio="bio2"
-#         kehan2.host="host2"
-#         kehan2.github="https://github.com/cmput404w19-project/group-project/projects2",
-#         kehan2.url="https://github.com/cmput404w19-project/group-project/projects2"
-#         kehan2.save()
+        data = {
+                "query": "deleteFriendrequest",
+                "author":{
+                  "url": temp_user1.url,
+                },
+                "friend": {
+                  "url": temp_user2.url,
+                }
+              }
 
-#         follow = Follow()
-#         follow.follower_id = kehan1
-#         follow.following_id = kehan2
-#         follow.save()
+        data1 = json.dumps(data)
+        request = self.factory.post("http://127.0.0.1:8000/acceptfriendrequest/", data1, content_type='application/json')
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+    
+class deleteFriendRequestTest(TestCase):
+
+    def setUp(self):
+        global temp_user1, temp_user2
+
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.user2 = createUser("kehan2", "2")
+        temp_user2 = setupUser(self.user2, "user2")
+        createFriendRequest(temp_user1, temp_user2)
+        self.factory = RequestFactory()
+    
+    def test_deleteFriendRequest(self):
+
+        view = deleteFriendRequest.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+
+        data = {
+                "query": "deleteFriendrequest",
+                "author":{
+                  "id": temp_user1.url,
+                },
+                "friend": {
+                  "id":temp_user2.url,
+                }
+              }
+        data1 = json.dumps(data)
+        request = self.factory.post("http://127.0.0.1:8000/deletefriendrequest/", data1, content_type='application/json')
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
 
     
-#     def test_unfollow(self):
-#         c = Client()
-#         login = c.login(username='kehan_wang',password='Mypossword123')
-#         self.assertTrue(login)
-#         follow_id = Follow.objects.filter(follower_id = kehan1.author_id, following_id = kehan2.author_id).first()
-#         self.assertTrue(follow_id)
-#         request = self.client.post("http://127.0.0.1:8000/unfollowrequest/%d/" %(follow_id.pk))
-#         self.assertTrue(request.status_code, 200)
+class AuthorProfileTest(TestCase):
+
+    def setUp(self):
+        global temp_user1
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.factory = RequestFactory()
+    
+    def test_authorprofile(self):
+
+        view = AuthorProfile.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+        request = self.factory.get("http://127.0.0.1:8000/author/" + str(temp_user2.author_id)+"/")
+        force_authenticate(request, user=self.user1)
+        response = view(request, temp_user1.author_id)
+        self.assertEqual(response.status_code, 200)
+        author_id = response.data['id'].split('/')[-1]
+        self.assertEqual(author_id, str(temp_user1.author_id))
+
+class ExternalServerTest(TestCase):
+
+    def setUp(self):
+        global temp_user1
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.factory = RequestFactory()
+    
+    def test_authorprofile(self):
+
+        view = ExternalEndpoints.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+        request = self.factory.get("http://127.0.0.1:8000/externalendpoints/")
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data)
+
+
+class UnFollowTest(TestCase):
+
+    def setUp(self):
+
+        global temp_user1, temp_user2
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.user2 = createUser("kehan2", "2")
+        temp_user2 = setupUser(self.user2, "user2")
+        createFollow(temp_user1.url, temp_user2.url)
+        self.factory = RequestFactory()
+
+    def test_unfollow(self):
+
+        view = UnFollow.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+
+        data = {
+              "author": {
+                "id": temp_user1.url,
+                "host": temp_user1.host,
+                "displayName": temp_user1.displayName,
+                "url": temp_user1.url
+              },
+              "friend": {
+                "id": temp_user2.url,
+                "host": temp_user2.host,
+                "displayName": temp_user2.displayName,
+                "url": temp_user2.url
+              }
+            }
+        data1 = json.dumps(data)
+        request = self.factory.post("http://127.0.0.1:8000/unfollowrequest/",data1, content_type='application/json')
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+ 
+class postDeleteTest(TestCase):
+
+    def setUp(self):
+
+        global temp_user1
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "user1")
+        self.post1 = createPost(temp_user1)
+        self.factory = RequestFactory()
+
+    def test_postDelete(self):
+
+        view = postDelete.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+
+        request = self.factory.post("http://127.0.0.1:8000/post/delete/"+str(self.post1.post_id))
+        force_authenticate(request, user=self.user1)
+        response = view(request, self.post1.post_id)
+        self.assertEqual(response.status_code, 302)
+
+
+class PublicPostsTest(TestCase):
+
+    def setUp(self):
+
+        self.user1 = createUser("kehan1", "1")
+        temp_user1 = setupUser(self.user1, "kehan1")
+        self.post1 = createPost(temp_user1)
+        self.factory = RequestFactory()
+
+    def test_publicposts(self):
+        
+        view = MakePost.as_view()
+        c = Client()
+        login = c.login(username='kehan1', password='1')
+        self.assertTrue(login)
+
+        request = self.factory.get("http://127.0.0.1:8000/author/render/post")
+        force_authenticate(request, user=self.user1)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        post_user = response.data["userprofile"]
+        self.assertEqual(post_user.displayName, self.user1.username)
+
+
+
+    
