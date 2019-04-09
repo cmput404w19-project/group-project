@@ -139,6 +139,10 @@ https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://stackoverflow.com/questions/36131472/django-csrf-token-with-js
 <br/>https://stackoverflow.com/questions/1795701/django-reverse-for-javascript
 <br/>https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+<br/> https://www.w3schools.com/jsref/prop_html_id.asp
+<br/>https://stackoverflow.com/questions/36131472/django-csrf-token-with-js
+<br/>
+
 
 ### Post
 #### Handle Markdown
