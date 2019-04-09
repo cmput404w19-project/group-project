@@ -585,7 +585,7 @@ class acceptFriendRequest(APIView):
             new_payload['query'] = "friendrequest"
 
             print("accepting friend request of :", new_payload)
-            resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=HTTPBasicAuth("Team14-Prod-User", "qweqweqweqwe"), data=new_payload)
+            resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=("Team14-Prod-User", "qweqweqweqwe"), data=new_payload)
             print(resp.status_code)
             print(resp.json())
             
