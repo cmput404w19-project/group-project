@@ -20,6 +20,16 @@ Contributors:
     Zhaozhen Liang (zhaozhen@ualberta.ca)
 
 
+# AJAX Documentation
+### Home Page posts
+We have a heavy AJAX in our client side front end. We use for loop AJAX fetches and promise.all() to send all requests to all the servers(External endpoints and also our own server) APIs (/author/posts) for getting all the visible posts for that particular user  
+### Home Page posting comments
+We send the comment post request to the server(the one which is hosting that post) API by fetch
+### AuthorProfile
+For author profile, we pre-render the author url into the html before return to the client. And then the client side Javascript will send fetch request to the server that is hosting the author information (by that url)
+### Friend
+We use fetch to send request to get the list of friends for that particular user in the friend page front end when user is viewing the friend list page
+
 # References
 ### TestCase
 Answered by Pedro M Duarte:
