@@ -161,8 +161,8 @@
             <div id="friendVisibleTo" style="display:none; ">
                 <textarea id="visibleTo" name="visibleTo" type="text" ></textarea>
                 <label  for="visibleToSelct">Choose the user who can see this </label>
-                <select id="visibleToSelct" name="visibleToSelct">
-                    <option value="Only Myself">
+                <select id="visibleToSelct" name="visibleToSelct" multiple="multiple" size="9" style="overflow:hidden">
+                    <option value="{{userprofile.url}}">
                         Only Myself
                     </option>
                 </select>
@@ -339,8 +339,10 @@
             }
             visibleTo = document.getElementById("visibleTo");
             visibleToSelct = document.getElementById("visibleToSelct");
-            alert(visibleToSelct.value);
-            visibleTo.value = visibleToSelct.value;
+            var values = $('#visibleToSelct').val();
+            //alert(values);
+            //console.log(values);
+            visibleTo.value = values;
 
         }
 
