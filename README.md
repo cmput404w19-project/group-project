@@ -53,6 +53,7 @@ You will first need to get into the signup page and register an account. And the
 
 
 # AJAX Documentation
+We decide to use lot of the AJAX on the client side for the purposes of sharing the server work load.
 ### Home Page posts
 We have a heavy AJAX in our client side front end. We use for loop AJAX fetches and promise.all() to send all requests to all the servers(External endpoints and also our own server) APIs (/author/posts) for getting all the visible posts for that particular user  
 ### Home Page posting comments
@@ -61,6 +62,13 @@ We send the comment post request to the server(the one which is hosting that pos
 For author profile, we pre-render the author url into the html before return to the client. And then the client side Javascript will send fetch request to the server that is hosting the author information (by that url)
 ### Friend
 We use fetch to send request to get the list of friends for that particular user in the friend page front end when user is viewing the friend list page
+
+
+# Design and Idea
+So the project theme is distributive social network, we follow the specification idea that each server is independent from each other and hosting only the posts information that is made by its own server user and also hosting each own server user's userprofile. Each server does not store any extra information about other server's user and posts except we store the url(api) that we can request for the data.
+
+## External endpoints
+For dealing with external endpoints, we use baisc auth which is provided by Django CRFS token for authentications to access APIs. And we have a model table to keep all the external servers information (hostname,username,password) that we are connecting to.
 
 # References
 ### TestCase
