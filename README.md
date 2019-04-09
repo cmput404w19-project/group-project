@@ -80,6 +80,12 @@ https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp
 <br/>Django Documentation
 <br/>https://docs.djangoproject.com/zh-hans/2.1/
+<br/>http://www.permadi.com/tutorial/jsInnerHTMLDOM/index.html
+<br/>https://github.com/dispersal/CMPUT404-project-socialdistribution/blob/master/posts/static/author/author_posts.js
+<br/>https://www.w3schools.com/jsref/event_onclick.asp
+<br/>https://stackoverflow.com/questions/46630893/angular-res-json-is-not-a-function
+<br/>https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+<br/>https://stackoverflow.com/questions/351409/how-to-append-something-to-an-array
 ### Post
 #### Handle Markdown
 https://github.com/showdownjs/showdown<br/>
