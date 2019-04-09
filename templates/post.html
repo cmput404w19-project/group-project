@@ -159,8 +159,8 @@
             </div>
 
             <div id="friendVisibleTo" style="display:none; ">
-                <textarea id="visibleTo" name="visibleTo" type="text" ></textarea>
-                <label  for="visibleToSelct">Choose the user who can see this </label>
+                <textarea id="visibleTo" name="visibleTo" type="text" style="display:none"></textarea>
+                <label  for="visibleToSelct">Visible To (multiple):</label>
                 <select id="visibleToSelct" name="visibleToSelct" multiple="multiple" size="9" style="overflow:hidden">
                     <option value="{{userprofile.url}}">
                         Only Myself
@@ -339,9 +339,12 @@
             }
             visibleTo = document.getElementById("visibleTo");
             visibleToSelct = document.getElementById("visibleToSelct");
-            var values = $('#visibleToSelct').val();
             //alert(values);
             //console.log(values);
+            // Reference;
+            // Felix Kling
+            // https://stackoverflow.com/questions/11821261/how-to-get-all-selected-values-from-select-multiple-multiple
+            var values = $('#visibleToSelct').val();
             visibleTo.value = values;
 
         }
