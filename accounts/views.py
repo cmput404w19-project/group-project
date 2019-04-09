@@ -560,8 +560,7 @@ class acceptFriendRequest(APIView):
         else:
             return Response(follow_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # if 'weeb-tears' in request.data['friend']['url']:
-        if True:
+        if 'weeb-tears' in request.data['friend']['url']:
             friend_profile_request = requests.get(request.data['friend']['url'])
             friend_profile = friend_profile_request.json()
             author_profile_request = requests.get(request.data['author']['url'])
@@ -570,8 +569,6 @@ class acceptFriendRequest(APIView):
             new_payload = {}
             new_payload['friend'] = {}
             new_payload['author'] = {}
-
-            print(new_payload)
 
             new_payload['query'] = 'friendrequest'
             new_payload['friend']['id'] = friend_profile['id']
@@ -586,9 +583,8 @@ class acceptFriendRequest(APIView):
             new_payload['author']['url'] = author_profile['url']
 
             new_payload['query'] = "friendrequest"
-            print("payload is:", new_payload)
 
-            # resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=HTTPBasicAuth("Team14-Prod-User", "qweqweqweqwe"))
+            resp = requests.post("https://weeb-tears.herokuapp.com/friendrequest", auth=HTTPBasicAuth("Team14-Prod-User", "qweqweqweqwe"), data=new_payload)
 
         print("follow serialzer pass")
         return Response({ "query": "friendrequest", "success": True, "message": "Friend request sent" }, status=status.HTTP_200_OK)
