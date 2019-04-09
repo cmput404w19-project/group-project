@@ -21,9 +21,6 @@ Contributors:
     Kehan Wang (kehan1@ualberta.ca)
     Zhaozhen Liang (zhaozhen@ualberta.ca)
 
-# Wiki
-https://github.com/cmput404w19-project/group-project/wiki
-
 # Installation
 Create a virtualenv and activate the python virtual environment
 ```
@@ -32,7 +29,7 @@ Create a virtualenv and activate the python virtual environment
 ```
 Download the project and install all libraries that are needed
 ```
-> git clone https://github.com/cmput404w19-project/group-project.git 
+> https://github.com/cmput404w19-project/group-project.git 
 > pip install -r requirments.txt
 ```
 Migrate all the changes if there are any 
@@ -101,6 +98,11 @@ https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-s
 cutteeth https://stackoverflow.com/questions/40191931/django-how-to-use-request-post-in-a-delete-view
 </br>Django class-based view documentation:
 </br>https://docs.djangoproject.com/en/2.1/topics/class-based-views/
+<br>https://www.django-rest-framework.org/tutorial/3-class-based-views/
+<br>http://www.chenxm.cc/article/244.html
+<br>http://webdocs.cs.ualberta.ca/~hindle1/2014/07-REST.pdf
+<br>https://stackoverflow.com/questions/24971729/django-python-todataurl-return-a-response-with-the-string-from-todataurl
+<br>https://segmentfault.com/a/1190000010970988
 ### Decorator for checking Login require and annoymous require
 Django decorator documentation:
 </br>https://docs.djangoproject.com/en/2.1/_modules/django/contrib/auth/decorators/
@@ -130,6 +132,11 @@ https://fonts.google.com/?selection.family=Muli|Sniglet|Srisakdi
 <br/>https://stackoverflow.com/questions/46630893/angular-res-json-is-not-a-function
 <br/>https://developers.google.com/web/updates/2015/03/introduction-to-fetch
 <br/>https://stackoverflow.com/questions/351409/how-to-append-something-to-an-array
+<br/>https://docs.djangoproject.com/en/2.1/ref/csrf/
+<br/>https://stackoverflow.com/questions/36131472/django-csrf-token-with-js
+<br/>https://stackoverflow.com/questions/1795701/django-reverse-for-javascript
+<br/>https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
 ### Post
 #### Handle Markdown
 https://github.com/showdownjs/showdown<br/>
