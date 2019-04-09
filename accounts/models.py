@@ -71,7 +71,7 @@ class Post(models.Model):
     # content ?
     content = models.TextField(default="")
     # categories
-    category = models.CharField(max_length=80, default="")
+    categories = models.CharField(max_length=80, default="")
     # size: page size
     # published: timestamp ISO
     published = models.DateTimeField(default=timezone.now)

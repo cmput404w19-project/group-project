@@ -211,10 +211,7 @@ class AuthorPosts(APIView):
         if thisRequestUserUrl:
             all_private_posts = Post.objects.filter(visibility="PRIVATE").all()
             for private_post in all_private_posts:
-                # check the visibleTo table
-                all_who_can_see = PostVisibleTo.objects.filter(post_id=private_post.post_id).values_list('user_url', flat=True)
-                if thisRequestUserUrl in all_who_can_see:
-                    # if this user is indeed inside the visibleTo list
+                if thisRequestUserUrl in private_post.visibleTo: 
                     posts.append(private_post)
         count = len(posts)
         resp['count'] = count
@@ -251,6 +248,8 @@ class AuthorPosts(APIView):
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
             post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
+            post['visibleTo'] = post['visibleTo'].split(",")
+            post['categories'] = post['categories'].split()
             post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             comments = GETCommentSerializer(comments, many=True).data

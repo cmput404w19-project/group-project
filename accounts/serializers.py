@@ -16,7 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
     # file64 = Base64FileField(required=False)
     id = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
-    categories = serializers.SerializerMethodField()
+    # categories = serializers.SerializerMethodField()
     #visibleTo = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
@@ -37,9 +37,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         return GETProfileSerializer(obj.user_id).data
-
-    def get_categories(self, obj):
-        return obj.category.split()
 
     def get_count(self, obj):
         return len(Comment.objects.filter(post_id=obj.post_id).all())
