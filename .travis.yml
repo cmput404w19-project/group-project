@@ -1,20 +1,12 @@
 sudo: false
 language: python
 cache: pip
-before_install:
-  - sudo apt-get install -y libxml2-dev
-addons:
-  apt:
-    sources:
-      - travis-ci/sqlite3
-    packages:
-      - sqlite3
 python:
 - 3.6
 install:
 - pip install -r requirements.txt
 env:
-- DB=sqlite
+- DB=postgresql
 script:
 - python manage.py makemigrations
 - python manage.py migrate
