@@ -27,7 +27,7 @@ class NewPostForm(forms.ModelForm):
                 'origin',
                 'contentType',
                 'content',
-                'category',
+                'categories',
                 'published',
                 'visibility',
                 'unlisted'
