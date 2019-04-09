@@ -21,6 +21,36 @@ Contributors:
     Kehan Wang (kehan1@ualberta.ca)
     Zhaozhen Liang (zhaozhen@ualberta.ca)
 
+# Installation
+Create a virtualenv and activate the python virtual environment
+```
+> virtualenv venv --python=python3
+> source venv/bin/activate
+```
+Download the project and install all libraries that are needed
+```
+> git clone 
+> pip install -r requirments.txt
+```
+Migrate all the changes if there are any 
+</br>and create superuser (this will be the admin on server)
+</br>and then we can run the server on localhost
+```
+> python manage.py migrate
+> python manage.py createsuperuser
+> python manage.py runserver
+```
+If you made any changes to the Django model, please run the follow to commiting all those changes to the actual SQL database
+```
+> python manage.py makemigrations
+> python manage.py migrate
+```
+
+# How to get an account?
+You will first need to get into the signup page and register an account. And then **you will need to wait for one of the Admin to give you permission to log into the main home page.** Or you can create a super user which will be the admin on the server as default. But other new sign up users will still need to grant permission to access the home page(login).
+</br>
+</br>For accepting new sign up user's request for granting permission to access homepage(login), you must first have a super user account and then go to the admin page by "/admin" and then go to the User table and find the users you want to grant permission to and click into it and check the **is_active** 
+
 
 # AJAX Documentation
 ### Home Page posts
