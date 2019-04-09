@@ -50,12 +50,6 @@ class PostSerializer(serializers.ModelSerializer):
     def get_comments(self, obj):
         return []
 
-    def get_visibleTo(self, obj):
-        visibleTo = []
-        for visible in obj.visibleTo:
-            visibleTo.append(visible)
-        return visibleTo
-
     def get_origin(self, obj):
         return str(obj.host) + 'posts/' + str(obj.post_id)
 

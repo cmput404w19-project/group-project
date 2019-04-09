@@ -115,6 +115,7 @@ class Posts(APIView):
                 post['size'] = pageSize
                 comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
                 commentPaginator = Paginator(comments, pageSize)
+                post['categories'] = post['categories'].split()
                 post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
                 post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
                 post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
@@ -145,6 +146,11 @@ class PostById(APIView):
             pageSize = int(pageSize)
             post = serializer.data
             post['size'] = pageSize
+            post['categories'] = post['categories'].split()
+            if post['visibility'] == "PRIVATE":
+                post['visibleTo'] = post['visibleTo'].split(",")
+            post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
+            post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
@@ -327,7 +333,12 @@ class AuthorPostsById(APIView):
                     break
 
         # TODO implement visible_to
-
+        # Get all visibility as "PRIVATE"
+        if thisRequestUserUrl:
+            all_private_posts = Post.objects.filter(visibility="PRIVATE").all()
+            for private_post in all_private_posts:
+                if thisRequestUserUrl in private_post.visibleTo: 
+                    posts.append(private_post)
         count = len(posts)
         resp['count'] = count
         pageSize = request.GET.get('size')
@@ -353,6 +364,8 @@ class AuthorPostsById(APIView):
             comments = Comment.objects.filter(post_id=post['id']).order_by("-published").all()
             commentPaginator = Paginator(comments, pageSize)
             comments = commentPaginator.get_page(0)
+            post['visibleTo'] = post['visibleTo'].split(",")
+            post['categories'] = post['categories'].split()
             post['next'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])+"/comments"
             post['origin'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
             post['source'] = str(request.scheme)+"://"+str(request.get_host())+"/posts/"+str(post['id'])
