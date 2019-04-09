@@ -29,7 +29,7 @@ class PostTestCase(TestCase):
         post1.origin = ""
         post1.contantType = "text/plain"
         post1.content = "Test Content 1"
-        post1.category = "Category 1"
+        post1.categories = "Category 1"
         #post1.publish_time = timezone.now
         post1.visibility = "PUBLIC"
         post1.unlisted = False
@@ -45,7 +45,7 @@ class PostTestCase(TestCase):
         post2.origin = ""
         post2.contantType = "text/plain"
         post2.content = "Test Content 2"
-        post2.category = "Category 2"
+        post2.categories = "Category 2"
         #post2.publish_time = timezone.now
         post2.visibility = "PRIVATE"
         post2.unlisted = True
@@ -57,14 +57,14 @@ class PostTestCase(TestCase):
         self.assertEqual(post1.title, "Test Title 1")
         self.assertEqual(post1.description, "Test Description 1")
         self.assertEqual(post1.content, "Test Content 1")
-        self.assertEqual(post1.category, "Category 1")
+        self.assertEqual(post1.categories, "Category 1")
         self.assertEqual(post1.visibility, "PUBLIC")
         #self.assertEqual(post1.unlisted, False)
 
         self.assertEqual(post2.title, "Test Title 2")
         self.assertEqual(post2.description, "Test Description 2")
         self.assertEqual(post2.content, "Test Content 2")
-        self.assertEqual(post2.category, "Category 2")
+        self.assertEqual(post2.categories, "Category 2")
         self.assertEqual(post2.visibility, "PRIVATE")
         #self.assertEqual(post1.unlisted, True)
 
