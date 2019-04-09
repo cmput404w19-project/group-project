@@ -202,6 +202,10 @@ function renderPosts(posts){
     description.innerHTML = "Description: " + post.description;
     description.style = "color:#c0c4c3";
 
+    var categories = document.createElement("p");
+    categories.innerHTML = "Categories: " + post.categories;
+    categories.style = "color:#c0c4c3";
+
     var postID = document.createElement("p");
     postID.innerHTML = "postID: " + post.id;
     postID.style = "color:#c0c4c3";
@@ -310,6 +314,7 @@ function renderPosts(posts){
     }
 
     Post2ndOutterDiv.appendChild(description);
+    Post2ndOutterDiv.appendChild(categories);
     Post2ndOutterDiv.appendChild(postID);
 
     Post2ndOutterDiv.appendChild(commentListDiv);
@@ -530,7 +535,7 @@ async function get_github(post, user_host, user_displayName, user_url, user_gith
                  Display3.style.fontSize = "0.8em";
 
                  var newDate = new Date(gitposts[i].time);
-                 
+
                  Display3.innerHTML = " created at : " + newDate;
                  var gitpost = document.getElementById("gitpost");
                  gitpost.appendChild(Display);

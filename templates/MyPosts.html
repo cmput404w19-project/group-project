@@ -207,6 +207,10 @@ function renderPosts(posts){
     description.innerHTML = "Description: " + post.description;
     description.style = "color:#c0c4c3";
 
+    var categories = document.createElement("p");
+    categories.innerHTML = "Categories: " + post.categories;
+    categories.style = "color:#c0c4c3";
+
 
 
     /*
@@ -330,6 +334,7 @@ function renderPosts(posts){
     }
 
     Post2ndOutterDiv.appendChild(description);
+    Post2ndOutterDiv.appendChild(categories);
 
     if(post.contentType ==="image/png;base64" || post.contentType ==="image/jpeg;base64"){
         Post2ndOutterDiv.appendChild(labelImage);
