@@ -67,6 +67,9 @@ We use fetch to send request to get the list of friends for that particular user
 # Design and Idea
 So the project theme is distributive social network, we follow the specification idea that each server is independent from each other and hosting only the posts information that is made by its own server user and also hosting each own server user's userprofile. Each server does not store any extra information about other server's user and posts except we store the url(api) that we can request for the data.
 
+## Friends
+In this project, the definition of real friend is if two users are following each other. Our way of handling friend is to only keep one direction followship in each server. Each server will only store who their user is following but does not know who is following them since the other server will have that. In such way, handling friends across different servers are actually way easier. When validating friend lists we send request to other servers to verify if that user is also following him/her to get the two diretion followships. 
+
 ## External endpoints
 For dealing with external endpoints, we use baisc auth which is provided by Django CRFS token for authentications to access APIs. And we have a model table to keep all the external servers information (hostname,username,password) that we are connecting to.
 
