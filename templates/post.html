@@ -159,10 +159,10 @@
             </div>
 
             <div id="friendVisibleTo" style="display:none; ">
-                <textarea id="visibleTo" name="visibleTo" type="text" ></textarea>
-                <label  for="visibleToSelct">Choose the user who can see this </label>
-                <select id="visibleToSelct" name="visibleToSelct">
-                    <option value="Only Myself">
+                <textarea id="visibleTo" name="visibleTo" type="text" style="display:none"></textarea>
+                <label  for="visibleToSelct">Visible To (multiple):</label>
+                <select id="visibleToSelct" name="visibleToSelct" multiple="multiple" size="9" style="overflow:hidden">
+                    <option value="{{userprofile.url}}">
                         Only Myself
                     </option>
                 </select>
@@ -335,12 +335,17 @@
             texta = document.getElementById("texta");
             selection = document.getElementById("section");
             if (chooseImageSelector.value != "none") {
-                texta.value = "<font size=5>"+texta.value+"</font>" + "\r\n***  \r\n*<font size=2>Source Image:</font>*  \r\n ![image]("+chooseImageSelector.value+" =500x*)";
+                texta.value = texta.value + "\r\n***  \r\n*<font size=2>Source Image:</font>*  \r\n ![image]("+chooseImageSelector.value+" =500x*)";
             }
             visibleTo = document.getElementById("visibleTo");
             visibleToSelct = document.getElementById("visibleToSelct");
-            alert(visibleToSelct.value);
-            visibleTo.value = visibleToSelct.value;
+            //alert(values);
+            //console.log(values);
+            // Reference;
+            // Felix Kling
+            // https://stackoverflow.com/questions/11821261/how-to-get-all-selected-values-from-select-multiple-multiple
+            var values = $('#visibleToSelct').val();
+            visibleTo.value = values;
 
         }
 
