@@ -70,6 +70,7 @@ def find_friends(author_url):
     # for all non-local friends, we need to check with other servers to see if the follow relation
     # exists on their end
 
+
     author1_id = author_url.split('/')[-1]
     for follow in remaining_follows_to_check:
         author2_host  = '/'.join(follow.split('/')[0:3])
