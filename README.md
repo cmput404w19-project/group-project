@@ -32,7 +32,7 @@ Create a virtualenv and activate the python virtual environment
 ```
 Download the project and install all libraries that are needed
 ```
-> https://github.com/cmput404w19-project/group-project.git 
+> git clone https://github.com/cmput404w19-project/group-project.git 
 > pip install -r requirments.txt
 ```
 Migrate all the changes if there are any 
